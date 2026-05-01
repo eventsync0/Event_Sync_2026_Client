@@ -4,9 +4,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import api from '../../../lib/api';
-import { Event, Session } from '../../../types';
-import { formatFullDate, formatTime, isLive } from '../../../lib/utils';
+import api from '@/lib/api';
+import { Event, Session } from '@/types';
+import { formatFullDate, formatTime, isLive } from '@/lib/utils';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 
 export default function EventDetailPage() {

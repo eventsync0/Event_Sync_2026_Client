@@ -1,39 +1,40 @@
 // src/app/events/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import api from '../../lib/api';
-import { Event } from '../../types';
+import api from '@/lib/api';
+import { Event } from '@/types';
 import { Calendar, Clock, MapPin } from 'lucide-react';
-import { formatFullDate, formatTime, isLive } from '../../lib/utils';
+import { formatFullDate, formatTime, isLive } from '@/lib/utils';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEvents = async () => {
+  // Fonction de récupération des événements (avec useCallback pour éviter les re-créations inutiles)
+  const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get('/events');
+      setError(null);
+      const response = await api.get('/api/events');
       setEvents(response.data);
     } catch (err: any) {
       console.error("Erreur lors du chargement des événements:", err);
-      setError("Impossible de charger les événements. Veuillez réessayer.");
+      setError("Impossible de charger les événements. Vérifiez que le backend est démarré.");
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchEvents();
   }, []);
 
-  // Vérifie si un événement a au moins une session en cours
+  // Chargement initial
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
   const hasLiveSession = (event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
-    
     return event.sessions.some((session) =>
       isLive(session.startTime, session.endTime)
     );
@@ -68,7 +69,6 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      {/* En-tête de la page */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-6 py-16 text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
@@ -80,7 +80,6 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {/* Liste des événements */}
       <div className="max-w-7xl mx-auto px-6 pt-12">
         {events.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -94,8 +93,6 @@ export default function EventsPage() {
                   className="block group"
                 >
                   <div className="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
-                    
-                    {/* Badge LIVE */}
                     {isCurrentlyLive && (
                       <div className="bg-red-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
                         <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
@@ -104,7 +101,7 @@ export default function EventsPage() {
                     )}
 
                     <div className="p-8 flex-1">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[3.5rem]">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {event.title}
                       </h2>
 
@@ -141,14 +138,12 @@ export default function EventsPage() {
                       </div>
                     </div>
 
-                    {/* Pied de carte */}
                     <div className="border-t border-gray-100 px-8 py-5 bg-gray-50 flex items-center justify-between">
                       <div className="text-sm text-gray-500">
                         {event.sessions?.length || 0} sessions
                       </div>
                       <div className="text-blue-600 font-medium group-hover:text-blue-700 flex items-center gap-1 transition-colors">
-                        Voir le programme
-                        <span className="text-lg leading-none">→</span>
+                        Voir le programme →
                       </div>
                     </div>
                   </div>
