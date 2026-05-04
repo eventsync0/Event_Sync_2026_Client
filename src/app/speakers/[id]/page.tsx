@@ -3,7 +3,7 @@ export default async function SpeakerPage({
 }: {
   params: { id: string };
 }) {
-  const res = await fetch(`http://localhost:PORT/speakers/${params.id}`);
+  const res = await fetch(`http://localhost:3001/speakers/${params.id}`);
 
   const json = await res.json();
   const speaker = json.data;
