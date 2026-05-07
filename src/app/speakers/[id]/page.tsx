@@ -37,4 +37,22 @@ export default async function SpeakerPage({
             {speaker.bio}
           </p>
         )}
+
+                {speaker.links?.length > 0 && (
+          <div className="flex gap-3 mt-4">
+            {speaker.links.map((link: any) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline capitalize"
+              >
+                {link.platform}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
 }
