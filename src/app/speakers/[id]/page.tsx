@@ -5,12 +5,14 @@ export default async function SpeakerPage({
 }) {
   const res = await fetch(`http://localhost:3001/speakers/${params.id}`);
 
+  if (!res.ok) {
+    throw new Error("Erreur lors du chargement du speaker");
+  }
+
   const json = await res.json();
   const speaker = json.data;
 
-  return (
-    <div>
-      <h1>{speaker.fullName}</h1>
-    </div>
-  );
+  if (!speaker) {
+    return <div>Speaker introuvable</div>;
+  }
 }
