@@ -30,9 +30,18 @@ export default function EventsPage() {
   }, []);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    let isMounted = true;
+    const loadData = async () => {
+      if (isMounted) {
+        await fetchEvents();
+      }
+    };
 
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchEvents]);
 
   const hasLiveSession = useCallback((event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
