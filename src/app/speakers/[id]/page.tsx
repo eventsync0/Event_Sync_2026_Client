@@ -59,4 +59,29 @@ export default async function SpeakerPage({
     <h2 className="text-xl font-semibold mt-10 mb-4">
       Ses sessions
     </h2>
+        {speaker.sessions?.length > 0 ? (
+      speaker.sessions.map((session: any) => (
+        <div
+          key={session.id}
+          className="border rounded-lg p-4 mb-3"
+        >
+          <div className="flex items-center gap-3">
+            {session.isLive && (
+              <span className="text-red-500 font-bold">
+                LIVE
+              </span>
+            )}
+
+            <a
+              href={`/sessions/${session.id}`}
+              className="font-semibold hover:underline"
+            >
+              {session.title}
+            </a>
+          </div>
+
+          <p className="text-sm text-gray-500 mt-1">
+            {session.startTime} — {session.endTime} |{" "}
+            {session.room?.name}
+          </p>
 }
