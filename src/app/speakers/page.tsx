@@ -24,7 +24,7 @@ export default async function SpeakersPage() {
         </h1>
 
         <p className="text-gray-500 mt-2">
-          Découvrez les speakers présents durant l’événement.
+        Discover the speakers present during the event.
         </p>
       </div>
 
