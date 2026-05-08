@@ -145,7 +145,7 @@ export default async function SpeakerPage({
                   <details className="mt-5">
 
                     <summary className="cursor-pointer text-sm text-gray-600">
-                      Voir les questions ({session.questions.length})
+                      View questions ({session.questions.length})
                     </summary>
 
                     <div className="mt-4 space-y-3">
