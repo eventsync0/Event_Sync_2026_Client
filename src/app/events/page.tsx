@@ -21,7 +21,7 @@ export default function EventsPage() {
       const data = response.data?.data ?? response.data ?? [];
       
       setEvents(Array.isArray(data) ? data : []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Erreur lors du chargement des événements:", err);
       setError("Impossible de charger les événements. Vérifiez que le backend est démarré.");
     } finally {
