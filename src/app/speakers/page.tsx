@@ -19,7 +19,7 @@ export default async function SpeakersPage() {
 
       {/* HEADER */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-black">
+        <h1 className="text-4xl font-bold text-white">
           Tous les intervenants
         </h1>
 
