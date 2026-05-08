@@ -40,7 +40,7 @@ export default function Navbar() {
               href="/speakers" 
               className="text-gray-700 hover:text-blue-600 font-medium transition"
             >
-              Intervenants
+              Speakers
             </Link>
           </div>
 
