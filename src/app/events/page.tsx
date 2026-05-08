@@ -1,11 +1,10 @@
-// src/app/events/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { Event } from '@/types';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { formatFullDate, formatTime, isLive } from '@/lib/utils';
 
 export default function EventsPage() {
@@ -13,13 +12,17 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
- 
   const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+
       const response = await api.get('/api/events');
-      setEvents(response.data);
+      
+      // Gestion flexible selon la structure de réponse du backend
+      const data = response.data?.data || response.data || [];
+      setEvents(Array.isArray(data) ? data : []);
+
     } catch (err: any) {
       console.error("Erreur lors du chargement des événements:", err);
       setError("Impossible de charger les événements. Vérifiez que le backend est démarré.");
@@ -32,10 +35,11 @@ export default function EventsPage() {
     fetchEvents();
   }, [fetchEvents]);
 
+  // Vérifier si un événement a au moins une session en cours
   const hasLiveSession = (event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
     return event.sessions.some((session) =>
-      isLive(session.startTime, session.endTime)
+      isLive(new Date(session.startTime), new Date(session.endTime))
     );
   };
 
@@ -52,8 +56,8 @@ export default function EventsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center max-w-md mx-auto px-6">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
+        <div className="text-center max-w-md mx-auto">
           <p className="text-red-600 text-xl mb-6">{error}</p>
           <button 
             onClick={fetchEvents}
@@ -68,6 +72,7 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
+      {/* Hero Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-6 py-16 text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
@@ -84,6 +89,7 @@ export default function EventsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((event) => {
               const isCurrentlyLive = hasLiveSession(event);
+              const sessionCount = event.sessions?.length || 0;
 
               return (
                 <Link 
@@ -92,15 +98,17 @@ export default function EventsPage() {
                   className="block group"
                 >
                   <div className="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
+                    
+                    {/* Badge LIVE */}
                     {isCurrentlyLive && (
                       <div className="bg-red-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
                         <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                        SESSIONS EN COURS
+                        ÉVÉNEMENT EN COURS
                       </div>
                     )}
 
                     <div className="p-8 flex-1">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[3.5em]">
                         {event.title}
                       </h2>
 
@@ -108,7 +116,7 @@ export default function EventsPage() {
                         {event.description}
                       </p>
 
-                      <div className="space-y-4">
+                      <div className="space-y-4 text-sm">
                         <div className="flex items-start gap-4">
                           <Calendar className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                           <div>
@@ -131,18 +139,28 @@ export default function EventsPage() {
                           <MapPin className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                           <div>
                             <p className="font-medium text-gray-700">Lieu</p>
-                            <p className="text-gray-600 line-clamp-2">{event.location}</p>
+                            <p className="text-gray-600">{event.location}</p>
                           </div>
                         </div>
+
+                        {sessionCount > 0 && (
+                          <div className="flex items-start gap-4">
+                            <Users className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-medium text-gray-700">Sessions</p>
+                              <p className="text-gray-600">{sessionCount} session{sessionCount > 1 ? 's' : ''}</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="border-t border-gray-100 px-8 py-5 bg-gray-50 flex items-center justify-between">
+                    <div className="border-t border-gray-100 px-8 py-5 bg-gray-50 flex items-center justify-between mt-auto">
                       <div className="text-sm text-gray-500">
-                        {event.sessions?.length || 0} sessions
+                        {sessionCount} session{sessionCount > 1 ? 's' : ''}
                       </div>
                       <div className="text-blue-600 font-medium group-hover:text-blue-700 flex items-center gap-1 transition-colors">
-                        Voir le programme →
+                        Voir le détail →
                       </div>
                     </div>
                   </div>
@@ -153,6 +171,7 @@ export default function EventsPage() {
         ) : (
           <div className="text-center py-24">
             <p className="text-2xl text-gray-400">Aucun événement disponible pour le moment.</p>
+            <p className="text-gray-500 mt-2">Revenez bientôt !</p>
           </div>
         )}
       </div>
