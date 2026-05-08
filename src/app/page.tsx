@@ -1,11 +1,9 @@
-import React from 'react'
+import HeroSection from '@/components/home/HeroSection';
 
-const page = () => {
+export default function HomePage() {
   return (
-    <div>
-      Hello
+    <div className="container mx-auto px-4 py-8">
+      <HeroSection />
     </div>
-  )
+  );
 }
-
-export default page
