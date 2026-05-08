@@ -90,7 +90,7 @@ export default async function SpeakersPage() {
         </div>
       ) : (
         <div className="text-gray-500">
-          Aucun intervenant trouvé.
+          No speakers found.
         </div>
       )}
 
