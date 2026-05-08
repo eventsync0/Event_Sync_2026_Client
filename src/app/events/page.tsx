@@ -13,7 +13,7 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fonction de récupération des événements (avec useCallback pour éviter les re-créations inutiles)
+ 
   const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
@@ -28,7 +28,6 @@ export default function EventsPage() {
     }
   }, []);
 
-  // Chargement initial
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);

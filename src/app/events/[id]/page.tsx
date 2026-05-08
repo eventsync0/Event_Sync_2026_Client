@@ -21,7 +21,7 @@ export default function EventDetailPage() {
     const fetchEventDetail = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/events/${id}`);
+        const response = await api.get(`/api/events/${id}`);
         setEvent(response.data);
       } catch (err: any) {
         console.error(err);
@@ -63,7 +63,6 @@ export default function EventDetailPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Informations générales */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-8 shadow-sm border">
             <div className="space-y-6">
@@ -87,7 +86,6 @@ export default function EventDetailPage() {
           </div>
         </div>
 
-        {/* Liste des sessions */}
         <div className="lg:col-span-2">
           <h2 className="text-2xl font-semibold mb-6">Sessions</h2>
           
