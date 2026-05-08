@@ -14,6 +14,14 @@ export interface Event {
 export interface Session {
   id: string;
   title: string;
+  description : string;
   startTime: string;
   endTime: string;
+  capacity : number
+  room : Room[]
+}
+
+export interface Room {
+  id : string;
+  name : string
 }

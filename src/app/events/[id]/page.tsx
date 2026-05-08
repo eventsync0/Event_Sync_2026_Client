@@ -1,4 +1,3 @@
-// src/app/events/[id]/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -7,7 +6,7 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { Event, Session } from '@/types';
 import { formatFullDate, formatTime, isLive } from '@/lib/utils';
-import { Calendar, Clock, MapPin, Users } from 'lucide-react';
+import {  Clock, Users } from 'lucide-react';
 
 export default function EventDetailPage() {
   const { id } = useParams();
@@ -23,7 +22,7 @@ export default function EventDetailPage() {
         setLoading(true);
         const response = await api.get(`/api/events/${id}`);
         setEvent(response.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
         setError("Impossible de charger les détails de l'événement");
       } finally {
@@ -128,7 +127,7 @@ export default function EventDetailPage() {
                         Salle : <span className="font-medium">{session.room.name}</span>
                       </p>
                     )}
-
+                    
                     <Link 
                       href={`/events/${event.id}/sessions/${session.id}`}
                       className="mt-6 inline-block text-blue-600 hover:underline font-medium"
