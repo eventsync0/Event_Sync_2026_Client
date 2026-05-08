@@ -14,4 +14,6 @@ export interface Event {
 export interface Session {
   id: string;
   title: string;
+  startTime: string;
+  endTime: string;
 }

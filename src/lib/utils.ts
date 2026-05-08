@@ -1,9 +1,11 @@
-export const isLive = (startTime: string, endTime: string): boolean => {
+export function isLive(startTime: Date | string, endTime: Date | string): boolean {
+  const start = typeof startTime === 'string' ? new Date(startTime) : startTime;
+  const end = typeof endTime === 'string' ? new Date(endTime) : endTime;
+  
   const now = new Date();
-  const start = new Date(startTime);
-  const end = new Date(endTime);
+  
   return now >= start && now <= end;
-};
+}
 
 export const formatFullDate = (dateStr: string): string => {
   return new Intl.DateTimeFormat('fr-FR', {

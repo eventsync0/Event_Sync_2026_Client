@@ -33,11 +33,21 @@ export default function EventsPage() {
     fetchEvents();
   }, [fetchEvents]);
 
+
   const hasLiveSession = useCallback((event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
-    return event.sessions.some((session) =>
-      isLive(new Date(session.startTime), new Date(session.endTime))
-    );
+  
+    return event.sessions.some((session) => {
+      const start = typeof session.startTime === 'string' 
+        ? new Date(session.startTime) 
+        : session.startTime;
+  
+      const end = typeof session.endTime === 'string' 
+        ? new Date(session.endTime) 
+        : session.endTime;
+  
+      return isLive(start, end);
+    });
   }, []);
 
   if (loading) {
