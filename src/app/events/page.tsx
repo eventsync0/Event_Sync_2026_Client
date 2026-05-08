@@ -18,11 +18,9 @@ export default function EventsPage() {
       setError(null);
 
       const response = await api.get('/api/events');
+      const data = response.data?.data ?? response.data ?? [];
       
-      // Gestion flexible selon la structure de réponse du backend
-      const data = response.data?.data || response.data || [];
       setEvents(Array.isArray(data) ? data : []);
-
     } catch (err: any) {
       console.error("Erreur lors du chargement des événements:", err);
       setError("Impossible de charger les événements. Vérifiez que le backend est démarré.");
@@ -35,13 +33,12 @@ export default function EventsPage() {
     fetchEvents();
   }, [fetchEvents]);
 
-  // Vérifier si un événement a au moins une session en cours
-  const hasLiveSession = (event: Event): boolean => {
+  const hasLiveSession = useCallback((event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
     return event.sessions.some((session) =>
       isLive(new Date(session.startTime), new Date(session.endTime))
     );
-  };
+  }, []);
 
   if (loading) {
     return (

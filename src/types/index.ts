@@ -8,4 +8,10 @@ export interface Event {
   location: string;
   createdAt?: string;
   updatedAt?: string;
+  sessions?: Session[];
+}
+
+export interface Session {
+  id: string;
+  title: string;
 }
