@@ -12,14 +12,14 @@ export default async function SpeakersPage() {
   }
 
   const json = await res.json();
-
   const speakers = json.data;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
 
+      {/* HEADER */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-white-900">
+        <h1 className="text-4xl font-bold text-black">
           Tous les intervenants
         </h1>
 
@@ -28,6 +28,7 @@ export default async function SpeakersPage() {
         </p>
       </div>
 
+      {/* LISTE DES SPEAKERS */}
       {speakers?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -35,16 +36,17 @@ export default async function SpeakersPage() {
             <Link
               key={speaker.id}
               href={`/speakers/${speaker.id}`}
-              className="border border-gray-200 rounded-2xl p-5 hover:shadow-lg transition bg-white"
+              className="border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
 
               <div className="flex flex-col items-center text-center">
 
+                {/* PHOTO */}
                 {speaker.photoUrl ? (
                   <img
                     src={speaker.photoUrl}
                     alt={speaker.fullName}
-                    className="w-28 h-28 rounded-full object-cover"
+                    className="w-28 h-28 rounded-full object-cover border-2 border-gray-200"
                   />
                 ) : (
                   <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
@@ -52,16 +54,19 @@ export default async function SpeakersPage() {
                   </div>
                 )}
 
-                <h2 className="text-xl font-semibold mt-4">
+                {/* NOM */}
+                <h2 className="text-xl font-semibold mt-4 text-black">
                   {speaker.fullName}
                 </h2>
 
+                {/* BIO */}
                 {speaker.bio && (
-                  <p className="text-sm text-gray-500 mt-3 line-clamp-3">
+                  <p className="text-sm text-gray-600 mt-3 line-clamp-3">
                     {speaker.bio}
                   </p>
                 )}
 
+                {/* LINKS */}
                 {speaker.links?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-4 justify-center">
 
@@ -78,6 +83,7 @@ export default async function SpeakersPage() {
                 )}
 
               </div>
+
             </Link>
           ))}
 
