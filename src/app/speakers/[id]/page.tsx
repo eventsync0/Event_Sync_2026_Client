@@ -3,8 +3,9 @@ export default async function SpeakerPage({
 }: {
   params: { id: string };
 }) {
- 
-  if (!res.ok) {
+  const API_URL = "http://localhost:3001/api";
+
+   if (!res.ok) {
     throw new Error("Erreur lors du chargement du speaker");
   }
 
