@@ -1,26 +1,22 @@
 import Link from "next/link";
+import { Linkedin, Github, Globe } from "lucide-react";
 
 export default async function SpeakerPage({
   params,
 }: {
   params: { id: string };
 }) {
-
   const API_URL = "http://localhost:3001/api";
 
-  const res = await fetch(
-    `${API_URL}/speakers/${params.id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/speakers/${params.id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Erreur lors du chargement du speaker");
   }
 
   const json = await res.json();
-
   const speaker = json.data;
 
   if (!speaker) {
@@ -36,6 +32,7 @@ export default async function SpeakerPage({
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
+      {/* BACK BUTTON */}
       <Link
         href="/speakers"
         className="text-blue-600 hover:underline"
@@ -43,10 +40,12 @@ export default async function SpeakerPage({
         ← Retour aux intervenants
       </Link>
 
+      {/* SPEAKER CARD */}
       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
 
         <div className="flex flex-col md:flex-row gap-8">
 
+          {/* PHOTO */}
           <div className="shrink-0">
             {speaker.photoUrl ? (
               <img
@@ -61,6 +60,7 @@ export default async function SpeakerPage({
             )}
           </div>
 
+          {/* INFOS */}
           <div className="flex-1">
 
             <h1 className="text-4xl font-bold text-gray-900">
@@ -73,20 +73,35 @@ export default async function SpeakerPage({
               </p>
             )}
 
+            {/* LINKS (ICÔNES) */}
             {speaker.links?.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-6">
+              <div className="flex gap-4 mt-6">
 
-                {speaker.links.map((link: any) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
-                  >
-                    {link.platform}
-                  </a>
-                ))}
+                {speaker.links.map((link: any) => {
+
+                  const platform = link.platform?.toLowerCase();
+
+                  let icon = <Globe className="w-5 h-5" />;
+
+                  if (platform === "linkedin") {
+                    icon = <Linkedin className="w-5 h-5" />;
+                  } else if (platform === "github") {
+                    icon = <Github className="w-5 h-5" />;
+                  }
+
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
+                      title={link.platform}
+                    >
+                      {icon}
+                    </a>
+                  );
+                })}
 
               </div>
             )}
@@ -94,17 +109,16 @@ export default async function SpeakerPage({
           </div>
 
         </div>
-
       </div>
 
+      {/* SESSIONS */}
       <div className="mt-12">
 
         <h2 className="text-2xl font-bold mb-6">
-        Speaker Sessions
+          Speaker Sessions
         </h2>
 
         {speaker.sessions?.length > 0 ? (
-
           <div className="space-y-5">
 
             {speaker.sessions.map((session: any) => (
@@ -140,8 +154,8 @@ export default async function SpeakerPage({
                   </p>
                 )}
 
+                {/* QUESTIONS */}
                 {session.questions?.length > 0 && (
-
                   <details className="mt-5">
 
                     <summary className="cursor-pointer text-sm text-gray-600">
@@ -170,17 +184,15 @@ export default async function SpeakerPage({
                     </div>
 
                   </details>
-
                 )}
 
               </div>
             ))}
 
           </div>
-
         ) : (
           <div className="text-gray-500">
-          No sessions found.
+            No sessions found.
           </div>
         )}
 
