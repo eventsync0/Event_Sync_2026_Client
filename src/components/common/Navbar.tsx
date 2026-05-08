@@ -10,7 +10,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
@@ -18,8 +17,14 @@ export default function Navbar() {
             <span className="font-bold text-2xl text-gray-900">EventSync</span>
           </Link>
 
-          {/* Navigation */}
+
           <div className="flex items-center gap-8">
+          <Link 
+              href="/" 
+              className="text-gray-700 hover:text-blue-600 font-medium transition"
+            >
+              Home
+            </Link>
             <Link 
               href="/events" 
               className="text-gray-700 hover:text-blue-600 font-medium transition"
