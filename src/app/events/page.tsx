@@ -1,11 +1,10 @@
-// src/app/events/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { Event } from '@/types';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { formatFullDate, formatTime, isLive } from '@/lib/utils';
 
 export default function EventsPage() {
@@ -13,38 +12,60 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
- 
   const fetchEvents = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+
       const response = await api.get('/api/events');
-      setEvents(response.data);
-    } catch (err: any) {
-      console.error("Erreur lors du chargement des événements:", err);
-      setError("Impossible de charger les événements. Vérifiez que le backend est démarré.");
+      const data = response.data?.data ?? response.data ?? [];
+      
+      setEvents(Array.isArray(data) ? data : []);
+    } catch (err: unknown) {
+      console.error("Error loading events:", err);
+      setError("Unable to load events. Please check that the backend is running.");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchEvents();
+    let isMounted = true;
+    const loadData = async () => {
+      if (isMounted) {
+        await fetchEvents();
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fetchEvents]);
 
-  const hasLiveSession = (event: Event): boolean => {
+  const hasLiveSession = useCallback((event: Event): boolean => {
     if (!event.sessions || event.sessions.length === 0) return false;
-    return event.sessions.some((session) =>
-      isLive(session.startTime, session.endTime)
-    );
-  };
+  
+    return event.sessions.some((session) => {
+      const start = typeof session.startTime === 'string' 
+        ? new Date(session.startTime) 
+        : session.startTime;
+  
+      const end = typeof session.endTime === 'string' 
+        ? new Date(session.endTime) 
+        : session.endTime;
+  
+      return isLive(start, end);
+    });
+  }, []);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Chargement des événements...</p>
+          <p className="text-gray-600 text-lg">Loading events...</p>
         </div>
       </div>
     );
@@ -52,14 +73,14 @@ export default function EventsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center max-w-md mx-auto px-6">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="text-center max-w-md mx-auto">
           <p className="text-red-600 text-xl mb-6">{error}</p>
           <button 
             onClick={fetchEvents}
-            className="px-8 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition font-medium"
+            className="px-8 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition font-medium w-full sm:w-auto"
           >
-            Réessayer
+            Try Again
           </button>
         </div>
       </div>
@@ -69,21 +90,22 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Nos Événements
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Our Events
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Découvrez tous les événements à venir et en cours sur EventSync
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+            Discover all upcoming and ongoing events on EventSync
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 pt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 md:pt-12">
         {events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {events.map((event) => {
               const isCurrentlyLive = hasLiveSession(event);
+              const sessionCount = event.sessions?.length || 0;
 
               return (
                 <Link 
@@ -92,57 +114,68 @@ export default function EventsPage() {
                   className="block group"
                 >
                   <div className="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
+                    
                     {isCurrentlyLive && (
                       <div className="bg-red-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
                         <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                        SESSIONS EN COURS
+                        EVENT IN PROGRESS
                       </div>
                     )}
 
-                    <div className="p-8 flex-1">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    <div className="p-6 md:p-8 flex-1">
+                      <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[2.8em]">
                         {event.title}
                       </h2>
 
-                      <p className="text-gray-600 mb-8 line-clamp-3">
+                      <p className="text-gray-600 mb-6 md:mb-8 line-clamp-3 text-sm md:text-base">
                         {event.description}
                       </p>
 
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-4">
-                          <Calendar className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-4 text-sm">
+                        <div className="flex items-start gap-3">
+                          <Calendar className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                           <div>
                             <p className="font-medium text-gray-700">Date</p>
                             <p className="text-gray-600">{formatFullDate(event.startDate)}</p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-4">
-                          <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex items-start gap-3">
+                          <Clock className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                           <div>
-                            <p className="font-medium text-gray-700">Horaires</p>
+                            <p className="font-medium text-gray-700">Time</p>
                             <p className="text-gray-600">
                               {formatTime(event.startDate)} — {formatTime(event.endDate)}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-4">
-                          <MapPin className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex items-start gap-3">
+                          <MapPin className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                           <div>
-                            <p className="font-medium text-gray-700">Lieu</p>
+                            <p className="font-medium text-gray-700">Location</p>
                             <p className="text-gray-600 line-clamp-2">{event.location}</p>
                           </div>
                         </div>
+
+                        {sessionCount > 0 && (
+                          <div className="flex items-start gap-3">
+                            <Users className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                            <div>
+                              <p className="font-medium text-gray-700">Sessions</p>
+                              <p className="text-gray-600">{sessionCount} session{sessionCount > 1 ? 's' : ''}</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="border-t border-gray-100 px-8 py-5 bg-gray-50 flex items-center justify-between">
+                    <div className="border-t border-gray-100 px-6 md:px-8 py-5 bg-gray-50 flex items-center justify-between mt-auto">
                       <div className="text-sm text-gray-500">
-                        {event.sessions?.length || 0} sessions
+                        {sessionCount} session{sessionCount > 1 ? 's' : ''}
                       </div>
-                      <div className="text-blue-600 font-medium group-hover:text-blue-700 flex items-center gap-1 transition-colors">
-                        Voir le programme →
+                      <div className="text-blue-600 font-medium group-hover:text-blue-700 flex items-center gap-1 transition-colors text-sm">
+                        View Details →
                       </div>
                     </div>
                   </div>
@@ -151,8 +184,9 @@ export default function EventsPage() {
             })}
           </div>
         ) : (
-          <div className="text-center py-24">
-            <p className="text-2xl text-gray-400">Aucun événement disponible pour le moment.</p>
+          <div className="text-center py-20 md:py-24">
+            <p className="text-2xl text-gray-400">No events available at the moment.</p>
+            <p className="text-gray-500 mt-2">Please check back soon!</p>
           </div>
         )}
       </div>
