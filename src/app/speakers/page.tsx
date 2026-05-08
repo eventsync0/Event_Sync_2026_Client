@@ -19,7 +19,7 @@ export default async function SpeakersPage() {
     <div className="max-w-6xl mx-auto px-6 py-10">
 
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-4xl font-bold text-white-900">
           Tous les intervenants
         </h1>
 
