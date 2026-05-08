@@ -18,25 +18,21 @@ export default async function SpeakersPage() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
 
-      {/* HEADER */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-black">
           All Speakers
         </h1>
-
         <p className="text-gray-500 mt-2">
           Discover the speakers present during the event.
         </p>
       </div>
 
-      {/* LIST */}
       {speakers?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {speakers.map((speaker: any) => (
-            <Link
+            <div
               key={speaker.id}
-              href={`/speakers/${speaker.id}`}
               className="border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
 
@@ -67,7 +63,7 @@ export default async function SpeakersPage() {
                   </p>
                 )}
 
-                {/* ICON LINKS */}
+                {/* SOCIAL LINKS */}
                 {speaker.links?.length > 0 && (
                   <div className="flex gap-3 mt-4 justify-center">
 
@@ -88,7 +84,6 @@ export default async function SpeakersPage() {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()} // ⭐ IMPORTANT
                           className="p-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
                         >
                           {icon}
@@ -99,9 +94,17 @@ export default async function SpeakersPage() {
                   </div>
                 )}
 
+                {/* BUTTON PROFILE */}
+                <Link
+                  href={`/speakers/${speaker.id}`}
+                  className="mt-5 text-sm font-medium text-blue-600 hover:underline"
+                >
+                  View profile →
+                </Link>
+
               </div>
 
-            </Link>
+            </div>
           ))}
 
         </div>
