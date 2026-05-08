@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Linkedin, Github, Globe } from "lucide-react";
+import { Linkedin, GitHub, Globe } from "lucide-react";
 
 export default async function SpeakerPage({
   params,
@@ -22,7 +22,7 @@ export default async function SpeakerPage({
   if (!speaker) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-black">
           Speaker introuvable
         </h1>
       </div>
@@ -32,7 +32,7 @@ export default async function SpeakerPage({
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
-      {/* BACK BUTTON */}
+      {/* BACK */}
       <Link
         href="/speakers"
         className="text-blue-600 hover:underline"
@@ -40,12 +40,12 @@ export default async function SpeakerPage({
         ← Retour aux intervenants
       </Link>
 
-      {/* SPEAKER CARD */}
+      {/* CARD */}
       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
 
         <div className="flex flex-col md:flex-row gap-8">
 
-          {/* PHOTO */}
+          {/* IMAGE */}
           <div className="shrink-0">
             {speaker.photoUrl ? (
               <img
@@ -73,12 +73,11 @@ export default async function SpeakerPage({
               </p>
             )}
 
-            {/* LINKS (ICÔNES) */}
+            {/* SOCIAL LINKS (ICÔNES) */}
             {speaker.links?.length > 0 && (
               <div className="flex gap-4 mt-6">
 
                 {speaker.links.map((link: any) => {
-
                   const platform = link.platform?.toLowerCase();
 
                   let icon = <Globe className="w-5 h-5" />;
@@ -86,7 +85,7 @@ export default async function SpeakerPage({
                   if (platform === "linkedin") {
                     icon = <Linkedin className="w-5 h-5" />;
                   } else if (platform === "github") {
-                    icon = <Github className="w-5 h-5" />;
+                    icon = <GitHub className="w-5 h-5" />;
                   }
 
                   return (
