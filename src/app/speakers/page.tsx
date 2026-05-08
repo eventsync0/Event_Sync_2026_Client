@@ -88,6 +88,7 @@ export default async function SpeakersPage() {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()} // ⭐ IMPORTANT
                           className="p-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
                         >
                           {icon}
