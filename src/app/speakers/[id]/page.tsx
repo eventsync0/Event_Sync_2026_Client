@@ -84,4 +84,28 @@ export default async function SpeakerPage({
             {session.startTime} — {session.endTime} |{" "}
             {session.room?.name}
           </p>
+                  {session.questions?.length > 0 && (
+            <details className="mt-3">
+              <summary className="text-sm text-gray-500 cursor-pointer">
+                {session.questions.length} question(s) posée(s)
+              </summary>
+
+              {session.questions.map((q: any) => (
+                <div
+                  key={q.id}
+                  className="mt-2 pl-3 border-l text-sm"
+                >
+                  <p>{q.content}</p>
+                  <p className="text-gray-400">
+                    {q.authorName} — {q.upvotes} upvote(s)
+                  </p>
+                </div>
+              ))}
+            </details>
+          )}
+        </div>
+      ))
+    ) : (
+      <p className="text-gray-500">Aucune session</p>
+    )}
 }
