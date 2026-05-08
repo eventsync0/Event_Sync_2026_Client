@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
-
+import { Speaker } from '../../app/speakers/page';
 export default function Navbar() {
   return (
     <nav className="bg-white sticky top-0 z-50">
@@ -37,10 +37,10 @@ export default function Navbar() {
               Planning
             </Link>
             <Link 
-              href="/speakers" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+            href="/speakers"
+            className="text-gray-700 hover:text-blue-600 font-medium transition"
             >
-              Intervenants
+            Intervenants
             </Link>
           </div>
 
