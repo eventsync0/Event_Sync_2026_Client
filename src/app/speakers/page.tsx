@@ -8,7 +8,7 @@ export default async function SpeakersPage() {
   });
 
   if (!res.ok) {
-    throw new Error("Erreur lors du chargement des speakers");
+    throw new Error("Error loading speakers");
   }
 
   const json = await res.json();
