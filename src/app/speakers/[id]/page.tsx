@@ -3,7 +3,7 @@ export default async function SpeakerPage({
 }: {
   params: { id: string };
 }) {
-  const res = await fetch(`http://localhost:3001/speakers/${params.id}`);
+  const res = await fetch(`http://localhost:3001/api/speakers/${params.id}`);
 
   if (!res.ok) {
     throw new Error("Erreur lors du chargement du speaker");
