@@ -108,4 +108,6 @@ export default async function SpeakerPage({
     ) : (
       <p className="text-gray-500">Aucune session</p>
     )}
+    </div>
+    );
 }
