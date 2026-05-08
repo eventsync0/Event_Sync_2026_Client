@@ -180,7 +180,7 @@ export default async function SpeakerPage({
 
         ) : (
           <div className="text-gray-500">
-            Aucune session trouvée.
+          No sessions found.
           </div>
         )}
 
