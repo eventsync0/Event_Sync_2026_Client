@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Linkedin, GitHub, Globe } from "lucide-react";
+import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
 export default async function SpeakerPage({
   params,
@@ -13,7 +13,7 @@ export default async function SpeakerPage({
   });
 
   if (!res.ok) {
-    throw new Error("Erreur lors du chargement du speaker");
+    throw new Error("Error while loading speaker");
   }
 
   const json = await res.json();
@@ -23,7 +23,7 @@ export default async function SpeakerPage({
     return (
       <div className="max-w-4xl mx-auto p-6">
         <h1 className="text-2xl font-bold text-black">
-          Speaker introuvable
+          Speaker not found
         </h1>
       </div>
     );
@@ -37,15 +37,15 @@ export default async function SpeakerPage({
         href="/speakers"
         className="text-blue-600 hover:underline"
       >
-        ← Retour aux intervenants
+        ← Back to speakers
       </Link>
 
-      {/* CARD */}
+      {/* SPEAKER CARD */}
       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
 
         <div className="flex flex-col md:flex-row gap-8">
 
-          {/* IMAGE */}
+          {/* PHOTO */}
           <div className="shrink-0">
             {speaker.photoUrl ? (
               <img
@@ -60,7 +60,7 @@ export default async function SpeakerPage({
             )}
           </div>
 
-          {/* INFOS */}
+          {/* INFO */}
           <div className="flex-1">
 
             <h1 className="text-4xl font-bold text-gray-900">
@@ -73,19 +73,19 @@ export default async function SpeakerPage({
               </p>
             )}
 
-            {/* SOCIAL LINKS (ICÔNES) */}
+            {/* SOCIAL LINKS */}
             {speaker.links?.length > 0 && (
               <div className="flex gap-4 mt-6">
 
                 {speaker.links.map((link: any) => {
                   const platform = link.platform?.toLowerCase();
 
-                  let icon = <Globe className="w-5 h-5" />;
+                  let icon = <FaGlobe className="text-xl" />;
 
                   if (platform === "linkedin") {
-                    icon = <Linkedin className="w-5 h-5" />;
+                    icon = <FaLinkedin className="text-xl" />;
                   } else if (platform === "github") {
-                    icon = <GitHub className="w-5 h-5" />;
+                    icon = <FaGithub className="text-xl" />;
                   }
 
                   return (
@@ -149,7 +149,7 @@ export default async function SpeakerPage({
 
                 {session.room?.name && (
                   <p className="text-sm text-gray-500">
-                    Salle : {session.room.name}
+                    Room: {session.room.name}
                   </p>
                 )}
 
