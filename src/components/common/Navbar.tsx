@@ -1,12 +1,11 @@
-// src/components/common/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
-import { Calendar, User } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 export default function Navbar() {
   return (
-    <nav className="bg-white border-b sticky top-0 z-50">
+    <nav className="bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           
@@ -45,14 +44,13 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Espace Organisateur */}
-          <Link 
+          {/* <Link 
             href="/login"
             className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition font-medium"
           >
             <User className="w-5 h-5" />
             Organisateur
-          </Link>
+          </Link> */}
 
         </div>
       </div>
