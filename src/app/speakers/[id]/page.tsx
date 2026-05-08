@@ -55,4 +55,8 @@ export default async function SpeakerPage({
         )}
       </div>
     </div>
+
+    <h2 className="text-xl font-semibold mt-10 mb-4">
+      Ses sessions
+    </h2>
 }
