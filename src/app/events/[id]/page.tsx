@@ -66,20 +66,20 @@ export default function EventDetailPage() {
           <div className="bg-white rounded-2xl p-8 shadow-sm border">
             <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Date</p>
-                <p className="font-medium">{formatFullDate(event.startDate)}</p>
+                <p className="text-sm text-black mb-1">Date</p>
+                <p className="font-medium text-black">{formatFullDate(event.startDate)}</p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500 mb-1">Horaires</p>
-                <p className="font-medium">
+                <p className="text-sm text-black mb-1">Horaires</p>
+                <p className="font-medium text-black">
                   {formatTime(event.startDate)} — {formatTime(event.endDate)}
                 </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500 mb-1">Lieu</p>
-                <p className="font-medium">{event.location}</p>
+                <p className="text-sm text-black mb-1">Lieu</p>
+                <p className="font-medium text-black">{event.location}</p>
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function EventDetailPage() {
                         Salle : <span className="font-medium">{session.room.name}</span>
                       </p>
                     )}
-                    
+                  
                     <Link 
                       href={`/events/${event.id}/sessions/${session.id}`}
                       className="mt-6 inline-block text-blue-600 hover:underline font-medium"
