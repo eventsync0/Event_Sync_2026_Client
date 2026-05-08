@@ -100,7 +100,7 @@ export default async function SpeakerPage({
       <div className="mt-12">
 
         <h2 className="text-2xl font-bold mb-6">
-          Sessions de l’intervenant
+        Speaker Sessions
         </h2>
 
         {speaker.sessions?.length > 0 ? (
