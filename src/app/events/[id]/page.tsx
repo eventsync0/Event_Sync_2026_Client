@@ -7,8 +7,11 @@ import api from "@/lib/api";
 import { Event, Session } from "@/types";
 import { formatFullDate, formatTime, isLive } from "@/lib/utils";
 import { Clock, Users } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
 
 export default function EventDetailPage() {
+  const router = useRouter();
   const { id } = useParams();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,10 +59,17 @@ export default function EventDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
+        <button
+    onClick={() => router.back()}
+    className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+  >
+    ← Retour
+  </button>
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">{event.title}</h1>
         <p className="text-gray-600 text-lg max-w-3xl">{event.description}</p>
       </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">

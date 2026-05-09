@@ -120,7 +120,7 @@ export default function EventsPage() {
                   <div className="bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
                     
                     {isCurrentlyLive && (
-                      <div className="bg-red-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
+                      <div className="bg-green-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
                         <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
                         EVENT IN PROGRESS
                       </div>
