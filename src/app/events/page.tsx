@@ -5,7 +5,7 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { Event } from '@/types';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { formatFullDate, formatTime, isLive } from '@/lib/utils';
+import { formatFullDate, formatTime, isLive, isEventLive, isEventDateReached } from '@/lib/utils';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -45,6 +45,9 @@ export default function EventsPage() {
   }, [fetchEvents]);
 
   const hasLiveSession = useCallback((event: Event): boolean => {
+    const eventIsLive = isEventLive(event.startDate, event.endDate);
+    if (!eventIsLive) return false;
+  
     if (!event.sessions || event.sessions.length === 0) return false;
   
     return event.sessions.some((session) => {
@@ -105,6 +108,7 @@ export default function EventsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {events.map((event) => {
               const isCurrentlyLive = hasLiveSession(event);
+              const eventDateReached = isEventDateReached(event.startDate);
               const sessionCount = event.sessions?.length || 0;
 
               return (
@@ -119,6 +123,20 @@ export default function EventsPage() {
                       <div className="bg-red-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
                         <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
                         EVENT IN PROGRESS
+                      </div>
+                    )}
+
+                    {eventDateReached && !isCurrentlyLive && (
+                      <div className="bg-yellow-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
+                        <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                        EVENT STARTED
+                      </div>
+                    )}
+
+                    {!eventDateReached && (
+                      <div className="bg-gray-600 text-white text-sm font-semibold px-6 py-2.5 flex items-center gap-2">
+                        <div className="w-3 h-3 bg-white rounded-full"></div>
+                        COMING SOON
                       </div>
                     )}
 

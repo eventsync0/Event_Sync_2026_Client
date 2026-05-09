@@ -23,3 +23,16 @@ export const formatTime = (dateStr: string): string => {
     hour12: false
   }).format(new Date(dateStr));
 };
+
+export function isEventLive(startDate: string, endDate: string): boolean {
+  const now = Date.now();
+  const start = new Date(startDate).getTime();
+  const end = new Date(endDate).getTime();
+  return now >= start && now <= end;
+}
+
+export function isEventDateReached(startDate: string): boolean {
+  const now = Date.now();
+  const start = new Date(startDate).getTime();
+  return now >= start;
+}
