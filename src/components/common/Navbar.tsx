@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
-import { Speaker } from '../../app/speakers/page';
+
 export default function Navbar() {
   return (
     <nav className="bg-white sticky top-0 z-50">
