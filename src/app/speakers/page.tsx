@@ -20,11 +20,11 @@ export default async function SpeakersPage() {
       {/* HEADER */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-white">
-          All speakers
+          All of speakers
         </h1>
 
         <p className="text-gray-500 mt-2">
-        Discover the speakers present during the event.
+          Discover the speakers present during the event.
         </p>
       </div>
 
