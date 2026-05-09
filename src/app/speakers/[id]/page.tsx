@@ -1,33 +1,29 @@
 import Link from "next/link";
+import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
 export default async function SpeakerPage({
   params,
 }: {
   params: { id: string };
 }) {
-
   const API_URL = "http://localhost:3001/api";
 
-  const res = await fetch(
-    `${API_URL}/speakers/${params.id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`${API_URL}/speakers/${params.id}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error("Erreur lors du chargement du speaker");
+    throw new Error("Error while loading speaker");
   }
 
   const json = await res.json();
-
   const speaker = json.data;
 
   if (!speaker) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold">
-          Speaker introuvable
+        <h1 className="text-2xl font-bold text-black">
+          Speaker not found
         </h1>
       </div>
     );
@@ -36,17 +32,20 @@ export default async function SpeakerPage({
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
+      {/* BACK */}
       <Link
         href="/speakers"
         className="text-blue-600 hover:underline"
       >
-        ← Retour aux intervenants
+        ← Back to speakers
       </Link>
 
+      {/* SPEAKER CARD */}
       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
 
         <div className="flex flex-col md:flex-row gap-8">
 
+          {/* PHOTO */}
           <div className="shrink-0">
             {speaker.photoUrl ? (
               <img
@@ -61,6 +60,7 @@ export default async function SpeakerPage({
             )}
           </div>
 
+          {/* INFO */}
           <div className="flex-1">
 
             <h1 className="text-4xl font-bold text-gray-900">
@@ -73,20 +73,34 @@ export default async function SpeakerPage({
               </p>
             )}
 
+            {/* SOCIAL LINKS */}
             {speaker.links?.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-6">
+              <div className="flex gap-4 mt-6">
 
-                {speaker.links.map((link: any) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
-                  >
-                    {link.platform}
-                  </a>
-                ))}
+                {speaker.links.map((link: any) => {
+                  const platform = link.platform?.toLowerCase();
+
+                  let icon = <FaGlobe className="text-xl" />;
+
+                  if (platform === "linkedin") {
+                    icon = <FaLinkedin className="text-xl" />;
+                  } else if (platform === "github") {
+                    icon = <FaGithub className="text-xl" />;
+                  }
+
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
+                      title={link.platform}
+                    >
+                      {icon}
+                    </a>
+                  );
+                })}
 
               </div>
             )}
@@ -94,17 +108,16 @@ export default async function SpeakerPage({
           </div>
 
         </div>
-
       </div>
 
+      {/* SESSIONS */}
       <div className="mt-12">
 
         <h2 className="text-2xl font-bold mb-6">
-          Sessions de l’intervenant
+          Speaker Sessions
         </h2>
 
         {speaker.sessions?.length > 0 ? (
-
           <div className="space-y-5">
 
             {speaker.sessions.map((session: any) => (
@@ -136,16 +149,16 @@ export default async function SpeakerPage({
 
                 {session.room?.name && (
                   <p className="text-sm text-gray-500">
-                    Salle : {session.room.name}
+                    Room: {session.room.name}
                   </p>
                 )}
 
+                {/* QUESTIONS */}
                 {session.questions?.length > 0 && (
-
                   <details className="mt-5">
 
                     <summary className="cursor-pointer text-sm text-gray-600">
-                      Voir les questions ({session.questions.length})
+                      View questions ({session.questions.length})
                     </summary>
 
                     <div className="mt-4 space-y-3">
@@ -170,17 +183,15 @@ export default async function SpeakerPage({
                     </div>
 
                   </details>
-
                 )}
 
               </div>
             ))}
 
           </div>
-
         ) : (
           <div className="text-gray-500">
-            Aucune session trouvée.
+            No sessions found.
           </div>
         )}
 
