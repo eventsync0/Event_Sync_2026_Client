@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import api from '@/lib/api';
-import { Event, Session } from '@/types';
-import { formatFullDate, formatTime, isLive } from '@/lib/utils';
-import {  Clock, Users } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import api from "@/lib/api";
+import { Event, Session } from "@/types";
+import { formatFullDate, formatTime, isLive } from "@/lib/utils";
+import { Clock, Users } from "lucide-react";
 
 export default function EventDetailPage() {
   const { id } = useParams();
@@ -67,7 +67,9 @@ export default function EventDetailPage() {
             <div className="space-y-6">
               <div>
                 <p className="text-sm text-black mb-1">Date</p>
-                <p className="font-medium text-black">{formatFullDate(event.startDate)}</p>
+                <p className="font-medium text-black">
+                  {formatFullDate(event.startDate)}
+                </p>
               </div>
 
               <div>
@@ -87,21 +89,25 @@ export default function EventDetailPage() {
 
         <div className="lg:col-span-2">
           <h2 className="text-2xl font-semibold mb-6">Sessions</h2>
-          
+
           {event.sessions && event.sessions.length > 0 ? (
             <div className="space-y-6">
               {event.sessions.map((session: Session) => {
                 const live = isLive(session.startTime, session.endTime);
 
                 return (
-                  <div 
+                  <div
                     key={session.id}
                     className="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-xl font-semibold">{session.title}</h3>
-                        <p className="text-gray-600 mt-1">{session.description}</p>
+                        <h3 className="text-xl font-semibold">
+                          {session.title}
+                        </h3>
+                        <p className="text-gray-600 mt-1">
+                          {session.description}
+                        </p>
                       </div>
                       {live && (
                         <span className="bg-red-100 text-red-700 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2">
@@ -114,7 +120,8 @@ export default function EventDetailPage() {
                     <div className="flex gap-6 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4" />
-                        {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                        {formatTime(session.startTime)} -{" "}
+                        {formatTime(session.endTime)}
                       </div>
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4" />
@@ -124,16 +131,32 @@ export default function EventDetailPage() {
 
                     {session.room && (
                       <p className="text-sm text-gray-500 mt-3">
-                        Salle : <span className="font-medium">{session.room.name}</span>
+                        Salle :{" "}
+                        <span className="font-medium">{session.room.name}</span>
                       </p>
                     )}
-                  
-                    <Link 
-                      href={`/events/${event.id}/sessions/${session.id}`}
-                      className="mt-6 inline-block text-blue-600 hover:underline font-medium"
-                    >
-                      Voir les questions en direct →
-                    </Link>
+                    {(() => {
+                      const live = isLive(session.startTime, session.endTime);
+                      console.log("Session:", session.title, "isLive:", live);
+                      console.log(
+                        "Start:",
+                        session.startTime,
+                        "Now:",
+                        new Date(),
+                        "End:",
+                        session.endTime,
+                      );
+                      return (
+                        live && (
+                          <Link
+                            href={`/events/${event.id}/sessions/${session.id}`}
+                            className="mt-6 inline-block text-blue-600 hover:underline font-medium"
+                          >
+                            Voir les questions en direct →
+                          </Link>
+                        )
+                      );
+                    })()}
                   </div>
                 );
               })}
