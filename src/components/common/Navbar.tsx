@@ -28,7 +28,7 @@ export default function Navbar() {
               href="/events" 
               className="text-gray-700 hover:text-blue-600 font-medium transition"
             >
-              Événements
+              Events
             </Link>
             <Link 
               href="/schedule" 
@@ -40,7 +40,7 @@ export default function Navbar() {
             href="/speakers"
             className="text-gray-700 hover:text-blue-600 font-medium transition"
             >
-            Intervenants
+              Speakers
             </Link>
           </div>
 
