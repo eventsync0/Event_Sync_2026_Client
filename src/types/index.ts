@@ -19,6 +19,7 @@ export interface Session {
   endTime: string;
   capacity : number
   room : Room[]
+  isLive?: boolean;
 }
 
 export interface Room {
