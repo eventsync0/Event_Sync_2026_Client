@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import LiveBadge from "@/components/LiveBadge";        // composant badge LIVE
-import FavoriteButton from "@/components/FavoriteButton"; // composant de Harena
+// import LiveBadge from "@/components/LiveBadge";        // composant badge LIVE
+// import FavoriteButton from "@/components/FavoriteButton"; // composant de Harena
 import { formatTime } from "@/lib/formatTime";         // utilitaire de formatage horaire
 
 export default async function SessionPage({
@@ -84,9 +84,9 @@ export default async function SessionPage({
       )}
 
       {/* Bouton favori (composant Harena) */}
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <FavoriteButton sessionId={session.id} />
-      </div>
+      </div> */}
 
       {/* Q&A - placeholder (composant à ajouter quand prêt) */}
       {/*
