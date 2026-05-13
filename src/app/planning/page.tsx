@@ -11,6 +11,7 @@ export default function PlanningPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     const fetchSessions = async () => {
