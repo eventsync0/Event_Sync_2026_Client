@@ -158,89 +158,93 @@ export default function PlanningPage() {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="max-w-7xl mx-auto px-4 py-6">
                 {sessions.length === 0 ? (
                     <div className="text-center py-20">
                         <p className="text-2xl text-gray-400">No events available at the moment.</p>
                         <p className="text-gray-500 mt-2">Please check back soon!</p>
                     </div>
                 ) : (
-                    <div className="grid gap-6">
-                        {sessions.map((session) => (
-                            <div
-                                key={session.id}
-                                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
-                            >
-                                <div className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                            {session.title}
-                                        </h2>
-                                        <p className="text-gray-600">{session.description}</p>
-                                    </div>
-                                </div>
+                    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                        <div className="grid grid-cols-7 border-b">
+                            {weekDays.map((day, idx) => {
+                                const isToday = day.toDateString() === new Date().toDateString();
+                                const sessionsForDay = getSessionsForDay(day);
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <Calendar className="w-4 h-4 text-blue-600" />
-                                        <span className="text-sm">
-                                            {new Date(session.startTime).toLocaleDateString('fr-FR', {
-                                                weekday: 'long',
-                                                day: 'numeric',
-                                                month: 'long'
+                                return (
+                                    <div key={idx} className={`p-3 text-center border-r last:border-r-0 ${isToday ? 'bg-blue-50' : ''}`}>
+                                        <div className="font-semibold text-gray-700">
+                                            {day.toLocaleDateString('fr-FR', { weekday: 'short' }).toUpperCase()}
+                                        </div>
+                                        <div className={`text-2xl font-bold ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>
+                                            {day.getDate()}
+                                        </div>
+                                        <div className="text-xs text-gray-400">
+                                            {day.toLocaleDateString('fr-FR', { month: 'short' })}
+                                        </div>
+                                        {sessionsForDay.length > 0 && (
+                                            <div className="mt-1 text-xs text-blue-600 font-medium">
+                                                {sessionsForDay.length} session{sessionsForDay.length > 1 ? 's' : ''}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className="grid grid-cols-7 min-h-[600px]">
+                            {weekDays.map((day, dayIdx) => {
+                                const sessionsForDay = getSessionsForDay(day);
+                                const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8h à 19h
+
+                                return (
+                                    <div key={dayIdx} className={`border-r last:border-r-0 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
+                                        <div className="relative min-h-[600px]">
+                                            {hours.map((hour) => (
+                                                <div key={hour} className="border-b border-gray-100 h-16 relative">
+                                                    <span className="absolute -top-3 left-1 text-xs text-gray-400 bg-white px-1">
+                                                        {hour}:00
+                                                    </span>
+                                                </div>
+                                            ))}
+
+                                            {sessionsForDay.map((session) => {
+                                                const sessionHour = new Date(session.startTime).getHours();
+                                                const sessionMinute = new Date(session.startTime).getMinutes();
+                                                const topPosition = (sessionHour - 8) * 64 + (sessionMinute / 60) * 64;
+                                                const height = getSessionHeight(session.startTime, session.endTime);
+
+                                                return (
+                                                    <div
+                                                        key={session.id}
+                                                        className="absolute left-1 right-1 bg-blue-100 rounded-lg p-2 overflow-hidden hover:bg-blue-200 transition cursor-pointer group"
+                                                        style={{
+                                                            top: `${topPosition}px`,
+                                                            height: `${height}px`,
+                                                            minHeight: '40px'
+                                                        }}
+                                                    >
+                                                        <Link href={`/events/${session.event?.id}`}>
+                                                            <div className="text-xs font-semibold text-blue-900 truncate">
+                                                                {session.title}
+                                                            </div>
+                                                            <div className="text-xs text-blue-700 mt-1">
+                                                                {formatHour(session.startTime)} - {formatHour(session.endTime)}
+                                                            </div>
+                                                            {session.room && (
+                                                                <div className="text-xs text-blue-600 truncate hidden group-hover:block">
+                                                                    📍 {session.room.name}
+                                                                </div>
+                                                            )}
+                                                        </Link>
+                                                    </div>
+                                                );
                                             })}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <Clock className="w-4 h-4 text-blue-600" />
-                                        <span className="text-sm">
-                                            {new Date(session.startTime).toLocaleTimeString('fr-FR', {
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                            })} - {new Date(session.endTime).toLocaleTimeString('fr-FR', {
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                            })}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <MapPin className="w-4 h-4 text-blue-600" />
-                                        <span className="text-sm">{session.room?.name || 'Salle non définie'}</span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-gray-600">
-                                        <Users className="w-4 h-4 text-blue-600" />
-                                        <span className="text-sm">{session.capacity} places</span>
-                                    </div>
-                                </div>
-
-                                {session.speakers && session.speakers.length > 0 && (
-                                    <div className="mt-4 pt-4 border-t border-gray-100">
-                                        <div className="flex items-center gap-2 text-gray-600">
-                                            <User className="w-4 h-4 text-blue-600" />
-                                            <span className="text-sm font-medium">Speakers:</span>
-                                            <span className="text-sm">
-                                                {session.speakers.map(s => s.fullName).join(', ')}
-                                            </span>
                                         </div>
                                     </div>
-                                )}
-
-                                {/* ✅ CORRECTION : Vérifie si event existe avant d'afficher le lien */}
-                                {session.event && (
-                                    <div className="mt-4 pt-4 border-t border-gray-100">
-                                        <Link
-                                            href={`/events/${session.event.id}`}
-                                            className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                                        >
-                                            Voir l'événement →
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </div>
