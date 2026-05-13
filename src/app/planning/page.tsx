@@ -46,46 +46,53 @@ export default function PlanningPage() {
   setCurrentDate(newDate);
 };
 
-const nextWeek = () => {
-  const newDate = new Date(currentDate);
-  newDate.setDate(currentDate.getDate() + 7);
-  setCurrentDate(newDate);
-};
+    const nextWeek = () => {
+        const newDate = new Date(currentDate);
+        newDate.setDate(currentDate.getDate() + 7);
+        setCurrentDate(newDate);
+    };
 
-const currentWeek = () => {
-  setCurrentDate(new Date());
-};
+    const currentWeek = () => {
+        setCurrentDate(new Date());
+    };
 
-const getWeekDays = (date: Date) => {
-  const startOfWeek = new Date(date);
-  const day = startOfWeek.getDay();
-  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
-  startOfWeek.setDate(diff);
-  
-  const weekDays = [];
-  for (let i = 0; i < 7; i++) {
-    const dayDate = new Date(startOfWeek);
-    dayDate.setDate(startOfWeek.getDate() + i);
-    weekDays.push(dayDate);
-  }
-  return weekDays;
-};
+    const getWeekDays = (date: Date) => {
+        const startOfWeek = new Date(date);
+        const day = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+        startOfWeek.setDate(diff);
 
-const formatHour = (date: string) => {
-  return new Date(date).toLocaleTimeString('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
+        const weekDays = [];
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(startOfWeek);
+            dayDate.setDate(startOfWeek.getDate() + i);
+            weekDays.push(dayDate);
+        }
+        return weekDays;
+    };
 
-const getSessionsForDay = (day: Date) => {
-  return sessions
-    .filter(session => {
-      const sessionDate = new Date(session.startTime);
-      return sessionDate.toDateString() === day.toDateString();
-    })
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-};
+    const formatHour = (date: string) => {
+        return new Date(date).toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const getSessionsForDay = (day: Date) => {
+        return sessions
+            .filter(session => {
+                const sessionDate = new Date(session.startTime);
+                return sessionDate.toDateString() === day.toDateString();
+            })
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    };
+
+    const getSessionHeight = (startTime: string, endTime: string) => {
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+        return Math.max(40, durationMinutes * 1.5);
+    };
 
   if (loading) {
     return (
