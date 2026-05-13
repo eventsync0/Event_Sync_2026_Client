@@ -71,6 +71,22 @@ const getWeekDays = (date: Date) => {
   return weekDays;
 };
 
+const formatHour = (date: string) => {
+  return new Date(date).toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const getSessionsForDay = (day: Date) => {
+  return sessions
+    .filter(session => {
+      const sessionDate = new Date(session.startTime);
+      return sessionDate.toDateString() === day.toDateString();
+    })
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+};
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
