@@ -40,6 +40,22 @@ export default function PlanningPage() {
     fetchSessions();
   }, []);
 
+  const previousWeek = () => {
+  const newDate = new Date(currentDate);
+  newDate.setDate(currentDate.getDate() - 7);
+  setCurrentDate(newDate);
+};
+
+const nextWeek = () => {
+  const newDate = new Date(currentDate);
+  newDate.setDate(currentDate.getDate() + 7);
+  setCurrentDate(newDate);
+};
+
+const currentWeek = () => {
+  setCurrentDate(new Date());
+};
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
