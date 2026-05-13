@@ -56,6 +56,21 @@ const currentWeek = () => {
   setCurrentDate(new Date());
 };
 
+const getWeekDays = (date: Date) => {
+  const startOfWeek = new Date(date);
+  const day = startOfWeek.getDay();
+  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+  startOfWeek.setDate(diff);
+  
+  const weekDays = [];
+  for (let i = 0; i < 7; i++) {
+    const dayDate = new Date(startOfWeek);
+    dayDate.setDate(startOfWeek.getDate() + i);
+    weekDays.push(dayDate);
+  }
+  return weekDays;
+};
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
