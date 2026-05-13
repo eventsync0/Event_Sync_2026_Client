@@ -94,6 +94,9 @@ export default function PlanningPage() {
         return Math.max(40, durationMinutes * 1.5);
     };
 
+    const weekDays = getWeekDays(currentDate);
+    const weekStart = weekDays[0];
+    const weekEnd = weekDays[6];
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
