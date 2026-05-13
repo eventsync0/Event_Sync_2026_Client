@@ -195,7 +195,7 @@ export default function PlanningPage() {
                         <div className="grid grid-cols-7 min-h-[600px]">
                             {weekDays.map((day, dayIdx) => {
                                 const sessionsForDay = getSessionsForDay(day);
-                                const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8h à 19h
+                                const hours = Array.from({ length: 10 }, (_, i) => i + 8); // 8h à 19h
 
                                 return (
                                     <div key={dayIdx} className={`border-r last:border-r-0 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
