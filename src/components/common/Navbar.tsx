@@ -31,7 +31,7 @@ export default function Navbar() {
               Events
             </Link>
             <Link 
-              href="/schedule" 
+              href="/planning" 
               className="text-gray-700 hover:text-blue-600 font-medium transition"
             >
               Planning

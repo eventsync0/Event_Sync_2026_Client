@@ -11,18 +11,27 @@ export interface Event {
   sessions?: Session[];
 }
 
-export interface Session {
+export interface Speaker {
   id: string;
-  title: string;
-  description : string;
-  startTime: string;
-  endTime: string;
-  capacity : number
-  room : Room[]
-  isLive?: boolean;
+  fullName: string;
+  photoUrl?: string;
+  bio?: string;
 }
 
 export interface Room {
-  id : string;
-  name : string
+  id: string;
+  name: string;
+}
+
+export interface Session {
+  id: string;
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  room: Room;        
+  event: Event;    
+  speakers: Speaker[]; 
+  isLive?: boolean;
 }
