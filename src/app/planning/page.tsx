@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
 import { Session } from '@/types';
+import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -71,13 +72,6 @@ export default function PlanningPage() {
         return weekDays;
     };
 
-    const formatHour = (date: string) => {
-        return new Date(date).toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     const getSessionsForDay = (day: Date) => {
         return sessions
             .filter(session => {
@@ -111,6 +105,8 @@ export default function PlanningPage() {
         const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         return colors[hash % colors.length];
     };
+
+
     const weekDays = getWeekDays(currentDate);
     const weekStart = weekDays[0];
     const weekEnd = weekDays[6];
@@ -241,18 +237,20 @@ export default function PlanningPage() {
                                                             minHeight: '40px'
                                                         }}
                                                     >
-                                                        <Link href={`/events/${session.event?.id}`}>
-                                                            <div className="text-xs font-semibold truncate">
-                                                                {session.title}
+                                                        <Link href={`/sessions/${session.id}`}>
+                                                            <div className="flex justify-between items-start gap-1">
+                                                                <div className="text-xs font-semibold truncate flex-1">
+                                                                    {session.title}
+                                                                </div>
+                                                                {isLiveSession(session.startTime, session.endTime) && (
+                                                                    <div className="flex-shrink-0">
+                                                                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div className="text-xs mt-1">
                                                                 {formatHour(session.startTime)} - {formatHour(session.endTime)}
                                                             </div>
-                                                            {session.room && (
-                                                                <div className="text-xs text-blue-600 truncate hidden group-hover:block">
-                                                                    📍 {session.room.name}
-                                                                </div>
-                                                            )}
                                                         </Link>
                                                     </div>
                                                 );
