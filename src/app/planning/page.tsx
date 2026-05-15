@@ -1,4 +1,3 @@
-// app/planning/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import Link from 'next/link';
 import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '@/lib/api';
 import { Session } from '@/types';
+import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -71,13 +71,6 @@ export default function PlanningPage() {
         return weekDays;
     };
 
-    const formatHour = (date: string) => {
-        return new Date(date).toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     const getSessionsForDay = (day: Date) => {
         return sessions
             .filter(session => {
@@ -94,9 +87,28 @@ export default function PlanningPage() {
         return Math.max(40, durationMinutes * 1.5);
     };
 
+    const getSessionColor = (sessionId: string) => {
+        const colors = [
+            'bg-blue-100 hover:bg-blue-200 text-blue-900',
+            'bg-green-100 hover:bg-green-200 text-green-900',
+            'bg-orange-100 hover:bg-orange-200 text-orange-900',
+            'bg-purple-100 hover:bg-purple-200 text-purple-900',
+            'bg-red-100 hover:bg-red-200 text-red-900',
+            'bg-yellow-100 hover:bg-yellow-200 text-yellow-900',
+            'bg-pink-100 hover:bg-pink-200 text-pink-900',
+            'bg-indigo-100 hover:bg-indigo-200 text-indigo-900',
+            'bg-teal-100 hover:bg-teal-200 text-teal-900',
+            'bg-cyan-100 hover:bg-cyan-200 text-cyan-900',
+        ];
+
+        const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return colors[hash % colors.length];
+    };
+
     const weekDays = getWeekDays(currentDate);
     const weekStart = weekDays[0];
     const weekEnd = weekDays[6];
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -195,7 +207,7 @@ export default function PlanningPage() {
                         <div className="grid grid-cols-7 min-h-[600px]">
                             {weekDays.map((day, dayIdx) => {
                                 const sessionsForDay = getSessionsForDay(day);
-                                const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8h à 19h
+                                const hours = Array.from({ length: 14 }, (_, i) => i + 7);
 
                                 return (
                                     <div key={dayIdx} className={`border-r last:border-r-0 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
@@ -211,31 +223,33 @@ export default function PlanningPage() {
                                             {sessionsForDay.map((session) => {
                                                 const sessionHour = new Date(session.startTime).getHours();
                                                 const sessionMinute = new Date(session.startTime).getMinutes();
-                                                const topPosition = (sessionHour - 8) * 64 + (sessionMinute / 60) * 64;
+                                                const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                 const height = getSessionHeight(session.startTime, session.endTime);
 
                                                 return (
                                                     <div
                                                         key={session.id}
-                                                        className="absolute left-1 right-1 bg-blue-100 rounded-lg p-2 overflow-hidden hover:bg-blue-200 transition cursor-pointer group"
+                                                        className={`absolute left-1 right-1 rounded-lg p-2 overflow-hidden transition cursor-pointer group ${getSessionColor(session.id)}`}
                                                         style={{
                                                             top: `${topPosition}px`,
                                                             height: `${height}px`,
                                                             minHeight: '40px'
                                                         }}
                                                     >
-                                                        <Link href={`/events/${session.event?.id}`}>
-                                                            <div className="text-xs font-semibold text-blue-900 truncate">
-                                                                {session.title}
+                                                        <Link href={`/sessions/${session.id}`}>
+                                                            <div className="flex justify-between items-start gap-1">
+                                                                <div className="text-xs font-semibold truncate flex-1">
+                                                                    {session.title}
+                                                                </div>
+                                                                {isLiveSession(session.startTime, session.endTime) && (
+                                                                    <div className="flex-shrink-0">
+                                                                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            <div className="text-xs text-blue-700 mt-1">
+                                                            <div className="text-xs mt-1">
                                                                 {formatHour(session.startTime)} - {formatHour(session.endTime)}
                                                             </div>
-                                                            {session.room && (
-                                                                <div className="text-xs text-blue-600 truncate hidden group-hover:block">
-                                                                    📍 {session.room.name}
-                                                                </div>
-                                                            )}
                                                         </Link>
                                                     </div>
                                                 );

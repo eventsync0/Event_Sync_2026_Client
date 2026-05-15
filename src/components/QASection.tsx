@@ -1,148 +1,85 @@
-'use client'
+'use client';
+import { useState } from 'react';
 
-import { useState, useEffect } from 'react'
+export function QASection({ sessionId, isLive, initialQuestions }: any) {
+    const [questions, setQuestions] = useState(initialQuestions || []);
+    const [content, setContent] = useState('');
+    const [authorName, setAuthorName] = useState('');
 
-interface Question {
-  id: string
-  content: string
-  authorName: string
-  upvotes: number
-  createdAt: string
-}
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!content.trim()) return;
 
-interface Props {
-  sessionId: string
-  isLive: boolean
-}
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId, content, authorName: authorName || null })
+        });
 
-export function QASection({ sessionId, isLive }: Props) {
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [content, setContent] = useState('')
-  const [authorName, setAuthorName] = useState('')
-  const [submitError, setSubmitError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+        if (res.ok) {
+            const newQ = await res.json();
+            setQuestions([newQ, ...questions]);
+            setContent('');
+            setAuthorName('');
+        }
+    };
 
-  useEffect(() => {
-    if (!isLive) return
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/${sessionId}/questions`)
-      .then(r => r.json())
-      .then(d => setQuestions(d.data))
-      .catch(console.error)
-  }, [sessionId, isLive])
+    const handleUpvote = async (id: string) => {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions/${id}/upvote`, { method: 'POST' });
+        if (res.ok) {
+            const { data } = await res.json();
+            setQuestions(questions.map((q: any) => q.id === id ? data : q).sort((a: any, b: any) => b.upvotes - a.upvotes));
+        }
+    };
 
-  if (!isLive) {
+    if (!isLive) return (
+        <div className="mt-8 p-6 bg-gray-50 rounded-xl text-center border border-dashed">
+            <p className="text-gray-500">La session de questions/réponses s'ouvrira quand la session sera en direct.</p>
+        </div>
+    );
+
     return (
-      <div className="py-8 text-center">
-        <p className="text-gray-400 italic">
-          Les questions seront disponibles lors de la session
-        </p>
-      </div>
-    )
-  }
+        <div className="mt-10">
+            <h2 className="text-2xl font-bold mb-6">Questions & Réponses</h2>
+            
+            <form onSubmit={handleSubmit} className="mb-8 space-y-3 bg-white p-4 rounded-xl border shadow-sm">
+                <textarea 
+                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Posez votre question..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
+                />
+                <div className="flex gap-2">
+                    <input 
+                        className="flex-1 p-2 border rounded-lg"
+                        placeholder="Votre nom (optionnel)"
+                        value={authorName}
+                        onChange={(e) => setAuthorName(e.target.value)}
+                    />
+                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700">
+                        Envoyer
+                    </button>
+                </div>
+            </form>
 
-  async function handleSubmit() {
-    if (!content.trim()) {
-      setSubmitError('Veuillez écrire votre question')
-      return
-    }
-    setSubmitError('')
-    setIsSubmitting(true)
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId,
-        content: content.trim(),
-        authorName: authorName.trim() || undefined
-      })
-    })
-
-    const data = await res.json()
-
-    if (res.ok) {
-      setContent('')
-      setAuthorName('')
-      setQuestions(prev => [data.data, ...prev])
-    } else {
-      setSubmitError(data.error)
-    }
-
-    setIsSubmitting(false)
-  }
-
-  async function handleUpvote(questionId: string) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/questions/${questionId}/upvote`,
-      { method: 'POST' }
-    )
-    if (res.ok) {
-      const { data } = await res.json()
-      setQuestions(prev =>
-        [...prev.map(q => (q.id === questionId ? data : q))].sort(
-          (a, b) =>
-            b.upvotes - a.upvotes ||
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        )
-      )
-    }
-  }
-
-  return (
-    <div className="mt-10">
-      <h2 className="text-xl font-semibold mb-4">Questions & Réponses</h2>
-
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h3 className="font-semibold mb-3">Poser une question</h3>
-        <textarea
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          placeholder="Écrivez votre question..."
-          className="w-full border rounded-lg p-3 resize-none text-sm"
-          rows={3}
-        />
-        {submitError && (
-          <p className="text-red-500 text-xs mt-1">{submitError}</p>
-        )}
-        <input
-          value={authorName}
-          onChange={e => setAuthorName(e.target.value)}
-          placeholder="Votre nom (laisser vide pour rester anonyme)"
-          className="w-full border rounded-lg px-3 py-2 text-sm mt-2"
-        />
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-50"
-        >
-          {isSubmitting ? 'Envoi...' : 'Envoyer la question'}
-        </button>
-      </div>
-
-      <div className="space-y-3">
-        {questions.length === 0 && (
-          <p className="text-gray-400 text-sm text-center py-4">
-            Aucune question pour le moment. Soyez le premier !
-          </p>
-        )}
-        {questions.map(q => (
-          <div key={q.id} className="flex items-start gap-4 border rounded-lg p-3">
-            <div className="flex-1">
-              <p className="text-sm">{q.content}</p>
-              <p className="text-xs text-gray-400 mt-1">
-                {q.authorName} · {new Date(q.createdAt).toLocaleTimeString('fr-FR')}
-              </p>
+            <div className="space-y-4">
+                {questions.map((q: any) => (
+                    <div key={q.id} className="flex justify-between items-start p-4 bg-white border rounded-xl shadow-sm">
+                        <div>
+                            <p className="font-medium text-gray-800">{q.content}</p>
+                            <p className="text-xs text-gray-400 mt-1">{q.authorName} • {new Date(q.createdAt).toLocaleTimeString()}</p>
+                        </div>
+                        <button 
+                            onClick={() => handleUpvote(q.id)}
+                            className="flex flex-col items-center px-3 py-1 bg-blue-50 rounded-lg text-blue-600 hover:bg-blue-100"
+                        >
+                            <span className="text-lg">▲</span>
+                            <span className="font-bold">{q.upvotes}</span>
+                        </button>
+                    </div>
+                ))}
             </div>
-            <button
-              onClick={() => handleUpvote(q.id)}
-              className="flex flex-col items-center text-blue-600 hover:text-blue-800 shrink-0"
-            >
-              <span className="text-lg leading-none">▲</span>
-              <span className="text-sm font-bold">{q.upvotes}</span>
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+        </div>
+    );
 }

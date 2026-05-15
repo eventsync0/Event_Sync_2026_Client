@@ -36,3 +36,29 @@ export function isEventDateReached(startDate: string): boolean {
   const start = new Date(startDate).getTime();
   return now >= start;
 }
+
+
+export const formatHour = (date: string) => {
+  const d = new Date(date);
+  return d.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+export const formatDate = (date: string) => {
+  const d = new Date(date);
+  return d.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
+
+export const isLiveSession = (startTime: string, endTime: string) => {
+  const now = new Date();
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  return now >= start && now <= end;
+};
