@@ -1,4 +1,3 @@
-// app/planning/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -106,10 +105,10 @@ export default function PlanningPage() {
         return colors[hash % colors.length];
     };
 
-
     const weekDays = getWeekDays(currentDate);
     const weekStart = weekDays[0];
     const weekEnd = weekDays[6];
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -208,7 +207,7 @@ export default function PlanningPage() {
                         <div className="grid grid-cols-7 min-h-[600px]">
                             {weekDays.map((day, dayIdx) => {
                                 const sessionsForDay = getSessionsForDay(day);
-                                const hours = Array.from({ length: 10 }, (_, i) => i + 8); // 8h à 19h
+                                const hours = Array.from({ length: 14 }, (_, i) => i + 7);
 
                                 return (
                                     <div key={dayIdx} className={`border-r last:border-r-0 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
@@ -224,7 +223,7 @@ export default function PlanningPage() {
                                             {sessionsForDay.map((session) => {
                                                 const sessionHour = new Date(session.startTime).getHours();
                                                 const sessionMinute = new Date(session.startTime).getMinutes();
-                                                const topPosition = (sessionHour - 8) * 64 + (sessionMinute / 60) * 64;
+                                                const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                 const height = getSessionHeight(session.startTime, session.endTime);
 
                                                 return (

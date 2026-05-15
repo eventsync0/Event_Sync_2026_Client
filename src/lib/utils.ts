@@ -40,7 +40,6 @@ export function isEventDateReached(startDate: string): boolean {
 
 export const formatHour = (date: string) => {
   const d = new Date(date);
-  d.setHours(d.getHours() + 3);
   return d.toLocaleTimeString('fr-FR', {
     hour: '2-digit',
     minute: '2-digit'
@@ -49,7 +48,6 @@ export const formatHour = (date: string) => {
 
 export const formatDate = (date: string) => {
   const d = new Date(date);
-  d.setHours(d.getHours() + 3);
   return d.toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -61,8 +59,6 @@ export const formatDate = (date: string) => {
 export const isLiveSession = (startTime: string, endTime: string) => {
   const now = new Date();
   const start = new Date(startTime);
-  start.setHours(start.getHours() + 3);
   const end = new Date(endTime);
-  end.setHours(end.getHours() + 3);
   return now >= start && now <= end;
 };
