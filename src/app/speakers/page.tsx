@@ -9,8 +9,11 @@ export default async function SpeakersPage() {
   });
 
   if (!res.ok) {
-    throw new Error("Error loading speakers");
-  }
+  console.error("Fetch failed:", res.status);
+  return {
+    notFound: true,
+  };
+}
 
   const json = await res.json();
   const speakers = json.data;

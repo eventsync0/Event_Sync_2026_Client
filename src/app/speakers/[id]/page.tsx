@@ -1,42 +1,37 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
-export default async function SpeakerPage({
-  params,
-}: {
+type Props = {
   params: { id: string };
-}) {
+};
+
+export default async function SpeakerPage({ params }: Props) {
   const API_URL = "http://localhost:3001/api";
 
   const res = await fetch(`${API_URL}/speakers/${params.id}`, {
     cache: "no-store",
   });
 
+  // ❌ gestion correcte des erreurs API
   if (!res.ok) {
-    throw new Error("Error while loading speaker");
+    console.log("Fetch failed. Status:", res.status);
+    notFound();
   }
 
   const json = await res.json();
   const speaker = json.data;
 
+  // ❌ si speaker inexistant
   if (!speaker) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-black">
-          Speaker not found
-        </h1>
-      </div>
-    );
+    notFound();
   }
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
       {/* BACK */}
-      <Link
-        href="/speakers"
-        className="text-blue-600 hover:underline"
-      >
+      <Link href="/speakers" className="text-blue-600 hover:underline">
         ← Back to speakers
       </Link>
 
@@ -106,7 +101,6 @@ export default async function SpeakerPage({
             )}
 
           </div>
-
         </div>
       </div>
 
@@ -168,7 +162,6 @@ export default async function SpeakerPage({
                           key={question.id}
                           className="border-l-4 border-blue-500 pl-4 py-2 bg-gray-50 rounded-r-lg"
                         >
-
                           <p className="text-gray-800">
                             {question.content}
                           </p>
@@ -176,7 +169,6 @@ export default async function SpeakerPage({
                           <div className="text-sm text-gray-500 mt-2">
                             {question.authorName} • {question.upvotes} upvote(s)
                           </div>
-
                         </div>
                       ))}
 
@@ -196,7 +188,6 @@ export default async function SpeakerPage({
         )}
 
       </div>
-
     </div>
   );
 }
