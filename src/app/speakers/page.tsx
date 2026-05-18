@@ -1,26 +1,42 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
-export default async function SpeakersPage() {
+export default function SpeakersPage() {
   const API_URL = "http://localhost:3001/api";
 
-  const res = await fetch(`${API_URL}/speakers`, {
-    cache: "no-store",
-  });
+  const [speakers, setSpeakers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
 
-  if (!res.ok) {
-  console.error("Fetch failed:", res.status);
-  return {
-    notFound: true,
-  };
-}
+  // FETCH DATA (client-side)
+  useEffect(() => {
+    const fetchSpeakers = async () => {
+      try {
+        const res = await fetch(`${API_URL}/speakers`);
 
-  const json = await res.json();
-  const speakers = json.data;
+        if (!res.ok) {
+          console.error("Fetch failed:", res.status);
+          return;
+        }
+
+        const json = await res.json();
+        setSpeakers(json.data);
+      } catch (err) {
+        console.error("Error fetching speakers:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpeakers();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
 
+      {/* HEADER */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-black">
           All Speakers
@@ -30,7 +46,15 @@ export default async function SpeakersPage() {
         </p>
       </div>
 
-      {speakers?.length > 0 ? (
+      {/* LOADING */}
+      {loading && (
+        <div className="text-gray-500">
+          Loading speakers...
+        </div>
+      )}
+
+      {/* GRID */}
+      {!loading && speakers?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {speakers.map((speaker: any) => (
@@ -97,13 +121,13 @@ export default async function SpeakersPage() {
                   </div>
                 )}
 
-                {/* BUTTON PROFILE */}
-                <Link
-                  href={`/speakers/${speaker.id}`}
+                {/* BUTTON OPEN MODAL */}
+                <button
+                  onClick={() => setSelectedSpeaker(speaker)}
                   className="mt-5 text-sm font-medium text-blue-600 hover:underline"
                 >
                   View profile →
-                </Link>
+                </button>
 
               </div>
 
@@ -112,8 +136,93 @@ export default async function SpeakersPage() {
 
         </div>
       ) : (
-        <div className="text-gray-500">
-          No speakers found.
+        !loading && (
+          <div className="text-gray-500">
+            No speakers found.
+          </div>
+        )
+      )}
+
+      {/* ================= MODAL ================= */}
+      {selectedSpeaker && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+          <div className="bg-white w-[90%] max-w-3xl rounded-2xl p-6 relative shadow-xl">
+
+            {/* CLOSE */}
+            <button
+              onClick={() => setSelectedSpeaker(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+            >
+              ✕
+            </button>
+
+            {/* CONTENT */}
+            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+
+              {/* IMAGE */}
+              {selectedSpeaker.photoUrl ? (
+                <img
+                  src={selectedSpeaker.photoUrl}
+                  alt={selectedSpeaker.fullName}
+                  className="w-40 h-40 rounded-full object-cover border"
+                />
+              ) : (
+                <div className="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                  No Image
+                </div>
+              )}
+
+              {/* INFO */}
+              <div className="flex-1 text-center md:text-left">
+
+                <h2 className="text-3xl font-bold text-black">
+                  {selectedSpeaker.fullName}
+                </h2>
+
+                {selectedSpeaker.bio && (
+                  <p className="text-gray-600 mt-4 leading-relaxed">
+                    {selectedSpeaker.bio}
+                  </p>
+                )}
+
+                {/* SOCIAL */}
+                {selectedSpeaker.links?.length > 0 && (
+                  <div className="flex gap-3 mt-5 justify-center md:justify-start">
+
+                    {selectedSpeaker.links.map((link: any) => {
+                      const platform = link.platform?.toLowerCase();
+
+                      let icon = <FaGlobe className="text-lg" />;
+
+                      if (platform === "linkedin") {
+                        icon = <FaLinkedin className="text-lg" />;
+                      } else if (platform === "github") {
+                        icon = <FaGithub className="text-lg" />;
+                      }
+
+                      return (
+                        <a
+                          key={link.id}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
+                        >
+                          {icon}
+                        </a>
+                      );
+                    })}
+
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
       )}
 
