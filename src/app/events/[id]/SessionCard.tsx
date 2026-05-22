@@ -1,4 +1,3 @@
-// src/app/events/[id]/SessionCard.tsx
 import { Clock, Users } from 'lucide-react';
 import { formatTime, isLive } from '@/lib/utils';
 import { Session } from '@/types';

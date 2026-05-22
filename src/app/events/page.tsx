@@ -1,4 +1,3 @@
-// src/app/events/page.tsx
 import { Suspense } from 'react';
 import api from '@/lib/api';
 import { Event } from '@/types';

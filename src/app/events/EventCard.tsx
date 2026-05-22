@@ -1,4 +1,3 @@
-// src/components/event/EventCard.tsx
 import Link from 'next/link';
 import { Event } from '@/types';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
