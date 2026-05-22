@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import  notFound  from '../../notFound';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import api from '@/lib/api';
 import { formatFullDate, formatTime } from '@/lib/utils';
