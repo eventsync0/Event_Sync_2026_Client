@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
+  /* === COULEURS PRINCIPALES === */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+  
+  --primary: #2563eb;
+  --primary-600: #1e40af;
+  --primary-foreground: #ffffff;
+
+  --accent: #7c3aed;
+  --accent-foreground: #ffffff;
+
+  --success: #10b981;
+  --success-foreground: #ffffff;
+
+  --dark: #0f172a;
+  --gray-900: #1e2937;
+  --light: #f8fafc;
+  --gray-100: #f1f5f9;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark Mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    
+    --dark: #0f172a;
+    --gray-900: #1e2937;
+    --gray-100: #334155;
+    --light: #1e2937;
   }
 }
 
+/* Configuration Tailwind v4 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-600: var(--primary-600);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  
+  --color-dark: var(--dark);
+  --color-gray-900: var(--gray-900);
+  --color-light: var(--light);
+  --color-gray-100: var(--gray-100);
+
+  /* Fonts modernes */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  
+  /* Amélioration des arrondis */
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+}
+
+/* Styles globaux */
 body {
-  background: var(--background);
+  font-family: var(--font-sans);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
 }

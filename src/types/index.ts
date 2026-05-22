@@ -8,4 +8,30 @@ export interface Event {
   location: string;
   createdAt?: string;
   updatedAt?: string;
+  sessions?: Session[];
+}
+
+export interface Speaker {
+  id: string;
+  fullName: string;
+  photoUrl?: string;
+  bio?: string;
+}
+
+export interface Room {
+  id: string;
+  name: string;
+}
+
+export interface Session {
+  id: string;
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  room: Room;        
+  event: Event;    
+  speakers: Speaker[]; 
+  isLive?: boolean;
 }
