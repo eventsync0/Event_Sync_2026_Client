@@ -1,180 +1,128 @@
-"use client";
+import { notFound } from 'next/navigation';
+import { Calendar, Clock, MapPin } from 'lucide-react';
+import api from '@/lib/api';
+import { formatFullDate, formatTime } from '@/lib/utils';
+import { Event, Session } from '@/types';
+import BackButton from './BackButton';
+import SessionCard from './SessionCard';
+import { AppError } from '@/types/error';
+import { Suspense } from 'react';
+import EventDetailSkeleton from './EventDetailSkeleton';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import api from "@/lib/api";
-import { Event, Session } from "@/types";
-import { formatFullDate, formatTime, isLive } from "@/lib/utils";
-import { Clock, Users } from "lucide-react";
-import { useRouter } from 'next/navigation';
+async function EventContent({ id }: { id: string }) {
+  let event: Event | null = null;
 
+  try {
+    const response = await api.get(`/api/events/${id}`);
+    event = response.data?.data || response.data;
+  } catch (err: unknown) {
+    console.error("Error loading event:", err);
 
-export default function EventDetailPage() {
-  const router = useRouter();
-  const { id } = useParams();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    if (err instanceof Error) {
+      throw new AppError(
+        err.message.includes('404') 
+          ? "Event not found" 
+          : "Failed to load event details"
+      );
+    }
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchEventDetail = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get(`/api/events/${id}`);
-        setEvent(response.data);
-      } catch (err: unknown) {
-        console.error(err);
-        setError("Impossible de charger les détails de l'événement");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventDetail();
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p>Chargement des détails...</p>
-        </div>
-      </div>
-    );
+    throw new AppError("An unexpected error occurred while loading the event");
   }
 
-  if (error || !event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <p className="text-xl">{error || "Événement non trouvé"}</p>
-        </div>
-      </div>
-    );
+  if (!event) {
+    notFound();
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-        <button
-    onClick={() => router.back()}
-    className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-  >
-    ← Retour
-  </button>
+    <>
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">{event.title}</h1>
-        <p className="text-gray-600 text-lg max-w-3xl">{event.description}</p>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+          {event.title}
+        </h1>
+        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
+          {event.description}
+        </p>
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl p-8 shadow-sm border">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 sticky top-8">
+            <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">
+              Event Information
+            </h3>
+            
             <div className="space-y-6">
-              <div>
-                <p className="text-sm text-black mb-1">Date</p>
-                <p className="font-medium text-black">
-                  {formatFullDate(event.startDate)}
-                </p>
+              <div className="flex gap-4">
+                <Calendar className="w-5 h-5 text-primary mt-1" />
+                <div>
+                  <p className="text-sm text-gray-500">Date</p>
+                  <p className="font-medium">{formatFullDate(event.startDate)}</p>
+                </div>
               </div>
 
-              <div>
-                <p className="text-sm text-black mb-1">Horaires</p>
-                <p className="font-medium text-black">
-                  {formatTime(event.startDate)} — {formatTime(event.endDate)}
-                </p>
+              <div className="flex gap-4">
+                <Clock className="w-5 h-5 text-primary mt-1" />
+                <div>
+                  <p className="text-sm text-gray-500">Time</p>
+                  <p className="font-medium">
+                    {formatTime(event.startDate)} — {formatTime(event.endDate)}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <p className="text-sm text-black mb-1">Lieu</p>
-                <p className="font-medium text-black">{event.location}</p>
+              <div className="flex gap-4">
+                <MapPin className="w-5 h-5 text-primary mt-1" />
+                <div>
+                  <p className="text-sm text-gray-500">Location</p>
+                  <p className="font-medium">{event.location}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Sessions */}
         <div className="lg:col-span-2">
-          <h2 className="text-2xl font-semibold mb-6">Sessions</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Sessions</h2>
 
           {event.sessions && event.sessions.length > 0 ? (
             <div className="space-y-6">
-              {event.sessions.map((session: Session) => {
-                const live = isLive(session.startTime, session.endTime);
-
-                return (
-                  <div
-                    key={session.id}
-                    className="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold">
-                          {session.title}
-                        </h3>
-                        <p className="text-gray-600 mt-1">
-                          {session.description}
-                        </p>
-                      </div>
-                      {live && (
-                        <span className="bg-red-100 text-red-700 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2">
-                          <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                          LIVE
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex gap-6 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        {formatTime(session.startTime)} -{" "}
-                        {formatTime(session.endTime)}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        {session.capacity} places
-                      </div>
-                    </div>
-
-                    {session.room && (
-                      <p className="text-sm text-gray-500 mt-3">
-                        Salle :{" "}
-                        <span className="font-medium">{session.room.name}</span>
-                      </p>
-                    )}
-                    {(() => {
-                      const live = isLive(session.startTime, session.endTime);
-                      console.log("Session:", session.title, "isLive:", live);
-                      console.log(
-                        "Start:",
-                        session.startTime,
-                        "Now:",
-                        new Date(),
-                        "End:",
-                        session.endTime,
-                      );
-                      return (
-                        live && (
-                          <Link
-                            href={`/events/${event.id}/sessions/${session.id}`}
-                            className="mt-6 inline-block text-blue-600 hover:underline font-medium"
-                          >
-                            Voir les questions en direct →
-                          </Link>
-                        )
-                      );
-                    })()}
-                  </div>
-                );
-              })}
+              {event.sessions.map((session: Session) => (
+                <SessionCard 
+                  key={session.id} 
+                  session={session} 
+                  eventId={event.id} 
+                />
+              ))}
             </div>
           ) : (
-            <p className="text-gray-500">Aucune session pour cet événement.</p>
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 text-center border border-gray-100 dark:border-gray-800">
+              <p className="text-gray-500">No sessions available for this event.</p>
+            </div>
           )}
         </div>
+      </div>
+    </>
+  );
+}
+
+export default async function EventDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  const { id } = await params;
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        
+        <BackButton />
+
+        <Suspense fallback={<EventDetailSkeleton />}>
+          <EventContent id={id} />
+        </Suspense>
       </div>
     </div>
   );
