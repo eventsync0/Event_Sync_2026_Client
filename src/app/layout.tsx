@@ -1,11 +1,34 @@
-// src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
+import { ThemeProvider } from '@/components/common/ThemeProvider';
+import {
+  Plus_Jakarta_Sans,
+  Fira_Code,
+  Audiowide,
+  Quicksand,
+} from "next/font/google";
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
-const inter = Inter({ subsets: ['latin'] });
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
+
+const audiowide = Audiowide({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-audiowide",
+});
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  variable: "--font-quicksand",
+});
 
 export const metadata: Metadata = {
   title: 'EventSync - Événements en direct',
@@ -18,15 +41,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
+    // On retire toute classe forcée, next-themes va gérer l'injection de .dark ici
+    <html lang="fr" suppressHydrationWarning   className={`
+      ${plusJakarta.variable}
+      ${firaCode.variable}
+      ${audiowide.variable}
+      ${quicksand.variable}
+    `}>
+      <body className="bg-background text-text-body antialiased">
+        <ThemeProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1 ">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
