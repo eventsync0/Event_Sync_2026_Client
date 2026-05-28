@@ -10,10 +10,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-coffee-600 rounded-full flex items-center justify-center">
+             <h2 className="text-white font-family">ES</h2>
             </div>
-            <span className="font-bold text-2xl text-gray-900">EventSync</span>
+            <div className="font-family text-2xl text-gray-900">Event<span className="text-coffee-500">.Sync</span></div>
           </Link>
 
 
