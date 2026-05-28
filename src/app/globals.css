@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+/* ==========================================================================
+   1. TOUS LES IMPORTS (Optimisés et regroupés tout en haut)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -26,50 +28,74 @@
   --border-custom: var(--coffee-200);   
 
   /* ==========================================================================
-     4. CAS D'USAGE : TYPOGRAPHIE & TEXTES (Mode Clair)
+     4. CAS D'USAGE : TYPOGRAPHIE & txtES (Mode Clair)
      ========================================================================== */
   --foreground: var(--coffee-900);      
-  --text-body: #3D342E;                  
-  --text-secondary: var(--coffee-700);  
-  --text-on-dark: var(--coffee-50);     
+  --txt-body: var(--coffee-800);                  
+  --txt-secondary: var(--coffee-700);  
+  --txt-on-dark: var(--coffee-50);     
 
   /* ==========================================================================
-     5. CAS D'USAGE : BOUTONS & ACTIONS (Mode Clair)
+     5. ÉTATS DES BOUTONS (Mode Clair)
      ========================================================================== */
-  --btn-primary: var(--coffee-500);     
-  --btn-primary-hover: var(--coffee-600);
-  --btn-secondary: var(--coffee-100);   
-  --btn-secondary-hover: var(--coffee-200);
+  /* --- PRIMARY --- */
+  --primary: var(--coffee-500);
+  --primary-hover: var(--coffee-600);
+  --primary-active: var(--coffee-700);
+  --primary-disabled: var(--coffee-300);
+
+  /* --- SECONDARY --- */
+  --secondary: var(--coffee-100);
+  --secondary-hover: var(--coffee-200);
+  --secondary-active: var(--coffee-300);
+  --secondary-disabled: var(--coffee-50);
+
+  /* --- TERTIARY --- */
+  --tertiary: transparent;
+  --tertiary-hover: rgba(205, 91, 50, 0.08); /* Effet d'overlay subtil */
+  --tertiary-active: rgba(205, 91, 50, 0.15);
+  --tertiary-disabled: transparent;
 
   /* ==========================================================================
      6. CAS D'USAGE : BADGES & LABELS (Mode Clair)
      ========================================================================== */
   --badge-bg: var(--coffee-100);        
-  --badge-text: var(--coffee-800);      
+  --badge-txt: var(--coffee-800);      
 }
 
 /* ==========================================================================
    7. AFFECTATION AUTOMATIQUE DU DARK MODE
    ========================================================================== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--coffee-950);
+   .dark {
+    --background: var(--coffee-950); /* Corrigé : passe bien sur le fond sombre */
     --bg-card: var(--coffee-900);
     --border-custom: var(--coffee-800);
 
     --foreground: var(--coffee-50);
-    --text-body: var(--coffee-100);
-    --text-secondary: var(--coffee-300);
-    --text-on-dark: var(--coffee-950);
+    --txt-body: var(--coffee-100);
+    --txt-secondary: var(--coffee-300);
+    --txt-on-dark: var(--coffee-950);
 
-    --btn-primary: var(--coffee-400);
-    --btn-primary-hover: var(--coffee-500);
-    --btn-secondary: rgba(41, 18, 10, 0.4); 
-    --btn-secondary-hover: rgba(82, 36, 20, 0.6);
+    /* --- ÉTATS PRIMARY (Sombre) --- */
+    --primary: var(--coffee-400);
+    --primary-hover: var(--coffee-500);
+    --primary-active: var(--coffee-600);
+    --primary-disabled: var(--coffee-800);
+
+    /* --- ÉTATS SECONDARY (Sombre) --- */
+    --secondary: rgba(41, 18, 10, 0.4); 
+    --secondary-hover: rgba(82, 36, 20, 0.6);
+    --secondary-active: rgba(82, 36, 20, 0.8);
+    --secondary-disabled: rgba(41, 18, 10, 0.1);
+
+    /* --- ÉTATS TERTIARY (Sombre) --- */
+    --tertiary: transparent;
+    --tertiary-hover: rgba(215, 124, 91, 0.1);
+    --tertiary-active: rgba(215, 124, 91, 0.2);
+    --tertiary-disabled: transparent;
 
     --badge-bg: rgba(41, 18, 10, 0.5);
-    --badge-text: var(--coffee-200);
-  }
+    --badge-txt: var(--coffee-200);
 }
 
 /* ==========================================================================
@@ -80,18 +106,29 @@
   --color-bg-card: var(--bg-card);
   --color-border-custom: var(--border-custom);
   
-  --color-text-title: var(--foreground);
-  --color-text-body: var(--text-body);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-on-dark: var(--text-on-dark);
+  --color-txt-title: var(--foreground);
+  --color-txt-body: var(--txt-body);
+  --color-txt-secondary: var(--txt-secondary);
+  --color-txt-on-dark: var(--txt-on-dark);
   
-  --color-btn-primary: var(--btn-primary);
-  --color-btn-primary-hover: var(--btn-primary-hover);
-  --color-btn-secondary: var(--btn-secondary);
-  --color-btn-secondary-hover: var(--btn-secondary-hover);
+  /* Mappage de tous les boutons et états dans Tailwind */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-disabled: var(--primary-disabled);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-active: var(--secondary-active);
+  --color-secondary-disabled: var(--secondary-disabled);
+
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-hover: var(--tertiary-hover);
+  --color-tertiary-active: var(--tertiary-active);
+  --color-tertiary-disabled: var(--tertiary-disabled);
 
   --color-badge-bg: var(--badge-bg);
-  --color-badge-text: var(--badge-text);
+  --color-badge-txt: var(--badge-txt);
 
   --color-coffee-50: var(--coffee-50);
   --color-coffee-100: var(--coffee-100);
@@ -105,12 +142,13 @@
   --color-coffee-900: var(--coffee-900);
   --color-coffee-950: var(--coffee-950);
 
-  /* Les polices de l'application */
+  /* Les polices d'écriture */
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Fira Code', ui-monospace, monospace;
-  --font-family: "Audiowide", sans-serif;
-  
-  /* Les rayons de bordure personnalisés */  
+  --font-audiowide: "Audiowide", sans-serif;
+  --font-quicksand: "Quicksand", sans-serif;
+ 
+  /* Les rayons de bordure */  
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.25rem;
@@ -123,6 +161,6 @@
 body {
   font-family: var(--font-sans);
   background-color: var(--background);
-  color: var(--text-body);
+  color: var(--txt-body);
   line-height: 1.6;
 }
