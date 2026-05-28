@@ -29,22 +29,22 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       
       {/* ========== FOND PRINCIPAL ========== */}
-      <div className="absolute inset-0 bg-gradient-to-br from-coffee-50 via-coffee-100/60 to-coffee-200/40 dark:from-coffee-950 dark:via-coffee-900/80 dark:to-coffee-800/60" />
+      <div className="absolute inset-0 dark:from-coffee-950 dark:via-coffee-900/80 dark:to-coffee-800/60" />
       
       {/* ========== CERCLES COLORÉS RESPONSIVE ========== */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Cercles grands écrans */}
-        <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] rounded-full border-4 border-coffee-400/30 dark:border-coffee-500/20 animate-spin-slow hidden lg:block" />
-        <div className="absolute -top-1/3 -right-1/3 w-[600px] h-[600px] rounded-full border-4 border-coffee-500/25 dark:border-coffee-400/30 animate-spin-slower hidden md:block" />
-        <div className="absolute -top-1/4 -right-1/4 w-[400px] h-[400px] rounded-full border-4 border-coffee-600/20 dark:border-coffee-300/40 animate-spin-slowest hidden sm:block" />
+        <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] rounded-full border-4 border-coffee-400 dark:border-coffee-500/20 animate-spin-slow hidden lg:block" />
+        <div className="absolute -top-1/3 -right-1/3 w-[600px] h-[600px] rounded-full border-4 border-coffee-500 dark:border-coffee-400/30 animate-spin-slower hidden md:block" />
+        <div className="absolute -top-1/4 -right-1/4 w-[400px] h-[400px] rounded-full border-4 border-coffee-600 dark:border-coffee-300/40 animate-spin-slowest hidden sm:block" />
         
         {/* Cercles version mobile (plus petits) */}
-        <div className="absolute -top-1/4 -right-1/4 w-[300px] h-[300px] rounded-full border-2 border-coffee-400/20 dark:border-coffee-500/15 block lg:hidden" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-[250px] h-[250px] rounded-full border-2 border-coffee-500/15 dark:border-coffee-400/20 block md:hidden" />
+        <div className="absolute -top-1/4 -right-1/4 w-[300px] h-[300px] rounded-full border-2 border-coffee-400 dark:border-coffee-500/15 block lg:hidden" />
+        <div className="absolute -bottom-1/4 -left-1/4 w-[250px] h-[250px] rounded-full border-2 border-coffee-500 dark:border-coffee-400/20 block md:hidden" />
         
         {/* Cercles à gauche - version responsive */}
-        <div className="absolute -bottom-1/2 -left-1/2 w-[700px] h-[700px] rounded-full border-4 border-coffee-400/20 dark:border-coffee-500/15 hidden xl:block" />
-        <div className="absolute -bottom-1/3 -left-1/3 w-[500px] h-[500px] rounded-full border-4 border-coffee-500/15 dark:border-coffee-400/25 hidden lg:block" />
+        <div className="absolute -bottom-1/2 -left-1/2 w-[700px] h-[700px] rounded-full border-4 border-coffee-400 dark:border-coffee-500/15 hidden xl:block" />
+        <div className="absolute -bottom-1/3 -left-1/3 w-[500px] h-[500px] rounded-full border-4 border-coffee-500 dark:border-coffee-400/25 hidden lg:block" />
         
         {/* Cercle central adapté */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-radial from-coffee-400/10 via-coffee-500/5 to-transparent" />
