@@ -1,21 +1,13 @@
-// app/components/sections/HeroSection.tsx (version responsivité optimisée)
-'use client';
-
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { 
   CalendarDays, 
   Users, 
   MapPin, 
   ThumbsUp,
-  Sparkles,
   ArrowRight
 } from 'lucide-react';
 
-const MotionDiv = dynamic(
-  () => import('framer-motion').then((mod) => mod.motion.div),
-  { ssr: false }
-);
+
 
 export default function HeroSection() {
   const stats = [
@@ -29,103 +21,103 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       
       {/* ========== FOND PRINCIPAL ========== */}
-      <div className="absolute inset-0 dark:from-coffee-950 dark:via-coffee-900/80 dark:to-coffee-800/60" />
+      <div className="absolute inset-0  dark:from-coffee-950 dark:via-coffee-900/80 dark:to-coffee-800/60" />
       
-      {/* ========== CERCLES COLORÉS RESPONSIVE ========== */}
+      {/* ========== CERCLES COLORÉS - PLUS NETS ========== */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Cercles grands écrans */}
-        <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] rounded-full border-4 border-coffee-400 dark:border-coffee-500/20 animate-spin-slow hidden lg:block" />
-        <div className="absolute -top-1/3 -right-1/3 w-[600px] h-[600px] rounded-full border-4 border-coffee-500 dark:border-coffee-400/30 animate-spin-slower hidden md:block" />
-        <div className="absolute -top-1/4 -right-1/4 w-[400px] h-[400px] rounded-full border-4 border-coffee-600 dark:border-coffee-300/40 animate-spin-slowest hidden sm:block" />
+        {/* Cercles grands écrans - bordures plus épaisses et opacité renforcée */}
+        <div className="absolute -top-1/2 -right-1/2 w-[800px] h-[800px] rounded-full border-4 border-coffee-400/50 dark:border-coffee-500/40 animate-spin-slow hidden lg:block" />
+        <div className="absolute -top-1/3 -right-1/3 w-[600px] h-[600px] rounded-full border-4 border-coffee-500/40 dark:border-coffee-400/40 animate-spin-slower hidden md:block" />
+        <div className="absolute -top-1/4 -right-1/4 w-[400px] h-[400px] rounded-full border-4 border-coffee-600/30 dark:border-coffee-300/50 animate-spin-slowest hidden sm:block" />
         
-        {/* Cercles version mobile (plus petits) */}
-        <div className="absolute -top-1/4 -right-1/4 w-[300px] h-[300px] rounded-full border-2 border-coffee-400 dark:border-coffee-500/15 block lg:hidden" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-[250px] h-[250px] rounded-full border-2 border-coffee-500 dark:border-coffee-400/20 block md:hidden" />
+        {/* Cercles version mobile - plus visibles */}
+        <div className="absolute -top-1/4 -right-1/4 w-[300px] h-[300px] rounded-full border-3 border-coffee-400/30 dark:border-coffee-500/25 block lg:hidden" />
+        <div className="absolute -bottom-1/4 -left-1/4 w-[250px] h-[250px] rounded-full border-3 border-coffee-500/25 dark:border-coffee-400/30 block md:hidden" />
         
-        {/* Cercles à gauche - version responsive */}
-        <div className="absolute -bottom-1/2 -left-1/2 w-[700px] h-[700px] rounded-full border-4 border-coffee-400 dark:border-coffee-500/15 hidden xl:block" />
-        <div className="absolute -bottom-1/3 -left-1/3 w-[500px] h-[500px] rounded-full border-4 border-coffee-500 dark:border-coffee-400/25 hidden lg:block" />
+        {/* Cercles à gauche - plus nets */}
+        <div className="absolute -bottom-1/2 -left-1/2 w-[700px] h-[700px] rounded-full border-4 border-coffee-400/30 dark:border-coffee-500/25 hidden xl:block" />
+        <div className="absolute -bottom-1/3 -left-1/3 w-[500px] h-[500px] rounded-full border-4 border-coffee-500/25 dark:border-coffee-400/35 hidden lg:block" />
         
-        {/* Cercle central adapté */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-radial from-coffee-400/10 via-coffee-500/5 to-transparent" />
+        {/* Cercle central - flou réduit */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-radial from-coffee-400/20 via-coffee-500/10 to-transparent blur-2xl" />
       </div>
 
-      {/* ========== LIGNES DIAGONALES - Responsive ========== */}
+      {/* ========== LIGNES DIAGONALES - OPACITÉ AUGMENTÉE ========== */}
       <div className="absolute inset-0">
-        <svg className="w-full h-full opacity-[0.06] md:opacity-[0.08] dark:opacity-[0.08] dark:md:opacity-[0.1]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-full h-full opacity-[0.12] md:opacity-[0.15] dark:opacity-[0.15] dark:md:opacity-[0.18]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="diagonalLines" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
-              <line x1="0" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="1" className="text-coffee-500" />
-              <line x1="15" y1="0" x2="30" y2="15" stroke="currentColor" strokeWidth="0.5" className="text-coffee-600" />
-              <line x1="0" y1="15" x2="15" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-coffee-600" />
+              <line x1="0" y1="0" x2="30" y2="30" stroke="currentColor" strokeWidth="1.2" className="text-coffee-500" />
+              <line x1="15" y1="0" x2="30" y2="15" stroke="currentColor" strokeWidth="0.8" className="text-coffee-600" />
+              <line x1="0" y1="15" x2="15" y2="30" stroke="currentColor" strokeWidth="0.8" className="text-coffee-600" />
             </pattern>
           </defs>
           <rect x="0" y="0" width="100%" height="100%" fill="url(#diagonalLines)" />
         </svg>
       </div>
 
-      {/* ========== TRIANGLES - Responsive ========== */}
+      {/* ========== TRIANGLES - PLUS VISIBLES ========== */}
       <div className="absolute inset-0">
-        {/* Triangle bas gauche - caché sur mobile */}
-        <svg className="absolute bottom-0 left-0 w-48 h-48 md:w-96 md:h-96 opacity-[0.08] dark:opacity-[0.12] hidden sm:block" viewBox="0 0 200 200">
-          <polygon points="0,200 200,200 100,100" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-500" />
-          <polygon points="0,140 140,140 70,70" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-600" />
-          <polygon points="0,80 80,80 40,40" fill="none" stroke="currentColor" strokeWidth="1" className="text-coffee-700" />
+        {/* Triangle bas gauche */}
+        <svg className="absolute bottom-0 left-0 w-48 h-48 md:w-96 md:h-96 opacity-[0.12] dark:opacity-[0.16] hidden sm:block" viewBox="0 0 200 200">
+          <polygon points="0,200 200,200 100,100" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-coffee-500" />
+          <polygon points="0,140 140,140 70,70" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-600" />
+          <polygon points="0,80 80,80 40,40" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-700" />
         </svg>
         
-        {/* Triangle haut droit - caché sur mobile */}
-        <svg className="absolute top-0 right-0 w-48 h-48 md:w-96 md:h-96 opacity-[0.08] dark:opacity-[0.12] hidden sm:block" viewBox="0 0 200 200">
-          <polygon points="200,0 0,0 100,100" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-500" />
-          <polygon points="200,60 60,60 130,130" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-600" />
-          <polygon points="200,120 120,120 160,160" fill="none" stroke="currentColor" strokeWidth="1" className="text-coffee-700" />
+        {/* Triangle haut droit */}
+        <svg className="absolute top-0 right-0 w-48 h-48 md:w-96 md:h-96 opacity-[0.12] dark:opacity-[0.16] hidden sm:block" viewBox="0 0 200 200">
+          <polygon points="200,0 0,0 100,100" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-coffee-500" />
+          <polygon points="200,60 60,60 130,130" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-600" />
+          <polygon points="200,120 120,120 160,160" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-700" />
         </svg>
       </div>
 
-      {/* ========== HEXAGONES - Responsive ========== */}
+      {/* ========== HEXAGONES - CONTRASTÉS ========== */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-[15%] left-[10%] w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 opacity-[0.08] dark:opacity-[0.12] hidden sm:block">
+        <div className="absolute top-[15%] left-[10%] w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 opacity-[0.12] dark:opacity-[0.16] hidden sm:block">
           <svg viewBox="0 0 100 100" className="w-full h-full">
-            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-500" />
-            <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-600" />
+            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-coffee-500" />
+            <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-coffee-600" />
           </svg>
         </div>
         
-        <div className="absolute bottom-[20%] right-[10%] w-28 h-28 md:w-40 md:h-40 lg:w-56 lg:h-56 opacity-[0.08] dark:opacity-[0.12] hidden md:block">
+        <div className="absolute bottom-[20%] right-[10%] w-28 h-28 md:w-40 md:h-40 lg:w-56 lg:h-56 opacity-[0.12] dark:opacity-[0.16] hidden md:block">
           <svg viewBox="0 0 100 100" className="w-full h-full">
-            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="currentColor" strokeWidth="2" className="text-coffee-500" />
-            <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coffee-600" />
+            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-coffee-500" />
+            <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-coffee-600" />
           </svg>
         </div>
       </div>
 
-      {/* ========== GRILLE DE POINTS - Responsive ========== */}
+      {/* ========== GRILLE DE POINTS - PLUS NETTE ========== */}
       <div className="absolute inset-0">
-        <svg className="w-full h-full opacity-[0.06] md:opacity-[0.08] dark:opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="w-full h-full opacity-[0.1] md:opacity-[0.12] dark:opacity-[0.12]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="dotGrid" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
-              <circle cx="12.5" cy="12.5" r="1.5" fill="currentColor" className="text-coffee-500" />
-              <circle cx="0" cy="0" r="0.8" fill="currentColor" className="text-coffee-600" />
-              <circle cx="25" cy="0" r="0.8" fill="currentColor" className="text-coffee-600" />
-              <circle cx="0" cy="25" r="0.8" fill="currentColor" className="text-coffee-600" />
-              <circle cx="25" cy="25" r="0.8" fill="currentColor" className="text-coffee-600" />
+              <circle cx="12.5" cy="12.5" r="2" fill="currentColor" className="text-coffee-500" />
+              <circle cx="0" cy="0" r="1.2" fill="currentColor" className="text-coffee-600" />
+              <circle cx="25" cy="0" r="1.2" fill="currentColor" className="text-coffee-600" />
+              <circle cx="0" cy="25" r="1.2" fill="currentColor" className="text-coffee-600" />
+              <circle cx="25" cy="25" r="1.2" fill="currentColor" className="text-coffee-600" />
             </pattern>
           </defs>
           <rect x="0" y="0" width="100%" height="100%" fill="url(#dotGrid)" />
         </svg>
       </div>
 
-      {/* ========== RAYONS LUMINEUX - Responsive ========== */}
+      {/* ========== RAYONS LUMINEUX - FLOU RÉDUIT ========== */}
       <div className="absolute inset-0">
-        <div className="absolute top-[20%] left-[15%] w-40 h-40 md:w-64 md:h-64 bg-gradient-radial from-coffee-400/15 via-transparent to-transparent rounded-full blur-2xl md:blur-3xl" />
-        <div className="absolute bottom-[15%] right-[10%] w-48 h-48 md:w-80 md:h-80 bg-gradient-radial from-coffee-500/10 via-transparent to-transparent rounded-full blur-2xl md:blur-3xl hidden sm:block" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-radial from-coffee-300/8 to-transparent rounded-full blur-xl md:blur-2xl" />
+        <div className="absolute top-[20%] left-[15%] w-40 h-40 md:w-64 md:h-64 bg-gradient-radial from-coffee-400/25 via-transparent to-transparent rounded-full blur-md md:blur-xl" />
+        <div className="absolute bottom-[15%] right-[10%] w-48 h-48 md:w-80 md:h-80 bg-gradient-radial from-coffee-500/20 via-transparent to-transparent rounded-full blur-md md:blur-xl hidden sm:block" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-radial from-coffee-300/15 to-transparent rounded-full blur-lg md:blur-xl" />
       </div>
 
-      {/* ========== CONTENU PRINCIPAL - RESPONSIVE ========== */}
+      {/* ========== CONTENU PRINCIPAL - IDENTIQUE ========== */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-19 sm:py-16 md:py-30 z-10">
         <div className="text-center">
 
-          {/* Titre - responsive */}
+          {/* Titre */}
           <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-audiowide mb-4 sm:mb-10 tracking-tight">
             <span className="text-txt-title">
               Welcome to
@@ -136,15 +128,15 @@ export default function HeroSection() {
             </span>
           </h1>
 
-          {/* Description - responsive */}
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-txt-secondary max-w-3xl mx-auto mb-5 sm:mb-5 font-light px-2">
+          {/* Description */}
+          <p className=" font-semibold sm:text-lg md:text-xl lg:text-2xl text-txt-secondary max-w-3xl mx-auto mb-5 sm:mb-5  px-2">
             Discover, create, and participate in events that shape your community.
-            <span className="block text-sm sm:text-base text-coffee-500 dark:text-coffee-400 font-medium mt-2">
+            <span className="  block text-sm sm:text-base text-coffee-500 dark:text-coffee-400 font-medium mt-2">
               Join over 50,000 enthusiasts
             </span>
           </p>
 
-          {/* Boutons - responsive */}
+          {/* Boutons */}
           <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center items-center mb-5 sm:mb-12 md:mb-20">
             <Link
               href="/events"
@@ -163,7 +155,7 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          {/* Statistiques - responsive */}
+          {/* Statistiques */}
           <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto px-2 sm:px-0">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
@@ -187,5 +179,5 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }
