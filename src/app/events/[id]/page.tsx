@@ -10,7 +10,7 @@ import { Suspense } from 'react';
 import EventDetailSkeleton from './EventDetailSkeleton';
 
 async function EventContent({ id }: { id: string }) {
-  let event: Event | null = null;
+  let event: Event;
 
   try {
     const response = await api.get(`/api/events/${id}`);

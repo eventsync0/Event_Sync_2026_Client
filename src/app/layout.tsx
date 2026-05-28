@@ -1,11 +1,9 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
-
-const inter = Inter({ subsets: ['latin'] });
+import { ThemeProvider } from '@/components/common/ThemeProvider'; // Import du provider
 
 export const metadata: Metadata = {
   title: 'EventSync - Événements en direct',
@@ -18,15 +16,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
+    // On retire toute classe forcée, next-themes va gérer l'injection de .dark ici
+    <html lang="fr" suppressHydrationWarning>
+      <body className="bg-background text-text-body antialiased">
+        <ThemeProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
