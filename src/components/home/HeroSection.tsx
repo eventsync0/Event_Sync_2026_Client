@@ -4,7 +4,7 @@ export default function HeroSection() {
   return (
     <div className='max-w-full'>
      <section className="text-center mb-16 min-h-screen bg-blue-700">
-      <h1 className="text-5xl font-bold mb-4 text-stone-950">
+      <h1 className="text-5xl font-family mb-4 text-stone-950">
         Bienvenue sur <span className="text-blue-600">EventSync</span>
       </h1>
       <p className="text-xl text-gray-600 mb-8">
@@ -12,7 +12,7 @@ export default function HeroSection() {
       </p>
       <Link 
         href="/events" 
-        className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
+        className="bg-coffee-bean-900 text-white px-8 py-3 rounded-lg hover:bg-coffee-bean-600 transition"
       >
         Voir les événements
       </Link>

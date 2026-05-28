@@ -1,71 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import "tailwindcss";
 
 :root {
-  /* === COULEURS PRINCIPALES === */
-  --background: #ffffff;
-  --foreground: #0f172a;
-  
-  --primary: #2563eb;
-  --primary-600: #1e40af;
-  --primary-foreground: #ffffff;
+  /* ==========================================================================
+     2. LA PALETTE DE RÉFÉRENCE (Palette Coffee Bean)
+     ========================================================================== */
+  --coffee-50: #faefea;
+  --coffee-100: #f5ded6;
+  --coffee-200: #ebbdad;
+  --coffee-300: #e19d84;
+  --coffee-400: #d77c5b;
+  --coffee-500: #cd5b32;   
+  --coffee-600: #a44928;   
+  --coffee-700: #7b371e;
+  --coffee-800: #522414;
+  --coffee-900: #29120a;
+  --coffee-950: #1d0d07;
 
-  --accent: #7c3aed;
-  --accent-foreground: #ffffff;
+  /* ==========================================================================
+     3. CAS D'USAGE : STRUCTURES & FONDS (Mode Clair)
+     ========================================================================== */
+  --background: var(--coffee-50);       
+  --bg-card: #ffffff;                    
+  --border-custom: var(--coffee-200);   
 
-  --success: #10b981;
-  --success-foreground: #ffffff;
+  /* ==========================================================================
+     4. CAS D'USAGE : TYPOGRAPHIE & TEXTES (Mode Clair)
+     ========================================================================== */
+  --foreground: var(--coffee-900);      
+  --text-body: #3D342E;                  
+  --text-secondary: var(--coffee-700);  
+  --text-on-dark: var(--coffee-50);     
 
-  --dark: #0f172a;
-  --gray-900: #1e2937;
-  --light: #f8fafc;
-  --gray-100: #f1f5f9;
+  /* ==========================================================================
+     5. CAS D'USAGE : BOUTONS & ACTIONS (Mode Clair)
+     ========================================================================== */
+  --btn-primary: var(--coffee-500);     
+  --btn-primary-hover: var(--coffee-600);
+  --btn-secondary: var(--coffee-100);   
+  --btn-secondary-hover: var(--coffee-200);
+
+  /* ==========================================================================
+     6. CAS D'USAGE : BADGES & LABELS (Mode Clair)
+     ========================================================================== */
+  --badge-bg: var(--coffee-100);        
+  --badge-text: var(--coffee-800);      
 }
 
-/* Dark Mode */
+/* ==========================================================================
+   7. AFFECTATION AUTOMATIQUE DU DARK MODE
+   ========================================================================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    
-    --dark: #0f172a;
-    --gray-900: #1e2937;
-    --gray-100: #334155;
-    --light: #1e2937;
+    --background: var(--coffee-950);
+    --bg-card: var(--coffee-900);
+    --border-custom: var(--coffee-800);
+
+    --foreground: var(--coffee-50);
+    --text-body: var(--coffee-100);
+    --text-secondary: var(--coffee-300);
+    --text-on-dark: var(--coffee-950);
+
+    --btn-primary: var(--coffee-400);
+    --btn-primary-hover: var(--coffee-500);
+    --btn-secondary: rgba(41, 18, 10, 0.4); 
+    --btn-secondary-hover: rgba(82, 36, 20, 0.6);
+
+    --badge-bg: rgba(41, 18, 10, 0.5);
+    --badge-text: var(--coffee-200);
   }
 }
 
-/* Configuration Tailwind v4 */
+/* ==========================================================================
+   8. CONFIGURATION TAILWIND V4
+   ========================================================================== */
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg-card: var(--bg-card);
+  --color-border-custom: var(--border-custom);
   
-  --color-primary: var(--primary);
-  --color-primary-600: var(--primary-600);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-text-title: var(--foreground);
+  --color-text-body: var(--text-body);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-on-dark: var(--text-on-dark);
   
-  --color-accent: var(--accent);
-  --color-success: var(--success);
-  
-  --color-dark: var(--dark);
-  --color-gray-900: var(--gray-900);
-  --color-light: var(--light);
-  --color-gray-100: var(--gray-100);
+  --color-btn-primary: var(--btn-primary);
+  --color-btn-primary-hover: var(--btn-primary-hover);
+  --color-btn-secondary: var(--btn-secondary);
+  --color-btn-secondary-hover: var(--btn-secondary-hover);
 
-  /* Fonts modernes */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --color-badge-bg: var(--badge-bg);
+  --color-badge-text: var(--badge-text);
+
+  --color-coffee-50: var(--coffee-50);
+  --color-coffee-100: var(--coffee-100);
+  --color-coffee-200: var(--coffee-200);
+  --color-coffee-300: var(--coffee-300);
+  --color-coffee-400: var(--coffee-400);
+  --color-coffee-500: var(--coffee-500);
+  --color-coffee-600: var(--coffee-600);
+  --color-coffee-700: var(--coffee-700);
+  --color-coffee-800: var(--coffee-800);
+  --color-coffee-900: var(--coffee-900);
+  --color-coffee-950: var(--coffee-950);
+
+  /* Les polices de l'application */
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Fira Code', ui-monospace, monospace;
+  --font-family: "Audiowide", sans-serif;
   
-  /* Amélioration des arrondis */
+  /* Les rayons de bordure personnalisés */  
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.25rem;
   --radius-3xl: 1.75rem;
 }
 
-/* Styles globaux */
+/* ==========================================================================
+   9. STYLES GLOBAUX HTML
+   ========================================================================== */
 body {
   font-family: var(--font-sans);
   background-color: var(--background);
-  color: var(--foreground);
+  color: var(--text-body);
   line-height: 1.6;
 }
