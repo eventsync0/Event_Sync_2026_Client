@@ -290,8 +290,6 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--txt-disabled); }
 
 
-/* app/globals.css */
-
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -307,26 +305,9 @@ body {
   to { transform: rotate(360deg); }
 }
 
-.animate-spin-slow {
-  animation: spin-slow 25s linear infinite;
-}
-
-.animate-spin-slower {
-  animation: spin-slower 30s linear infinite;
-}
-
-.animate-spin-slowest {
-  animation: spin-slowest 35s linear infinite;
-}
-
-.bg-gradient-radial {
-  background-image: radial-gradient(circle, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
-}
-
-.blur-3xl {
-  filter: blur(64px);
-}
-
-.blur-2xl {
-  filter: blur(48px);
-}
+.animate-spin-slow { animation: spin-slow 25s linear infinite; }
+.animate-spin-slower { animation: spin-slower 30s linear infinite; }
+.animate-spin-slowest { animation: spin-slowest 35s linear infinite; }
+.bg-gradient-radial { background-image: radial-gradient(circle, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%); }
+.blur-2xl { filter: blur(48px); }
+.blur-3xl { filter: blur(64px); }

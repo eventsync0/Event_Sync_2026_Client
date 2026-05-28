@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 import { Menu, X } from 'lucide-react';
+import { title } from 'process';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,6 +25,9 @@ export default function Navbar() {
     { href: '/events', label: 'Events' },
     { href: '/planning', label: 'Planning' },
     { href: '/speakers', label: 'Speakers' },
+    { href: '/about', label: 'About' },
+    
+    
   ];
 
   return (
