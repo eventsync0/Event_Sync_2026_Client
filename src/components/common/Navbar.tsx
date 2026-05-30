@@ -66,11 +66,17 @@ export default function Navbar() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`relative px-2.5 lg:px-3.5 py-1.5 font-audiowide text-[10px] sm:text-xs md:text-sm font-medium transition-all duration-200 rounded-lg group ${
+                      className={`relative px-2.5 lg:px-3.5 py-1.5 font-audiowide text-[10px] sm:text-xs md:text-sm font-medium transition-all duration-200 rounded-lg group
+                        after:absolute after:left-1/2 after:-translate-x-1/2 after:bottom-0
+                        after:h-0.5 after:w-0 after:rounded-full
+                        after:bg-coffee-600 dark:after:bg-coffee-400
+                        after:transition-all after:duration-300
+                        hover:after:w-4
+                      ${
                         isActive
-                          ? 'text-coffee-600 dark:text-coffee-400'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
+                        ? 'text-coffee-600 dark:text-coffee-400'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
                     >
                       {link.label}
                       {isActive && (
