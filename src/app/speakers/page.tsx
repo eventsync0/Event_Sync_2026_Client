@@ -71,8 +71,8 @@ export default function SpeakersPage() {
         rounded-2xl
         border
         border-coffee-200
-        bg-bg-card
-        text-txt-title
+        bg-white
+        text-black
         placeholder:text-txt-secondary
         shadow-sm
         focus:outline-none
