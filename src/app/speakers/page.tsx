@@ -35,8 +35,7 @@ export default function SpeakersPage() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
 
-      {/* HEADER */}
-      <div className="mb-12 text-center">
+       <div className="mb-12 text-center">
         <h1 className="font-audiowide text-4xl md:text-5xl text-txt-title">
           All Speakers
         </h1>
@@ -46,15 +45,13 @@ export default function SpeakersPage() {
         </p>
       </div>
 
-      {/* LOADING */}
-      {loading && (
+       {loading && (
         <div className="text-center py-16 text-txt-secondary">
           Loading speakers...
         </div>
       )}
 
-      {/* GRID */}
-      {!loading && speakers?.length > 0 ? (
+       {!loading && speakers?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
 
           {speakers.map((speaker: any) => (
@@ -76,8 +73,7 @@ export default function SpeakersPage() {
               "
             >
 
-              {/* PHOTO */}
-              <div className="flex justify-center">
+               <div className="flex justify-center">
                 {speaker.photoUrl ? (
                   <img
                     src={speaker.photoUrl}
@@ -104,8 +100,7 @@ export default function SpeakersPage() {
                 )}
               </div>
 
-              {/* NAME */}
-              <h2 className="
+               <h2 className="
                 text-xl md:text-2xl
                 font-bold
                 mt-5
@@ -114,8 +109,7 @@ export default function SpeakersPage() {
                 {speaker.fullName}
               </h2>
 
-              {/* BIO */}
-              {speaker.bio && (
+               {speaker.bio && (
                 <p className="
                   text-sm
                   text-txt-secondary
@@ -127,8 +121,7 @@ export default function SpeakersPage() {
                 </p>
               )}
 
-              {/* SOCIAL LINKS */}
-              {speaker.links?.length > 0 && (
+               {speaker.links?.length > 0 && (
                 <div className="flex gap-3 mt-5 justify-center">
 
                   {speaker.links.map((link: any) => {
@@ -167,8 +160,7 @@ export default function SpeakersPage() {
                 </div>
               )}
 
-              {/* BUTTON */}
-              <button
+               <button
                 onClick={() => setSelectedSpeaker(speaker)}
                 className="
                   mt-6
@@ -198,8 +190,7 @@ export default function SpeakersPage() {
         )
       )}
 
-      {/* ================= MODAL ================= */}
-      {selectedSpeaker && (
+       {selectedSpeaker && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
 
           <div className="
@@ -214,8 +205,7 @@ export default function SpeakersPage() {
             relative
           ">
 
-            {/* CLOSE */}
-            <button
+             <button
               onClick={() => setSelectedSpeaker(null)}
               className="
                 absolute
@@ -229,11 +219,9 @@ export default function SpeakersPage() {
               ✕
             </button>
 
-            {/* CONTENT */}
-            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+             <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
 
-              {/* IMAGE */}
-              {selectedSpeaker.photoUrl ? (
+               {selectedSpeaker.photoUrl ? (
                 <img
                   src={selectedSpeaker.photoUrl}
                   alt={selectedSpeaker.fullName}
@@ -257,8 +245,7 @@ export default function SpeakersPage() {
                 </div>
               )}
 
-              {/* INFO */}
-              <div className="flex-1 text-center md:text-left">
+               <div className="flex-1 text-center md:text-left">
 
                 <h2 className="
                   font-audiowide
@@ -278,8 +265,7 @@ export default function SpeakersPage() {
                   </p>
                 )}
 
-                {/* SOCIAL */}
-                {selectedSpeaker.links?.length > 0 && (
+                 {selectedSpeaker.links?.length > 0 && (
                   <div className="flex gap-3 mt-6 justify-center md:justify-start">
 
                     {selectedSpeaker.links.map((link: any) => {
