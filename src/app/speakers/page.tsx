@@ -33,7 +33,7 @@ export default function SpeakersPage() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12">
+    <div className="max-w-6xl mx-auto px-6 py-21">
 
        <div className="mb-12 text-center">
         <h1 className="font-audiowide text-4xl md:text-5xl text-txt-title">
