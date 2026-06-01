@@ -45,6 +45,34 @@ export default function SpeakersPage() {
         </p>
       </div>
 
+       <div className="mb-10 flex justify-center">
+        <input
+          type="text"
+          placeholder="Search speakers..."
+          className="
+            w-full max-w-md
+            px-4 py-3
+            rounded-full
+            border
+            border-coffee-200
+            focus:outline-none
+            focus:ring-2 focus:ring-coffee-300
+            transition
+          "
+          onChange={(e) => {
+            const query = e.target.value.toLowerCase();
+            setSpeakers((prev) =>
+              prev.filter((s) =>
+                s.fullName.toLowerCase().includes(query) ||
+                s.bio?.toLowerCase().includes(query)
+              )
+            );
+          }}
+        />
+      </div>
+
+        
+
        {loading && (
         <div className="text-center py-16 text-txt-secondary">
           Loading speakers...
