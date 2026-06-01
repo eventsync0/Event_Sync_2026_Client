@@ -33,69 +33,16 @@ export default function SpeakersPage() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-25">
+     <div className="max-w-6xl mx-auto px-6 py-21">
 
-      {/* HEADER */}
-      <div className="mb-12 text-center">
-        <h1 className="font-audiowide text-4xl  md:text-5xl text-txt-title">
+       <div className="mb-12 text-center">
+        <h1 className="font-audiowide text-4xl md:text-5xl text-txt-title">
           All Speakers
         </h1>
 
         <p className="text-txt-secondary mt-3 max-w-2xl mx-auto text-lg">
           Discover the experts, innovators, and leaders sharing knowledge during the event.
         </p>
-      </div>
-
-       <div className="mb-10 flex justify-center">
-        <input
-          type="text"
-          placeholder="Search speakers..."
-          className="
-            w-full max-w-md
-            px-4 py-3
-            rounded-full
-            border
-            border-coffee-200
-            focus:outline-none
-            focus:ring-2 focus:ring-coffee-300
-            transition
-          "
-          onChange={(e) => {
-            const query = e.target.value.toLowerCase();
-            setSpeakers((prev) =>
-              prev.filter((s) =>
-                s.fullName.toLowerCase().includes(query) ||
-                s.bio?.toLowerCase().includes(query)
-              )
-            );
-          }}
-        />
-      </div>
-
-       <div className="mb-10 flex justify-center">
-        <input
-          type="text"
-          placeholder="Search speakers..."
-          className="
-            w-full max-w-md
-            px-4 py-3
-            rounded-full
-            border
-            border-coffee-200
-            focus:outline-none
-            focus:ring-2 focus:ring-coffee-300
-            transition
-          "
-          onChange={(e) => {
-            const query = e.target.value.toLowerCase();
-            setSpeakers((prev) =>
-              prev.filter((s) =>
-                s.fullName.toLowerCase().includes(query) ||
-                s.bio?.toLowerCase().includes(query)
-              )
-            );
-          }}
-        />
       </div>
 
        {loading && (
@@ -366,4 +313,3 @@ export default function SpeakersPage() {
 
     </div>
   );
-}

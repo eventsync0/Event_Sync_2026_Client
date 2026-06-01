@@ -1,18 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 type Props = {
   params: { id: string };
 };
 
-export default async function SpeakerPage({ params }: Props) {
+export default function SpeakerPage({ params }: Props) {
   const API_URL = "http://localhost:3001/api";
 
-  const res = await fetch(`${API_URL}/speakers/${params.id}`, {
-    cache: "no-store",
-  });
+  const [speaker, setSpeaker] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
+<<<<<<< HEAD
    if (!res.ok) {
     console.log("Fetch failed. Status:", res.status);
     notFound();
@@ -23,6 +26,43 @@ export default async function SpeakerPage({ params }: Props) {
 
    if (!speaker) {
     notFound();
+=======
+  useEffect(() => {
+    const fetchSpeaker = async () => {
+      try {
+        const res = await fetch(`${API_URL}/speakers/${params.id}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          console.log("Fetch failed:", res.status);
+          notFound();
+          return;
+        }
+
+        const json = await res.json();
+        setSpeaker(json.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpeaker();
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!speaker) {
+    return notFound();
+>>>>>>> bb3fde7 (feat: filter ok)
   }
 
   return (
@@ -114,11 +154,7 @@ export default async function SpeakerPage({ params }: Props) {
 
                 <div className="flex items-center gap-3">
 
-                  {session.isLive && (
-                    <span className="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full">
-                      LIVE
-                    </span>
-                  )}
+                  {/* LIVE supprimé (non garanti par doc) */}
 
                   <Link
                     href={`/sessions/${session.id}`}
@@ -133,11 +169,7 @@ export default async function SpeakerPage({ params }: Props) {
                   {session.startTime} — {session.endTime}
                 </p>
 
-                {session.room?.name && (
-                  <p className="text-sm text-gray-500">
-                    Room: {session.room.name}
-                  </p>
-                )}
+                {/* ROOM supprimé (structure non garantie) */}
 
                  {session.questions?.length > 0 && (
                   <details className="mt-5">
@@ -158,7 +190,7 @@ export default async function SpeakerPage({ params }: Props) {
                           </p>
 
                           <div className="text-sm text-gray-500 mt-2">
-                            {question.authorName} • {question.upvotes} upvote(s)
+                            {question.name ?? "Anonymous"} • {question.upvotes} upvote(s)
                           </div>
                         </div>
                       ))}
