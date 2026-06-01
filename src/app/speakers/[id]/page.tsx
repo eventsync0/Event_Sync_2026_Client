@@ -15,7 +15,6 @@ export default function SpeakerPage({ params }: Props) {
   const [speaker, setSpeaker] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-<<<<<<< HEAD
    if (!res.ok) {
     console.log("Fetch failed. Status:", res.status);
     notFound();
@@ -26,43 +25,6 @@ export default function SpeakerPage({ params }: Props) {
 
    if (!speaker) {
     notFound();
-=======
-  useEffect(() => {
-    const fetchSpeaker = async () => {
-      try {
-        const res = await fetch(`${API_URL}/speakers/${params.id}`, {
-          cache: "no-store",
-        });
-
-        if (!res.ok) {
-          console.log("Fetch failed:", res.status);
-          notFound();
-          return;
-        }
-
-        const json = await res.json();
-        setSpeaker(json.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSpeaker();
-  }, [params.id]);
-
-  if (loading) {
-    return (
-      <div className="text-center py-20 text-gray-500">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!speaker) {
-    return notFound();
->>>>>>> bb3fde7 (feat: filter ok)
   }
 
   return (
