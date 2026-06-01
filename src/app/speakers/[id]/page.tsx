@@ -13,8 +13,7 @@ export default async function SpeakerPage({ params }: Props) {
     cache: "no-store",
   });
 
-  // ❌ gestion correcte des erreurs API
-  if (!res.ok) {
+   if (!res.ok) {
     console.log("Fetch failed. Status:", res.status);
     notFound();
   }
@@ -22,26 +21,22 @@ export default async function SpeakerPage({ params }: Props) {
   const json = await res.json();
   const speaker = json.data;
 
-  // ❌ si speaker inexistant
-  if (!speaker) {
+   if (!speaker) {
     notFound();
   }
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
-      {/* BACK */}
-      <Link href="/speakers" className="text-blue-600 hover:underline">
+       <Link href="/speakers" className="text-blue-600 hover:underline">
         ← Back to speakers
       </Link>
 
-      {/* SPEAKER CARD */}
-      <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
+       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
 
         <div className="flex flex-col md:flex-row gap-8">
 
-          {/* PHOTO */}
-          <div className="shrink-0">
+           <div className="shrink-0">
             {speaker.photoUrl ? (
               <img
                 src={speaker.photoUrl}
@@ -55,8 +50,7 @@ export default async function SpeakerPage({ params }: Props) {
             )}
           </div>
 
-          {/* INFO */}
-          <div className="flex-1">
+           <div className="flex-1">
 
             <h1 className="text-4xl font-bold text-gray-900">
               {speaker.fullName}
@@ -68,8 +62,7 @@ export default async function SpeakerPage({ params }: Props) {
               </p>
             )}
 
-            {/* SOCIAL LINKS */}
-            {speaker.links?.length > 0 && (
+             {speaker.links?.length > 0 && (
               <div className="flex gap-4 mt-6">
 
                 {speaker.links.map((link: any) => {
@@ -104,8 +97,7 @@ export default async function SpeakerPage({ params }: Props) {
         </div>
       </div>
 
-      {/* SESSIONS */}
-      <div className="mt-12">
+       <div className="mt-12">
 
         <h2 className="text-2xl font-bold mb-6">
           Speaker Sessions
@@ -147,8 +139,7 @@ export default async function SpeakerPage({ params }: Props) {
                   </p>
                 )}
 
-                {/* QUESTIONS */}
-                {session.questions?.length > 0 && (
+                 {session.questions?.length > 0 && (
                   <details className="mt-5">
 
                     <summary className="cursor-pointer text-sm text-gray-600">
