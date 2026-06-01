@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo} from "react";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
 export default function SpeakersPage() {
@@ -9,7 +9,7 @@ export default function SpeakersPage() {
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
-
+  const [search, setSearch] = useState("");     
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
@@ -32,6 +32,12 @@ export default function SpeakersPage() {
     fetchSpeakers();
   }, []);
 
+  const filteredSpeakers = useMemo(() => {
+  return speakers.filter((speaker) =>
+    speaker.fullName?.toLowerCase().includes(search.toLowerCase())
+  );
+}, [speakers, search]);
+
   return (
      <div className="max-w-6xl mx-auto px-6 py-21">
 
@@ -51,10 +57,38 @@ export default function SpeakersPage() {
         </div>
       )}
 
-       {!loading && speakers?.length > 0 ? (
+    <div className="mb-10 flex justify-center">
+  <div className="w-full max-w-xl">
+    <input
+      type="text"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Search a speaker..."
+      className="
+        w-full
+        px-5
+        py-4
+        rounded-2xl
+        border
+        border-coffee-200
+        bg-bg-card
+        text-txt-title
+        placeholder:text-txt-secondary
+        shadow-sm
+        focus:outline-none
+        focus:ring-2
+        focus:ring-coffee-400
+        focus:border-coffee-400
+        transition-all
+      "
+    />
+  </div>
+</div>
+
+       {!loading && filteredSpeakers?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
 
-          {speakers.map((speaker: any) => (
+          {filteredSpeakers.map((speaker: any) => (
             <div
               key={speaker.id}
               className="
