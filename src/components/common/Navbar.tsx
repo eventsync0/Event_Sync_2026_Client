@@ -24,7 +24,6 @@ export default function Navbar() {
     { href: '/events', label: 'Events' },
     { href: '/planning', label: 'Planning' },
     { href: '/speakers', label: 'Speakers' },
-    { href: '/about', label: 'About' },
   ];
 
   return (

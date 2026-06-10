@@ -121,7 +121,7 @@ export default function HeroSection() {
           mb-4 sm:mb-5 md:mb-6 lg:mb-7
           px-2 sm:px-0
         ">
-          Discover, create, and participate in events that shape your community.
+          Discover and participate in events that shape your community.
           <span className="
             block
             text-[10px] sm:text-xs
@@ -129,7 +129,7 @@ export default function HeroSection() {
             font-medium
             mt-0.5 sm:mt-1
           ">
-            Join over 50,000 enthusiasts
+            Join us and be part of unforgettable experiences!
           </span>
         </p>
 
