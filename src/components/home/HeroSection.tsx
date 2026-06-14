@@ -95,14 +95,14 @@ export default function HeroSection() {
       </div>
 
       {/* CONTENU PRINCIPAL */}
-      <div className="relative w-full text-center px-4 sm:px-6 lg:px-8 py-20 sm:py-24 md:py-28 lg:py-32 z-10">
+      <div className="relative w-full text-center px-5 sm:px-8 lg:px-12 xl:px-16 py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32 z-10">
 
         {/* Titre */}
         <h1 className="
-          text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl
           font-audiowide
-          mb-3 sm:mb-4 md:mb-5 lg:mb-6
-          tracking-tight leading-tight
+          tracking-tight leading-[1.15] sm:leading-tight
+          mb-4 sm:mb-5 md:mb-6 lg:mb-7
+          text-[clamp(1.5rem,5vw,4.5rem)]
         ">
           <span className="text-txt-title">
             Welcome to{" "}
@@ -115,47 +115,59 @@ export default function HeroSection() {
         {/* Description */}
         <p className="
           font-semibold
-          text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
+          text-[clamp(0.8rem,2vw,1.125rem)]
+          leading-relaxed
           text-txt-secondary
-          max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto
-          mb-4 sm:mb-5 md:mb-6 lg:mb-7
-          px-2 sm:px-0
+          max-w-[90%] sm:max-w-md md:max-w-lg lg:max-w-2xl mx-auto
+          mb-5 sm:mb-6 md:mb-7 lg:mb-8
         ">
           Discover and participate in events that shape your community.
           <span className="
             block
-            text-[10px] sm:text-xs
+            text-[clamp(0.65rem,1.5vw,0.8rem)]
             text-coffee-500 dark:text-coffee-400
             font-medium
-            mt-0.5 sm:mt-1
+            mt-1 sm:mt-1.5
           ">
             Join us and be part of unforgettable experiences!
           </span>
         </p>
 
         {/* Boutons */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center items-center mb-8 sm:mb-10 md:mb-12 lg:mb-14">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-10 sm:mb-12 md:mb-14 lg:mb-16">
           <Link
             href="/events"
-            className="group inline-flex items-center gap-1.5 bg-gradient-to-r from-coffee-600 via-coffee-500 to-coffee-600 hover:from-coffee-700 hover:via-coffee-600 hover:to-coffee-700 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 font-medium
-              px-4 py-2 text-xs min-h-[36px]
-              sm:px-5 sm:py-2.5 sm:text-sm sm:min-h-[40px]
-              md:px-6 md:py-2.5 md:text-sm md:min-h-[42px]
-              lg:px-7 lg:py-3 lg:text-base lg:min-h-[46px]
+            className="
+              group inline-flex items-center gap-2
+              bg-gradient-to-r from-coffee-600 via-coffee-500 to-coffee-600
+              hover:from-coffee-700 hover:via-coffee-600 hover:to-coffee-700
+              text-white rounded-lg
+              transition-all duration-300
+              shadow-md hover:shadow-lg hover:scale-105 active:scale-95
+              font-semibold tracking-wide
+              px-5 py-2.5 text-sm min-h-[40px] w-full sm:w-auto
+              md:px-6 md:py-3 md:text-[0.9rem] md:min-h-[44px]
+              lg:px-7 lg:py-3 lg:text-base lg:min-h-[48px]
             "
           >
-            <CalendarDays className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:rotate-12" />
+            <CalendarDays className="w-4 h-4 sm:w-4 sm:h-4 md:w-[18px] md:h-[18px] transition-transform group-hover:rotate-12 shrink-0" />
             <span>Explore Events</span>
-            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="w-4 h-4 sm:w-4 sm:h-4 md:w-[18px] md:h-[18px] transition-transform group-hover:translate-x-1 shrink-0" />
           </Link>
 
           <Link
             href="/about"
-            className="inline-flex items-center gap-1.5 border-2 border-coffee-400 dark:border-coffee-600 text-txt-body hover:bg-coffee-100 dark:hover:bg-coffee-800/50 hover:border-coffee-500 dark:hover:border-coffee-500 rounded-lg transition-all duration-300 hover:scale-105 active:scale-95 font-medium
-              px-4 py-2 text-xs min-h-[36px]
-              sm:px-5 sm:py-2.5 sm:text-sm sm:min-h-[40px]
-              md:px-6 md:py-2.5 md:text-sm md:min-h-[42px]
-              lg:px-7 lg:py-3 lg:text-base lg:min-h-[46px]
+            className="
+              inline-flex items-center justify-center gap-2
+              border-2 border-coffee-400 dark:border-coffee-600
+              text-txt-body
+              hover:bg-coffee-100 dark:hover:bg-coffee-800/50
+              hover:border-coffee-500 dark:hover:border-coffee-500
+              rounded-lg transition-all duration-300 hover:scale-105 active:scale-95
+              font-semibold tracking-wide
+              px-5 py-2.5 text-sm min-h-[40px] w-full sm:w-auto
+              md:px-6 md:py-3 md:text-[0.9rem] md:min-h-[44px]
+              lg:px-7 lg:py-3 lg:text-base lg:min-h-[48px]
             "
           >
             Learn More
@@ -163,26 +175,29 @@ export default function HeroSection() {
         </div>
 
         {/* Statistiques */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-5 max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 max-w-[340px] sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div key={index} className="text-center group">
-                <div className="flex justify-center mb-1 sm:mb-1.5 md:mb-2">
-                  <div className={`p-1.5 sm:p-2 rounded-full bg-gradient-to-br ${stat.color} dark:from-coffee-700 dark:to-coffee-800 group-hover:from-coffee-600 group-hover:to-coffee-700 dark:group-hover:from-coffee-600 dark:group-hover:to-coffee-700 transition-all duration-300 group-hover:scale-110 shadow-sm`}>
-                    <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5 text-white" />
+                <div className="flex justify-center mb-2 sm:mb-2 md:mb-2.5">
+                  <div className={`p-2 sm:p-2 md:p-2.5 rounded-full bg-gradient-to-br ${stat.color} dark:from-coffee-700 dark:to-coffee-800 group-hover:from-coffee-600 group-hover:to-coffee-700 dark:group-hover:from-coffee-600 dark:group-hover:to-coffee-700 transition-all duration-300 group-hover:scale-110 shadow-sm`}>
+                    <Icon className="w-4 h-4 sm:w-4 sm:h-4 md:w-[18px] md:h-[18px] lg:w-5 lg:h-5 text-white" />
                   </div>
                 </div>
                 <div className="
                   font-audiowide
                   bg-gradient-to-r from-coffee-600 to-coffee-700 dark:from-coffee-400 dark:to-coffee-500 bg-clip-text text-transparent
-                  text-sm sm:text-base md:text-lg lg:text-xl
+                  text-base sm:text-lg md:text-xl lg:text-2xl
+                  leading-tight
                 ">
                   {stat.value}
                 </div>
                 <div className="
-                  text-txt-secondary font-medium mt-0.5
-                  text-[9px] sm:text-[10px] md:text-xs
+                  text-txt-secondary font-medium
+                  mt-1
+                  text-[10px] sm:text-xs md:text-[0.7rem] lg:text-xs
+                  tracking-wide uppercase
                 ">
                   {stat.label}
                 </div>
