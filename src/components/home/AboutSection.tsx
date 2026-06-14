@@ -1,6 +1,6 @@
 export default function AboutSection() {
     return (
-        <div className="max-w-4xl mx-auto px-4 py-16">
+        <div className="max-w-7xl mx-auto px-4 py-16">
             <h1 className="text-4xl font-bold mb-6">About EventSync</h1>
             <p className="text-txt-body mb-4">
                 EventSync is a cutting-edge platform designed to revolutionize the way we discover, create, and participate in events. Our mission is to connect people with the events that matter most to them, fostering community engagement and enriching lives through shared experiences.
