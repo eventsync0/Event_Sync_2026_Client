@@ -9,41 +9,60 @@ interface EventCardProps {
   event: Event;
 }
 
-// Palette de couleurs moderne avec dégradés
+// Palette de couleurs moderne avec dégradés - utilisant les couleurs coffee
 function getCategoryGradient(category: EventCategory) {
   const gradients: Record<EventCategory, string> = {
-    CONFERENCE: 'from-blue-500/20 to-purple-500/20 dark:from-blue-500/10 dark:to-purple-500/10',
-    WORKSHOP: 'from-green-500/20 to-emerald-500/20 dark:from-green-500/10 dark:to-emerald-500/10',
-    SEMINAR: 'from-purple-500/20 to-pink-500/20 dark:from-purple-500/10 dark:to-pink-500/10',
-    MEETUP: 'from-pink-500/20 to-rose-500/20 dark:from-pink-500/10 dark:to-rose-500/10',
-    WEBINAR: 'from-indigo-500/20 to-blue-500/20 dark:from-indigo-500/10 dark:to-blue-500/10',
-    SOCIAL: 'from-yellow-500/20 to-amber-500/20 dark:from-yellow-500/10 dark:to-amber-500/10',
-    FUNDRAISER: 'from-red-500/20 to-rose-500/20 dark:from-red-500/10 dark:to-rose-500/10',
-    SPORTS: 'from-orange-500/20 to-amber-500/20 dark:from-orange-500/10 dark:to-amber-500/10',
-    ARTS: 'from-rose-500/20 to-pink-500/20 dark:from-rose-500/10 dark:to-pink-500/10',
-    TECHNOLOGY: 'from-cyan-500/20 to-blue-500/20 dark:from-cyan-500/10 dark:to-blue-500/10',
-    BUSINESS: 'from-emerald-500/20 to-teal-500/20 dark:from-emerald-500/10 dark:to-teal-500/10',
-    EDUCATION: 'from-teal-500/20 to-cyan-500/20 dark:from-teal-500/10 dark:to-cyan-500/10',
-    OTHER: 'from-gray-500/20 to-gray-600/20 dark:from-gray-500/10 dark:to-gray-600/10'
+    CONFERENCE: 'from-coffee-500/20 to-coffee-700/20 dark:from-coffee-400/10 dark:to-coffee-600/10',
+    WORKSHOP: 'from-coffee-400/20 to-coffee-600/20 dark:from-coffee-300/10 dark:to-coffee-500/10',
+    SEMINAR: 'from-coffee-500/20 to-coffee-600/20 dark:from-coffee-400/10 dark:to-coffee-500/10',
+    MEETUP: 'from-coffee-400/20 to-coffee-500/20 dark:from-coffee-300/10 dark:to-coffee-400/10',
+    WEBINAR: 'from-coffee-500/20 to-coffee-700/20 dark:from-coffee-400/10 dark:to-coffee-600/10',
+    SOCIAL: 'from-coffee-300/20 to-coffee-500/20 dark:from-coffee-200/10 dark:to-coffee-400/10',
+    FUNDRAISER: 'from-coffee-600/20 to-coffee-800/20 dark:from-coffee-500/10 dark:to-coffee-700/10',
+    SPORTS: 'from-coffee-400/20 to-coffee-600/20 dark:from-coffee-300/10 dark:to-coffee-500/10',
+    ARTS: 'from-coffee-300/20 to-coffee-500/20 dark:from-coffee-200/10 dark:to-coffee-400/10',
+    TECHNOLOGY: 'from-coffee-500/20 to-coffee-700/20 dark:from-coffee-400/10 dark:to-coffee-600/10',
+    BUSINESS: 'from-coffee-600/20 to-coffee-800/20 dark:from-coffee-500/10 dark:to-coffee-700/10',
+    EDUCATION: 'from-coffee-400/20 to-coffee-600/20 dark:from-coffee-300/10 dark:to-coffee-500/10',
+    OTHER: 'from-coffee-300/20 to-coffee-400/20 dark:from-coffee-200/10 dark:to-coffee-300/10'
   };
   return gradients[category] || gradients.OTHER;
 }
 
 function getCategoryColor(category: EventCategory) {
   const colors: Record<EventCategory, string> = {
-    CONFERENCE: 'bg-blue-500',
-    WORKSHOP: 'bg-green-500',
-    SEMINAR: 'bg-purple-500',
-    MEETUP: 'bg-pink-500',
-    WEBINAR: 'bg-indigo-500',
-    SOCIAL: 'bg-yellow-500',
-    FUNDRAISER: 'bg-red-500',
-    SPORTS: 'bg-orange-500',
-    ARTS: 'bg-rose-500',
-    TECHNOLOGY: 'bg-cyan-500',
-    BUSINESS: 'bg-emerald-500',
-    EDUCATION: 'bg-teal-500',
-    OTHER: 'bg-gray-500'
+    CONFERENCE: 'bg-coffee-600',
+    WORKSHOP: 'bg-coffee-500',
+    SEMINAR: 'bg-coffee-600',
+    MEETUP: 'bg-coffee-400',
+    WEBINAR: 'bg-coffee-600',
+    SOCIAL: 'bg-coffee-300',
+    FUNDRAISER: 'bg-coffee-700',
+    SPORTS: 'bg-coffee-500',
+    ARTS: 'bg-coffee-400',
+    TECHNOLOGY: 'bg-coffee-600',
+    BUSINESS: 'bg-coffee-700',
+    EDUCATION: 'bg-coffee-500',
+    OTHER: 'bg-coffee-400'
+  };
+  return colors[category] || colors.OTHER;
+}
+
+function getCategoryStatusColor(category: EventCategory) {
+  const colors: Record<EventCategory, string> = {
+    CONFERENCE: 'border-coffee-600/20 dark:border-coffee-400/20',
+    WORKSHOP: 'border-coffee-500/20 dark:border-coffee-300/20',
+    SEMINAR: 'border-coffee-600/20 dark:border-coffee-400/20',
+    MEETUP: 'border-coffee-400/20 dark:border-coffee-300/20',
+    WEBINAR: 'border-coffee-600/20 dark:border-coffee-400/20',
+    SOCIAL: 'border-coffee-300/20 dark:border-coffee-200/20',
+    FUNDRAISER: 'border-coffee-700/20 dark:border-coffee-500/20',
+    SPORTS: 'border-coffee-500/20 dark:border-coffee-300/20',
+    ARTS: 'border-coffee-400/20 dark:border-coffee-300/20',
+    TECHNOLOGY: 'border-coffee-600/20 dark:border-coffee-400/20',
+    BUSINESS: 'border-coffee-700/20 dark:border-coffee-500/20',
+    EDUCATION: 'border-coffee-500/20 dark:border-coffee-300/20',
+    OTHER: 'border-coffee-400/20 dark:border-coffee-300/20'
   };
   return colors[category] || colors.OTHER;
 }
@@ -53,6 +72,7 @@ export default function EventCard({ event }: EventCardProps) {
   const categoryInfo = EVENT_CATEGORIES.find(c => c.value === event.category);
   const gradient = getCategoryGradient(event.category);
   const colorClass = getCategoryColor(event.category);
+  const borderClass = getCategoryStatusColor(event.category);
 
   const hasLiveSession = event.sessions?.some((session) => {
     const start = new Date(session.startTime);
@@ -67,24 +87,24 @@ export default function EventCard({ event }: EventCardProps) {
     if (hasLiveSession) {
       return { 
         label: 'Live Now', 
-        bg: 'bg-green-500/10 dark:bg-green-500/20', 
-        text: 'text-green-600 dark:text-green-400',
-        dot: 'bg-green-500'
+        bg: 'bg-success/10 dark:bg-success/20', 
+        text: 'text-success dark:text-success',
+        dot: 'bg-success'
       };
     }
     if (isEventStarted) {
       return { 
         label: 'In Progress', 
-        bg: 'bg-amber-500/10 dark:bg-amber-500/20', 
-        text: 'text-amber-600 dark:text-amber-400',
-        dot: 'bg-amber-500'
+        bg: 'bg-warning/10 dark:bg-warning/20', 
+        text: 'text-warning dark:text-warning',
+        dot: 'bg-warning'
       };
     }
     return { 
       label: 'Upcoming', 
-      bg: 'bg-blue-500/10 dark:bg-blue-500/20', 
-      text: 'text-blue-600 dark:text-blue-400',
-      dot: 'bg-blue-500'
+      bg: 'bg-info/10 dark:bg-info/20', 
+      text: 'text-info dark:text-info',
+      dot: 'bg-info'
     };
   };
 
@@ -92,7 +112,7 @@ export default function EventCard({ event }: EventCardProps) {
 
   return (
     <Link href={`/events/${event.id}`} className="block group h-full">
-      <div className="relative h-full bg-white/80 dark:bg-coffee-950/80 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/20 dark:border-coffee-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+      <div className={`relative h-full bg-bg-card/80 dark:bg-coffee-950/80 backdrop-blur-xl rounded-3xl overflow-hidden border ${borderClass} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2`}>
         
         {/* Glassmorphism overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -113,52 +133,52 @@ export default function EventCard({ event }: EventCardProps) {
               </span>
             </div>
             
-            {/* Category Badge à la place du coeur et partage */}
+            {/* Category Badge */}
             {categoryInfo && (
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-white/50 dark:bg-coffee-900/50 backdrop-blur-sm border border-white/20 dark:border-coffee-700/50`}>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-bg-card/50 dark:bg-coffee-900/50 backdrop-blur-sm border ${borderClass}`}>
                 <span className="text-base">{categoryInfo.icon}</span>
-                <span className="text-coffee-700 dark:text-coffee-300">{categoryInfo.label}</span>
+                <span className="text-txt-title dark:text-txt-title">{categoryInfo.label}</span>
               </span>
             )}
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-bold text-coffee-900 dark:text-white mb-2 group-hover:text-coffee-600 dark:group-hover:text-coffee-400 transition-colors line-clamp-2">
+          <h3 className="text-xl font-bold text-txt-title dark:text-txt-title mb-2 group-hover:text-coffee-600 dark:group-hover:text-coffee-400 transition-colors line-clamp-2">
             {event.title}
           </h3>
 
           {/* Description */}
-          <p className="text-coffee-500 dark:text-coffee-400 text-sm leading-relaxed line-clamp-2 mb-6">
+          <p className="text-txt-secondary dark:text-txt-secondary text-sm leading-relaxed line-clamp-2 mb-6">
             {event.description}
           </p>
 
           {/* Meta info avec icônes modernes */}
           <div className="space-y-2.5 text-sm">
-            <div className="flex items-center gap-3 text-coffee-500 dark:text-coffee-400 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-800 flex items-center justify-center">
-                <Calendar className="w-4 h-4" />
+            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
               </div>
               <span>{formatFullDate(event.startDate)}</span>
             </div>
 
-            <div className="flex items-center gap-3 text-coffee-500 dark:text-coffee-400 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-800 flex items-center justify-center">
-                <Clock className="w-4 h-4" />
+            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
               </div>
               <span>{formatTime(event.startDate)} — {formatTime(event.endDate)}</span>
             </div>
 
-            <div className="flex items-center gap-3 text-coffee-500 dark:text-coffee-400 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-800 flex items-center justify-center">
-                <MapPin className="w-4 h-4" />
+            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
+              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
+                <MapPin className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
               </div>
               <span className="truncate">{event.location}</span>
             </div>
 
             {sessionCount > 0 && (
-              <div className="flex items-center gap-3 text-coffee-500 dark:text-coffee-400 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 transition-colors">
-                <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-800 flex items-center justify-center">
-                  <Users className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
+                <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
+                  <Users className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
                 </div>
                 <span>{sessionCount} session{sessionCount > 1 ? 's' : ''}</span>
               </div>
@@ -167,12 +187,12 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {/* Footer */}
-        <div className="relative border-t border-white/20 dark:border-coffee-800/50 px-6 py-4 bg-white/30 dark:bg-coffee-900/20 backdrop-blur-sm group-hover:bg-white/50 dark:group-hover:bg-coffee-900/40 transition-colors">
+        <div className="relative border-t border-border/50 dark:border-coffee-800/50 px-6 py-4 bg-bg-subtle/30 dark:bg-coffee-900/20 backdrop-blur-sm group-hover:bg-bg-subtle/50 dark:group-hover:bg-coffee-900/40 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-coffee-600 dark:text-coffee-400 group-hover:text-coffee-800 dark:group-hover:text-coffee-200 transition-colors">
+            <span className="text-sm font-medium text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
               View Details
             </span>
-            <ArrowUpRight className="w-4 h-4 text-coffee-400 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <ArrowUpRight className="w-4 h-4 text-coffee-400 dark:text-coffee-500 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </div>
         </div>
       </div>
