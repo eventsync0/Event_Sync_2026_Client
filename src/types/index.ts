@@ -1,14 +1,30 @@
-
+export enum EventCategory {
+  CONFERENCE = 'CONFERENCE',
+  WORKSHOP = 'WORKSHOP',
+  SEMINAR = 'SEMINAR',
+  MEETUP = 'MEETUP',
+  WEBINAR = 'WEBINAR',
+  SOCIAL = 'SOCIAL',
+  FUNDRAISER = 'FUNDRAISER',
+  SPORTS = 'SPORTS',
+  ARTS = 'ARTS',
+  TECHNOLOGY = 'TECHNOLOGY',
+  BUSINESS = 'BUSINESS',
+  EDUCATION = 'EDUCATION',
+  OTHER = 'OTHER'
+}
 export interface Event {
   id: string;
   title: string;
   description: string;
+  category: EventCategory;
   startDate: string;
   endDate: string;
   location: string;
   createdAt?: string;
   updatedAt?: string;
   sessions?: Session[];
+  attendees?: number;
 }
 
 export interface Speaker {
