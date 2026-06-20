@@ -28,7 +28,7 @@ export default function AboutSection() {
                 About
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-coffee-900 dark:text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-audiowide text-coffee-900 dark:text-white tracking-tight">
               About <span className="bg-gradient-to-r from-coffee-600 to-coffee-700 dark:from-coffee-300 dark:to-coffee-200 bg-clip-text text-transparent">EventSync</span>
             </h2>
             <p className="text-coffee-500 dark:text-coffee-400 mt-2 text-lg">

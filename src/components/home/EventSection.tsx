@@ -181,8 +181,8 @@ export default function EventSection({ limit = 3 }: { limit?: number }) {
                 Events
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-coffee-900 dark:text-white tracking-tight">
-              What's happening?
+            <h2 className="text-3xl sm:text-4xl font-audiowide text-coffee-900 dark:text-white tracking-tight">
+              What's <span className="bg-gradient-to-r from-coffee-600 to-coffee-700 dark:from-coffee-300 dark:to-coffee-200 bg-clip-text text-transparent">happening ?</span>
             </h2>
             <p className="text-coffee-500 dark:text-coffee-400 mt-2 text-lg">
               Find your next adventure
