@@ -1,9 +1,17 @@
+
+import AboutSection from '@/components/home/AboutSection';
+import EventSection from '@/components/home/EventSection';
 import HeroSection from '@/components/home/HeroSection';
+import SpeakerSection from '@/components/home/SpeakerSection';
+
 
 export default function HomePage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="">
       <HeroSection />
+      <EventSection limit={3} />
+      <SpeakerSection />
+      <AboutSection />  
     </div>
   );
 }

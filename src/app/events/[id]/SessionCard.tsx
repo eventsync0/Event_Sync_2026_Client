@@ -1,4 +1,3 @@
-// src/app/events/[id]/SessionCard.tsx
 import { Clock, Users } from 'lucide-react';
 import { formatTime, isLive } from '@/lib/utils';
 import { Session } from '@/types';
@@ -9,7 +8,7 @@ interface SessionCardProps {
   eventId: string;
 }
 
-export default function SessionCard({ session, eventId }: SessionCardProps) {
+export default function SessionCard({ session }: SessionCardProps) {
   const isSessionLive = isLive(session.startTime, session.endTime);
 
   return (
@@ -48,7 +47,7 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
       )}
 
       {isSessionLive && (
-        <LiveSessionLink eventId={eventId} sessionId={session.id} />
+        <LiveSessionLink sessionId={session.id} />
       )}
     </div>
   );

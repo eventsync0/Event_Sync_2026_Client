@@ -1,26 +1,23 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
-export default function SpeakersPage() {
+export default function SpeakerSection() {
   const API_URL = "http://localhost:3001/api";
 
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
         const res = await fetch(`${API_URL}/speakers`);
-
         if (!res.ok) {
           console.error("Fetch failed:", res.status);
           return;
         }
-
         const json = await res.json();
         setSpeakers(json.data);
       } catch (err) {
@@ -29,25 +26,16 @@ export default function SpeakersPage() {
         setLoading(false);
       }
     };
-
     fetchSpeakers();
   }, []);
 
-  const filteredSpeakers = useMemo(() => {
-    return speakers.filter((speaker) =>
-      speaker.fullName?.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [speakers, search]);
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-21">
-
       {/* HEADER */}
       <div className="mb-12 text-center">
         <h1 className="font-audiowide text-4xl md:text-5xl text-txt-title">
           All Speakers
         </h1>
-
         <p className="text-txt-secondary mt-3 max-w-2xl mx-auto text-lg">
           Discover the experts, innovators, and leaders sharing knowledge during the event.
         </p>
@@ -60,30 +48,9 @@ export default function SpeakersPage() {
         </div>
       )}
 
-      {/* SEARCH */}
-      <div className="mb-10 flex justify-center">
-        <div className="w-full max-w-xl">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search a speaker..."
-            className="
-              w-full px-5 py-4 rounded-2xl border
-              border-coffee-200 bg-white text-black
-              placeholder:text-txt-secondary shadow-sm
-              focus:outline-none focus:ring-2
-              focus:ring-coffee-400 focus:border-coffee-400
-              transition-all
-            "
-          />
-        </div>
-      </div>
-
-      {/* LIST */}
-      {!loading && filteredSpeakers.length > 0 ? (
+      {/* LIST - direct sans filtre */}
+      {!loading && speakers.length > 0 ? (
         <div className="relative group">
-
           {/* LEFT BUTTON */}
           <button
             onClick={() =>
@@ -113,7 +80,7 @@ export default function SpeakersPage() {
               [scrollbar-width:none]
             "
           >
-            {filteredSpeakers.map((speaker: any) => (
+            {speakers.map((speaker: any) => (
               <div
                 key={speaker.id}
                 className="
@@ -125,7 +92,6 @@ export default function SpeakersPage() {
                   transition-all duration-300
                 "
               >
-
                 {/* IMAGE */}
                 <div className="flex justify-center">
                   {speaker.photoUrl ? (
@@ -165,11 +131,9 @@ export default function SpeakersPage() {
                   <div className="flex gap-3 mt-5 justify-center">
                     {speaker.links.map((link: any) => {
                       const platform = link.platform?.toLowerCase();
-
                       let icon = <FaGlobe className="text-lg" />;
                       if (platform === "linkedin") icon = <FaLinkedin className="text-lg" />;
                       else if (platform === "github") icon = <FaGithub className="text-lg" />;
-
                       return (
                         <a
                           key={link.id}
@@ -196,7 +160,6 @@ export default function SpeakersPage() {
                 >
                   View profile →
                 </button>
-
               </div>
             ))}
           </div>
@@ -218,7 +181,6 @@ export default function SpeakersPage() {
           >
             ›
           </button>
-
         </div>
       ) : (
         !loading && (
@@ -228,25 +190,20 @@ export default function SpeakersPage() {
         )
       )}
 
-      {/* MODAL */}
+      {/* MODAL (inchangé) */}
       {selectedSpeaker && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-
           <div className="
             bg-bg-card w-[90%] max-w-3xl rounded-3xl
             p-8 shadow-2xl border border-coffee-200 relative
           ">
-
             <button
               onClick={() => setSelectedSpeaker(null)}
               className="absolute top-3 right-4 text-txt-secondary hover:text-black text-xl"
             >
               ✕
             </button>
-
             <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-
-              {/* IMAGE */}
               {selectedSpeaker.photoUrl ? (
                 <img
                   src={selectedSpeaker.photoUrl}
@@ -258,29 +215,22 @@ export default function SpeakersPage() {
                   No Image
                 </div>
               )}
-
-              {/* INFO */}
               <div className="flex-1 text-center md:text-left">
-
                 <h2 className="font-audiowide text-3xl md:text-4xl text-txt-title">
                   {selectedSpeaker.fullName}
                 </h2>
-
                 {selectedSpeaker.bio && (
                   <p className="text-txt-secondary mt-5 leading-relaxed">
                     {selectedSpeaker.bio}
                   </p>
                 )}
-
                 {selectedSpeaker.links?.length > 0 && (
                   <div className="flex gap-3 mt-6 justify-center md:justify-start">
                     {selectedSpeaker.links.map((link: any) => {
                       const platform = link.platform?.toLowerCase();
-
                       let icon = <FaGlobe className="text-lg" />;
                       if (platform === "linkedin") icon = <FaLinkedin className="text-lg" />;
                       else if (platform === "github") icon = <FaGithub className="text-lg" />;
-
                       return (
                         <a
                           key={link.id}
@@ -299,14 +249,11 @@ export default function SpeakersPage() {
                     })}
                   </div>
                 )}
-
               </div>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
