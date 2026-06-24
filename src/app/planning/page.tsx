@@ -137,7 +137,7 @@ export default function PlanningPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 mt-16">
             <div className="bg-white border-b sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex justify-between items-center mb-4">
@@ -151,7 +151,7 @@ export default function PlanningPage() {
                             </button>
                             <button
                                 onClick={currentWeek}
-                                className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                                className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition text-coffee-600"
                             >
                                 Aujourd'hui
                             </button>
