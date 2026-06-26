@@ -7,7 +7,7 @@ import { AppError } from '@/types/error';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Calendar as CalendarIcon, TrendingUp, MapPin } from 'lucide-react';
 
-// Composant pour les statistiques - Server Component
+
 async function EventStats() {
   let events: Event[] = [];
 

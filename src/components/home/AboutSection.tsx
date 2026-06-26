@@ -4,7 +4,6 @@ import Link from 'next/link';
 export default function AboutSection() {
   return (
     <section className="relative py-16 sm:py-20 md:py-24 bg-background w-full overflow-hidden">
-      {/* Fond avec pattern - identique à EventSection */}
       <div 
         className="absolute inset-0 opacity-[0.02] dark:opacity-[0.01]" 
         style={{
@@ -17,7 +16,6 @@ export default function AboutSection() {
       />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête - exactement comme EventSection */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div>
             <div className="flex items-center gap-3 mb-3">
@@ -45,9 +43,8 @@ export default function AboutSection() {
           </Link>
         </div>
 
-        {/* Contenu original */}
+
         <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
-          {/* Texte - 3 colonnes */}
           <div className="lg:col-span-3 space-y-6">
             <div className="bg-white/70 dark:bg-coffee-900/40 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-coffee-100/50 dark:border-coffee-800/50">
               <p className="text-coffee-700 dark:text-coffee-300 leading-relaxed text-base md:text-lg">
@@ -109,7 +106,6 @@ export default function AboutSection() {
             </div>
           </div>
 
-          {/* Sidebar - 2 colonnes */}
           <div className="lg:col-span-2">
             <div className="bg-gradient-to-br from-coffee-50 to-coffee-100/50 dark:from-coffee-900/50 dark:to-coffee-800/30 rounded-2xl p-6 md:p-8 border border-coffee-200/50 dark:border-coffee-800/50 sticky top-8 backdrop-blur-sm">
               <h3 className="text-xl font-bold text-coffee-900 dark:text-white mb-4">Our Mission</h3>

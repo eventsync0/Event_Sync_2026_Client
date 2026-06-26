@@ -1,4 +1,4 @@
-import { Clock, Users, ChevronRight, MapPin, Calendar, User, Mic, Sparkles } from 'lucide-react';
+import { Clock, Users, ChevronRight, MapPin, Calendar, Mic, Sparkles } from 'lucide-react';
 import { formatTime, isLive } from '@/lib/utils';
 import { Session } from '@/types';
 import LiveSessionLink from './LiveSessionLink';
@@ -10,15 +10,13 @@ interface SessionCardProps {
   eventId: string;
 }
 
-export default function SessionCard({ session, eventId }: SessionCardProps) {
+export default function SessionCard({ session }: SessionCardProps) {
   const isSessionLive = isLive(session.startTime, session.endTime);
 
   return (
     <div className="group relative bg-bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-border transition-all duration-300 hover:-translate-y-1">
-      {/* Barre de statut en haut */}
       <div className="h-1 w-full bg-gradient-to-r from-coffee-400 to-coffee-600 dark:from-coffee-500 dark:to-coffee-700" />
       
-      {/* Badge LIVE flottant */}
       {isSessionLive && (
         <div className="absolute top-4 right-4 z-10">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg animate-pulse">
@@ -30,9 +28,7 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
 
       <div className="p-6 lg:p-8">
         <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-          {/* Contenu principal */}
           <div className="flex-1 min-w-0 space-y-4">
-            {/* En-tête avec titre et métadonnées */}
             <div className="space-y-3">
               <h3 className="text-xl lg:text-2xl font-bold text-txt-title leading-tight group-hover:text-coffee-600 dark:group-hover:text-coffee-400 transition-colors">
                 {session.title}
@@ -43,7 +39,6 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
               </p>
             </div>
 
-            {/* Grille d'informations */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
               <div className="flex items-center gap-2.5 text-sm text-txt-secondary bg-bg-subtle px-3 py-2 rounded-lg">
                 <Calendar className="w-4 h-4 text-coffee-500 dark:text-coffee-400 flex-shrink-0" />
@@ -76,7 +71,6 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
               )}
             </div>
 
-            {/* Intervenants - Version moderne avec avatars */}
             {session.speakers && session.speakers.length > 0 && (
               <div className="pt-2">
                 <div className="flex items-center gap-2 mb-3">
@@ -94,7 +88,7 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
                       key={speaker.id || index} 
                       className="group/speaker flex items-center gap-3 px-3 py-2 bg-bg-subtle rounded-xl border border-border/50 hover:border-coffee-300 dark:hover:border-coffee-700 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
                     >
-                      {/* Avatar avec image ou initiale */}
+                
                       {speaker.photoUrl ? (
                         <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-coffee-200 dark:ring-coffee-700 flex-shrink-0">
                           <Image 
@@ -120,7 +114,7 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
                           </p>
                         )}
                       </div>
-                      {/* Petit badge de statut (optionnel) */}
+                     
                       {index === 0 && (
                         <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-coffee-100 dark:bg-coffee-800/50 text-coffee-600 dark:text-coffee-400 text-[10px] font-bold rounded-full">
                           <Sparkles className="w-2.5 h-2.5" />

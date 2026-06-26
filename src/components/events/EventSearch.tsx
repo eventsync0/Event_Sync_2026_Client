@@ -1,4 +1,3 @@
-// components/events/EventSearch.tsx
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
@@ -25,7 +24,6 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  
   const [search, setSearch] = useState(initialSearch);
   const [category] = useState(initialCategory);
   const [isFocused, setIsFocused] = useState(false);
