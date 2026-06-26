@@ -1,4 +1,7 @@
+'use client';
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Users,
@@ -6,19 +9,104 @@ import {
   ThumbsUp,
   ArrowRight,
 } from "lucide-react";
+import api from "@/lib/api";
+
+interface Stats {
+  totalEvents: number;
+  totalCapacity: number;
+  totalCities: number;
+  totalSpeakers: number;
+  upcomingEvents: number;
+  liveEvents: number;
+  totalQuestions: number;
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 max-w-[340px] sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
+      {[1, 2, 3, 4].map((index) => (
+        <div key={index} className="text-center">
+          <div className="flex justify-center mb-2 sm:mb-2 md:mb-2.5">
+            <div className="p-2 sm:p-2 md:p-2.5 rounded-full bg-coffee-200 dark:bg-coffee-800 animate-pulse w-12 h-12" />
+          </div>
+          <div className="h-6 w-16 bg-coffee-200 dark:bg-coffee-800 rounded-lg animate-pulse mx-auto" />
+          <div className="h-3 w-12 bg-coffee-200 dark:bg-coffee-800 rounded-lg animate-pulse mx-auto mt-1.5" />
+          <div className="h-2 w-10 bg-coffee-200 dark:bg-coffee-800 rounded-lg animate-pulse mx-auto mt-1 opacity-60" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function HeroSection() {
-  const stats = [
-    { value: "500+", label: "Events", icon: CalendarDays, color: "from-coffee-500 to-coffee-600" },
-    { value: "50k+", label: "Participants", icon: Users, color: "from-coffee-400 to-coffee-500" },
-    { value: "120+", label: "Cities", icon: MapPin, color: "from-coffee-500 to-coffee-700" },
-    { value: "98%", label: "Satisfaction", icon: ThumbsUp, color: "from-coffee-400 to-coffee-600" },
-  ];
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await api.get('/api/stats');
+        setStats(response.data?.data || response.data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+        setStats({
+          totalEvents: 0,
+          totalCapacity: 0,
+          totalCities: 0,
+          totalSpeakers: 0,
+          upcomingEvents: 0,
+          liveEvents: 0,
+          totalQuestions: 0,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'k+';
+    }
+    return num + '+';
+  };
+
+  const statItems = stats ? [
+    { 
+      value: formatNumber(stats.totalEvents), 
+      label: "Events", 
+      icon: CalendarDays, 
+      color: "from-coffee-500 to-coffee-600",
+      detail: `${stats.upcomingEvents} upcoming`,
+    },
+    { 
+      value: formatNumber(stats.totalCapacity), 
+      label: "Participants", 
+      icon: Users, 
+      color: "from-coffee-400 to-coffee-500",
+      detail: `${stats.liveEvents} live now`,
+    },
+    { 
+      value: stats.totalCities > 0 ? stats.totalCities + '+' : '0', 
+      label: "Cities", 
+      icon: MapPin, 
+      color: "from-coffee-500 to-coffee-700",
+      detail: "worldwide",
+    },
+    { 
+      value: stats.totalSpeakers > 0 ? stats.totalSpeakers + '+' : '0', 
+      label: "Speakers", 
+      icon: ThumbsUp, 
+      color: "from-coffee-400 to-coffee-600",
+      detail: `${stats.totalQuestions} questions`,
+    },
+  ] : [];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-      {/* ARRIÈRE-PLAN DÉCORATIF — inchangé */}
       <div className="absolute inset-0 dark:from-coffee-950 dark:via-coffee-900/80 dark:to-coffee-800/60" />
 
       <div className="absolute inset-0 overflow-hidden">
@@ -94,10 +182,10 @@ export default function HeroSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] sm:w-[240px] sm:h-[240px] md:w-[300px] md:h-[300px] bg-gradient-radial from-coffee-300/15 to-transparent rounded-full blur-lg md:blur-xl" />
       </div>
 
-      {/* CONTENU PRINCIPAL */}
+    
       <div className="relative w-full text-center px-5 sm:px-8 lg:px-12 xl:px-16 py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32 z-10">
 
-        {/* Titre */}
+      
         <h1 className="
           font-audiowide
           tracking-tight leading-[1.15] sm:leading-tight
@@ -112,7 +200,7 @@ export default function HeroSection() {
           </span>
         </h1>
 
-        {/* Description */}
+   
         <p className="
           font-semibold
           text-[clamp(0.8rem,2vw,1.125rem)]
@@ -133,7 +221,7 @@ export default function HeroSection() {
           </span>
         </p>
 
-        {/* Boutons */}
+  
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-10 sm:mb-12 md:mb-14 lg:mb-16">
           <Link
             href="/events"
@@ -156,7 +244,7 @@ export default function HeroSection() {
           </Link>
 
           <Link
-            href="/about"
+            href="#about"
             className="
               inline-flex items-center justify-center gap-2
               border-2 border-coffee-400 dark:border-coffee-600
@@ -174,37 +262,50 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        {/* Statistiques */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 max-w-[340px] sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className="text-center group">
-                <div className="flex justify-center mb-2 sm:mb-2 md:mb-2.5">
-                  <div className={`p-2 sm:p-2 md:p-2.5 rounded-full bg-gradient-to-br ${stat.color} dark:from-coffee-700 dark:to-coffee-800 group-hover:from-coffee-600 group-hover:to-coffee-700 dark:group-hover:from-coffee-600 dark:group-hover:to-coffee-700 transition-all duration-300 group-hover:scale-110 shadow-sm`}>
-                    <Icon className="w-4 h-4 sm:w-4 sm:h-4 md:w-[18px] md:h-[18px] lg:w-5 lg:h-5 text-white" />
+        {loading ? (
+          <StatsSkeleton />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 max-w-[340px] sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
+            {statItems.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div key={index} className="text-center group">
+                  <div className="flex justify-center mb-2 sm:mb-2 md:mb-2.5">
+                    <div className={`p-2 sm:p-2 md:p-2.5 rounded-full bg-gradient-to-br ${stat.color} dark:from-coffee-700 dark:to-coffee-800 group-hover:from-coffee-600 group-hover:to-coffee-700 dark:group-hover:from-coffee-600 dark:group-hover:to-coffee-700 transition-all duration-300 group-hover:scale-110 shadow-sm`}>
+                      <Icon className="w-4 h-4 sm:w-4 sm:h-4 md:w-[18px] md:h-[18px] lg:w-5 lg:h-5 text-white" />
+                    </div>
                   </div>
+                  <div className="
+                    font-audiowide
+                    bg-gradient-to-r from-coffee-600 to-coffee-700 dark:from-coffee-400 dark:to-coffee-500 bg-clip-text text-transparent
+                    text-base sm:text-lg md:text-xl lg:text-2xl
+                    leading-tight
+                  ">
+                    {stat.value}
+                  </div>
+                  <div className="
+                    text-txt-secondary font-medium
+                    mt-1
+                    text-[10px] sm:text-xs md:text-[0.7rem] lg:text-xs
+                    tracking-wide uppercase
+                  ">
+                    {stat.label}
+                  </div>
+                  {stat.detail && (
+                    <div className="
+                      text-[8px] sm:text-[10px] md:text-xs
+                      text-coffee-400 dark:text-coffee-500
+                      mt-0.5
+                      opacity-80
+                    ">
+                      {stat.detail}
+                    </div>
+                  )}
                 </div>
-                <div className="
-                  font-audiowide
-                  bg-gradient-to-r from-coffee-600 to-coffee-700 dark:from-coffee-400 dark:to-coffee-500 bg-clip-text text-transparent
-                  text-base sm:text-lg md:text-xl lg:text-2xl
-                  leading-tight
-                ">
-                  {stat.value}
-                </div>
-                <div className="
-                  text-txt-secondary font-medium
-                  mt-1
-                  text-[10px] sm:text-xs md:text-[0.7rem] lg:text-xs
-                  tracking-wide uppercase
-                ">
-                  {stat.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
