@@ -1,6 +1,6 @@
 // app/events/[id]/page.tsx
-import notFound from './notfound';
-import { Calendar, Clock, MapPin, Users, Sparkles, Building2 } from 'lucide-react';
+import { notFound } from 'next/navigation';
+import { Calendar, Clock, MapPin, Users, Sparkles, Building2, Share2, CalendarDays, Clock as ClockIcon, Tag, Globe, Award, TrendingUp } from 'lucide-react';
 import api from '@/lib/api';
 import { formatFullDate, formatTime } from '@/lib/utils';
 import { Event, Session } from '@/types';
@@ -38,97 +38,164 @@ async function EventContent({ id }: { id: string }) {
 
   return (
     <>
-      {/* Hero Section */}
-      <div className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-coffee-50 via-white to-amber-50 dark:from-gray-900 dark:via-gray-900 dark:to-coffee-950/30 p-8 md:p-12 border border-coffee-100/50 dark:border-coffee-800/30">
-        {/* Décoration de fond */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-coffee-200/20 dark:bg-coffee-700/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-200/20 dark:bg-amber-700/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+      {/* Hero Section - Avec toutes les infos */}
+      <div className="relative mb-12 overflow-hidden rounded-3xl bg-coffee-50 dark:bg-coffee-950/40 p-8 md:p-12 border border-coffee-100/50 dark:border-coffee-800/30">
+        {/* Décoration de fond moderne */}
+        <div className="absolute inset-0 bg-gradient-to-br from-coffee-100/30 via-transparent to-coffee-200/20 dark:from-coffee-800/20 dark:to-coffee-700/10" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-coffee-200/20 dark:bg-coffee-700/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-coffee-300/10 dark:bg-coffee-600/10 rounded-full blur-3xl" />
+        
+        {/* Cercles décoratifs */}
+        <div className="absolute top-1/2 right-8 -translate-y-1/2 w-32 h-32 border-2 border-coffee-200/20 dark:border-coffee-700/20 rounded-full hidden lg:block" />
+        <div className="absolute top-1/3 right-16 w-16 h-16 border-2 border-coffee-300/10 dark:border-coffee-600/10 rounded-full hidden lg:block" />
         
         <div className="relative z-10">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-coffee-100 dark:bg-coffee-800/50">
-              <Sparkles className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-coffee-100 dark:bg-coffee-800/50 backdrop-blur-sm">
+                <Sparkles className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
+              </div>
+              <div>
+                <span className="text-sm font-medium text-coffee-600 dark:text-coffee-400 uppercase tracking-wider">
+                  Événement
+                </span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-coffee-200/50 dark:bg-coffee-800/50 text-coffee-700 dark:text-coffee-300 rounded-full">
+                    <ClockIcon className="w-3 h-3" />
+                    {event.sessions?.length || 0} sessions
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-coffee-200/50 dark:bg-coffee-800/50 text-coffee-700 dark:text-coffee-300 rounded-full">
+                    <Tag className="w-3 h-3" />
+                    {event.category?.toLowerCase() || 'Événement'}
+                  </span>
+                </div>
+              </div>
             </div>
-            <span className="text-sm font-medium text-coffee-600 dark:text-coffee-400 uppercase tracking-wider">
-              Événement
-            </span>
+            
+            <button className="p-2.5 rounded-xl bg-coffee-100/50 dark:bg-coffee-800/30 hover:bg-coffee-200/50 dark:hover:bg-coffee-700/30 transition-colors backdrop-blur-sm">
+              <Share2 className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
+            </button>
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-txt-title tracking-tight mb-4 leading-tight">
             {event.title}
           </h1>
           
-          <p className="text-lg md:text-xl text-txt-secondary max-w-3xl leading-relaxed">
+          <p className="text-lg md:text-xl text-txt-secondary max-w-3xl leading-relaxed mb-6">
             {event.description}
           </p>
+
+          {/* Grille d'informations dans le hero */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl">
+            <div className="flex items-center gap-3 px-4 py-3 bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-xl border border-coffee-100/50 dark:border-coffee-800/30">
+              <div className="p-1.5 rounded-lg bg-coffee-100/50 dark:bg-coffee-800/30">
+                <CalendarDays className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+              </div>
+              <div>
+                <p className="text-xs text-txt-disabled">Date</p>
+                <p className="text-sm font-semibold text-txt-title">{formatFullDate(event.startDate)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-4 py-3 bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-xl border border-coffee-100/50 dark:border-coffee-800/30">
+              <div className="p-1.5 rounded-lg bg-coffee-100/50 dark:bg-coffee-800/30">
+                <Clock className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+              </div>
+              <div>
+                <p className="text-xs text-txt-disabled">Horaire</p>
+                <p className="text-sm font-semibold text-txt-title">{formatTime(event.startDate)} - {formatTime(event.endDate)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-4 py-3 bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-xl border border-coffee-100/50 dark:border-coffee-800/30">
+              <div className="p-1.5 rounded-lg bg-coffee-100/50 dark:bg-coffee-800/30">
+                <MapPin className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+              </div>
+              <div>
+                <p className="text-xs text-txt-disabled">Lieu</p>
+                <p className="text-sm font-semibold text-txt-title truncate">{event.location}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 px-4 py-3 bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-xl border border-coffee-100/50 dark:border-coffee-800/30">
+              <div className="p-1.5 rounded-lg bg-coffee-100/50 dark:bg-coffee-800/30">
+                <Users className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+              </div>
+              <div>
+                <p className="text-xs text-txt-disabled">Sessions</p>
+                <p className="text-sm font-semibold text-txt-title">{event.sessions?.length || 0}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sidebar - Informations */}
+        {/* Sidebar - Statistiques et infos supplémentaires */}
         <div className="lg:col-span-4">
           <div className="sticky top-8 space-y-6">
-            <div className="bg-bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-md transition-shadow duration-300">
-              <h3 className="text-sm font-semibold text-txt-secondary uppercase tracking-wider mb-6 flex items-center gap-2">
-                <span className="w-1 h-6 bg-gradient-to-b from-coffee-400 to-coffee-600 rounded-full" />
-                Informations
-              </h3>
+            {/* Stats Card */}
+            <div className="bg-bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="p-1.5 rounded-lg bg-coffee-100 dark:bg-coffee-800/50">
+                  <TrendingUp className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-txt-secondary uppercase tracking-wider">
+                  Statistiques
+                </h3>
+              </div>
               
-              <div className="space-y-5">
-                {/* Date */}
-                <div className="flex items-start gap-4 group">
-                  <div className="p-2.5 rounded-xl bg-bg-subtle group-hover:bg-coffee-100 dark:group-hover:bg-coffee-800/50 transition-colors">
-                    <Calendar className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-txt-disabled uppercase tracking-wider">Date</p>
-                    <p className="text-sm font-semibold text-txt-title mt-0.5">
-                      {formatFullDate(event.startDate)}
-                    </p>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
+                  <span className="text-sm text-txt-secondary">Sessions totales</span>
+                  <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
+                    {event.sessions?.length || 0}
+                  </span>
                 </div>
 
-                {/* Heure */}
-                <div className="flex items-start gap-4 group">
-                  <div className="p-2.5 rounded-xl bg-bg-subtle group-hover:bg-coffee-100 dark:group-hover:bg-coffee-800/50 transition-colors">
-                    <Clock className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-txt-disabled uppercase tracking-wider">Horaire</p>
-                    <p className="text-sm font-semibold text-txt-title mt-0.5">
-                      {formatTime(event.startDate)} — {formatTime(event.endDate)}
-                    </p>
-                  </div>
+                <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
+                  <span className="text-sm text-txt-secondary">Capacité totale</span>
+                  <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
+                    {event.sessions?.reduce((acc, s) => acc + (s.capacity || 0), 0) || 0}
+                  </span>
                 </div>
 
-                {/* Lieu */}
-                <div className="flex items-start gap-4 group">
-                  <div className="p-2.5 rounded-xl bg-bg-subtle group-hover:bg-coffee-100 dark:group-hover:bg-coffee-800/50 transition-colors">
-                    <MapPin className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-txt-disabled uppercase tracking-wider">Lieu</p>
-                    <p className="text-sm font-semibold text-txt-title mt-0.5 flex items-center gap-1.5">
-                      <Building2 className="w-3.5 h-3.5 text-coffee-500" />
-                      {event.location}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Sessions count */}
-                <div className="pt-4 mt-2 border-t border-border">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
-                      <span className="text-sm text-txt-secondary">Sessions</span>
-                    </div>
-                    <span className="text-sm font-bold text-coffee-600 dark:text-coffee-400 bg-badge-bg text-badge-txt px-3 py-1 rounded-full">
-                      {event.sessions?.length || 0}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
+                  <span className="text-sm text-txt-secondary">Intervenants</span>
+                  <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
+                    {event.sessions?.reduce((acc, s) => {
+                      const speakers = s.speakers?.length || 0;
+                      return acc + speakers;
+                    }, 0) || 0}
+                  </span>
                 </div>
               </div>
             </div>
+
+            {/* Catégorie Card */}
+            <div className="bg-bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1.5 rounded-lg bg-coffee-100 dark:bg-coffee-800/50">
+                  <Tag className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-txt-secondary uppercase tracking-wider">
+                  Catégorie
+                </h3>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-coffee-50 dark:bg-coffee-900/30 border border-coffee-100/50 dark:border-coffee-800/30">
+                <div className="p-2 rounded-lg bg-coffee-200/50 dark:bg-coffee-700/30">
+                  <Award className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-txt-disabled">Type d'événement</p>
+                  <p className="text-sm font-semibold text-txt-title capitalize">
+                    {event.category?.toLowerCase() || 'Non catégorisé'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
