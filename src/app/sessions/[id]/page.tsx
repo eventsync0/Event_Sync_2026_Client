@@ -134,13 +134,13 @@ export default function SessionDetailPage() {
         <div className="min-h-screen bg-gray-50 pb-12">
             <div className="max-w-4xl mx-auto px-4 py-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    <button
+                    {/* <button
                         onClick={() => router.back()}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white rounded-xl border hover:bg-gray-50 transition-all shadow-sm"
                     >
-                        <ArrowLeft className="w-4 h-4" />
-                        Planning
-                    </button>
+                        {/* <ArrowLeft className="w-4 h-4" />
+                        Planning */}
+                    {/* </button> */}
 
                     <button
                         onClick={handleToggleFav}
@@ -148,8 +148,8 @@ export default function SessionDetailPage() {
                             isFav ? 'bg-yellow-400 border-yellow-400 text-white' : 'bg-white border-gray-200 text-gray-700'
                         }`}
                     >
-                        <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
-                        {isFav ? 'Programmé' : 'Ajouter au planning'}
+                        {/* <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
+                        {isFav ? 'Programmé' : 'Ajouter au planning'} */}
                     </button>
                 </div>
 
