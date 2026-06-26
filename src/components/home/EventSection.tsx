@@ -1,11 +1,11 @@
 import { Suspense } from 'react';
 import api from '@/lib/api';
 import { Event } from '@/types';
-import EventCard from '../../app/events/EventCard';
-import EventsListSkeleton from '../../app/events/EventsListSkeleton';
+import EventCard from '../events/EventCard';
+import EventsListSkeleton from '../events/EventsListSkeleton';
 import { AppError } from '@/types/error';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Calendar as CalendarIcon, Clock, TrendingUp, MapPin } from 'lucide-react';
+import { ArrowRight, Sparkles, Calendar as CalendarIcon, TrendingUp, MapPin } from 'lucide-react';
 
 // Composant pour les statistiques - Server Component
 async function EventStats() {
@@ -16,7 +16,7 @@ async function EventStats() {
     const data = response.data?.data ?? response.data ?? [];
     events = Array.isArray(data) ? data : [];
   } catch (err) {
-    console.error("Error loading events for stats:", err);
+    console.error('Error loading events for stats:', err);
     return null;
   }
 
@@ -24,42 +24,26 @@ async function EventStats() {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Calcul des statistiques réelles
-  const totalEvents = events.length;
-  
-  // Événements du mois
-  const eventsThisMonth = events.filter(event => {
+  const eventsThisMonth = events.filter((event) => {
     const date = new Date(event.startDate);
     return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
   });
 
-  // Événements actifs (en cours)
-  const activeEvents = events.filter(event => {
+  const activeEvents = events.filter((event) => {
     const start = new Date(event.startDate);
     const end = new Date(event.endDate);
     return start <= now && now <= end;
   });
 
-  // Événements à venir
-  const upcomingEvents = events.filter(event => {
-    return new Date(event.startDate) > now;
-  });
+  const uniqueLocations = new Set(events.map((event) => event.location)).size;
 
-  // Lieux uniques
-  const uniqueLocations = new Set(events.map(event => event.location)).size;
-
-  // Événements en direct (live)
-  const liveEvents = events.filter(event => {
-    if (!event.sessions) return false;
-    return event.sessions.some(session => {
+  const liveEvents = events.filter((event) =>
+    event.sessions?.some((session) => {
       const start = new Date(session.startTime);
       const end = new Date(session.endTime);
       return start <= now && now <= end;
-    });
-  });
-
-  // Nombre de participants total (simulé ou à remplacer par une vraie donnée)
-  const totalAttendees = events.reduce((acc, event) => acc + (event.attendees || 0), 0);
+    })
+  );
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
@@ -121,16 +105,12 @@ async function EventsContent({ limit = 3 }: { limit?: number }) {
     const response = await api.get('/api/events');
     const data = response.data?.data ?? response.data ?? [];
     events = Array.isArray(data) ? data : [];
-    events = events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-    if (limit && events.length > limit) {
-      events = events.slice(0, limit);
-    }
+    events = events
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+      .slice(0, limit);
   } catch (err) {
-    if (err instanceof Error) {
-      console.error("Error loading events for home section:", err.message);
-      throw new AppError("Unable to load events.");
-    }
-    throw new AppError("An unexpected error occurred");
+    console.error('Error loading events for home section:', err instanceof Error ? err.message : err);
+    throw new AppError('Unable to load events.');
   }
 
   if (events.length === 0) {
@@ -154,23 +134,37 @@ async function EventsContent({ limit = 3 }: { limit?: number }) {
   );
 }
 
+const StatsSkeleton = () => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="bg-white/50 dark:bg-coffee-900/30 rounded-xl p-4 border border-coffee-100 dark:border-coffee-800 animate-pulse">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-coffee-200 dark:bg-coffee-700" />
+          <div>
+            <div className="h-7 w-12 bg-coffee-200 dark:bg-coffee-700 rounded" />
+            <div className="h-3 w-16 bg-coffee-200 dark:bg-coffee-700 rounded mt-1" />
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default function EventSection({ limit = 3 }: { limit?: number }) {
   return (
     <section className="relative py-16 sm:py-20 md:py-24 bg-background w-full overflow-hidden">
-      {/* Fond avec pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.02] dark:opacity-[0.01]" 
+      <div
+        className="absolute inset-0 opacity-[0.02] dark:opacity-[0.01]"
         style={{
           backgroundImage: `
             linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px'
-        }} 
+          backgroundSize: '40px 40px',
+        }}
       />
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header minimaliste */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div>
             <div className="flex items-center gap-3 mb-3">
@@ -198,31 +192,14 @@ export default function EventSection({ limit = 3 }: { limit?: number }) {
           </Link>
         </div>
 
-        {/* Statistiques avec données réelles */}
-        <Suspense fallback={
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white/50 dark:bg-coffee-900/30 rounded-xl p-4 border border-coffee-100 dark:border-coffee-800 animate-pulse">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-coffee-200 dark:bg-coffee-700" />
-                  <div>
-                    <div className="h-7 w-12 bg-coffee-200 dark:bg-coffee-700 rounded" />
-                    <div className="h-3 w-16 bg-coffee-200 dark:bg-coffee-700 rounded mt-1" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        }>
+        <Suspense fallback={<StatsSkeleton />}>
           <EventStats />
         </Suspense>
 
-        {/* Grille des événements */}
         <Suspense fallback={<EventsListSkeleton />}>
           <EventsContent limit={limit} />
         </Suspense>
 
-        {/* Footer avec gradient */}
         <div className="mt-14 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-coffee-500/5 to-coffee-600/5 dark:from-coffee-400/5 dark:to-coffee-500/5 rounded-3xl blur-2xl" />
           <div className="relative bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-3xl p-8 border border-coffee-200/50 dark:border-coffee-800/50 text-center">

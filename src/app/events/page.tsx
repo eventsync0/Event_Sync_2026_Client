@@ -2,10 +2,10 @@
 import { Suspense } from 'react';
 import api from '@/lib/api';
 import { Event } from '@/types';
-import EventCard from './EventCard';
-import EventFilters from './EventFilters';
-import EventPagination from './EventPagination';
-import EventsListSkeleton from './EventsListSkeleton';
+import EventCard from '../../components/events/EventCard';
+import EventFilters from '../../components/events/EventFilters';
+import EventPagination from '../../components/events/EventPagination';
+import EventsListSkeleton from '../../components/events/EventsListSkeleton';
 import { filterEvents, sortEvents } from '@/lib/event-utils';
 import { AppError } from '@/types/error';
 

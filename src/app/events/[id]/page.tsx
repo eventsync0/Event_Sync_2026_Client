@@ -3,11 +3,11 @@ import { Calendar, Clock, MapPin } from 'lucide-react';
 import api from '@/lib/api';
 import { formatFullDate, formatTime } from '@/lib/utils';
 import { Event, Session } from '@/types';
-import BackButton from './BackButton';
-import SessionCard from './SessionCard';
+import BackButton from '../../../components/events/BackButton';
+import SessionCard from '../../../components/events/SessionCard';
 import { AppError } from '@/types/error';
 import { Suspense } from 'react';
-import EventDetailSkeleton from './EventDetailSkeleton';
+import EventDetailSkeleton from '../../../components/events/EventDetailSkeleton';
 
 async function EventContent({ id }: { id: string }) {
   let event: Event;
