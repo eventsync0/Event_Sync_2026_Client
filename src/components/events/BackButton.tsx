@@ -9,10 +9,10 @@ export default function BackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+      className="inline-flex items-center gap-2 px-5 py-2.5 mt-4 mb-8 text-sm font-medium text-txt-secondary bg-bg-card border border-border rounded-2xl hover:bg-bg-subtle hover:border-coffee-300 dark:hover:border-coffee-700 transition-all duration-300 group"
     >
-      <ArrowLeft className="w-4 h-4" />
-      Back to Events
+      <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
+      <span>Back to Events</span>
     </button>
   );
 }
