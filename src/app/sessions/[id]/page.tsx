@@ -25,6 +25,9 @@ export default function SessionDetailPage() {
     const [authorName, setAuthorName] = useState('');
     const [isSending, setIsSending] = useState(false);
 
+    // Le hook est maintenant placé correctement à l'intérieur du composant !
+    const [votedQuestions, setVotedQuestions] = useState<string[]>([]);
+
     const fetchData = useCallback(async () => {
         try {
             const response = await api.get(`/api/sessions/${id}`);
@@ -64,7 +67,6 @@ export default function SessionDetailPage() {
         return () => clearInterval(interval);
     }, [id, session]);
 
-
     const handleToggleFav = () => {
         const state = toggleFavorite(id as string);
         setIsFav(state);
@@ -93,14 +95,25 @@ export default function SessionDetailPage() {
     };
 
     const handleUpvote = async (qId: string) => {
+        const hasVoted = votedQuestions.map(String).includes(String(qId));
+        const action = hasVoted ? 'downvote' : 'upvote';
+
         try {
-            await api.post(`/api/questions/${qId}/upvote`);
+            const response = await api.post(`/api/questions/${qId}/upvote`, { action });
+            const updatedQuestion = response.data?.data;
+
             setQuestions(prev => 
-                prev.map(q => q.id === qId ? { ...q, upvotes: q.upvotes + 1 } : q)
+                prev.map(q => q.id === qId ? { ...q, upvotes: updatedQuestion?.upvotes ?? q.upvotes } : q)
                     .sort((a, b) => b.upvotes - a.upvotes)
             );
+
+            setVotedQuestions(prev => 
+                hasVoted 
+                    ? prev.filter(id => String(id) !== String(qId)) 
+                    : [...prev, String(qId)]
+            );
         } catch (err) {
-            console.error("Erreur lors de l'upvote");
+            console.error("Erreur lors du vote :", err);
         }
     };
 
@@ -108,7 +121,7 @@ export default function SessionDetailPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin h-10 w-10 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <div className="animate-spin h-10 w-10 border-4 border-coffee-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                     <p className="text-gray-500 font-medium">Récupération des détails...</p>
                 </div>
             </div>
@@ -120,7 +133,7 @@ export default function SessionDetailPage() {
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="text-center bg-white p-8 rounded-3xl shadow-sm border max-w-sm w-full">
                     <p className="text-red-500 font-semibold mb-6">{error || "Session introuvable"}</p>
-                    <button onClick={() => router.back()} className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold">
+                    <button onClick={() => router.back()} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold">
                         Retour
                     </button>
                 </div>
@@ -134,15 +147,15 @@ export default function SessionDetailPage() {
         <div className="min-h-screen bg-gray-50 pb-12">
             <div className="max-w-4xl mx-auto px-4 py-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    <button
+                    {/* <button
                         onClick={() => router.back()}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white rounded-xl border hover:bg-gray-50 transition-all shadow-sm"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Planning
-                    </button>
+                    </button> */}
 
-                    <button
+                    {/* <button
                         onClick={handleToggleFav}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-sm transition-all shadow-sm ${
                             isFav ? 'bg-yellow-400 border-yellow-400 text-white' : 'bg-white border-gray-200 text-gray-700'
@@ -150,13 +163,11 @@ export default function SessionDetailPage() {
                     >
                         <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
                         {isFav ? 'Programmé' : 'Ajouter au planning'}
-                    </button>
+                    </button> */}
                 </div>
 
-                {/* Card Principale */}
                 <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-                    {/* Hero Section de la Session */}
-                    <div className={`p-8 ${isLive ? 'bg-gradient-to-br from-red-50 to-orange-50' : 'bg-gradient-to-br from-blue-50 to-indigo-50'}`}>
+                    <div className={`p-8 ${isLive ? 'bg-gradient-to-br from-red-50 to-orange-50' : 'bg-gradient-to-br from-coffee-50 to-indigo-50'}`}>
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             {isLive && (
                                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 animate-pulse">
@@ -187,13 +198,13 @@ export default function SessionDetailPage() {
                         {session.speakers && session.speakers.length > 0 && (
                             <div className="mb-12">
                                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                    <User className="w-5 h-5 text-blue-600" />
+                                    <User className="w-5 h-5 text-coffee-600" />
                                     Intervenants
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {session.speakers.map((speaker) => (
                                         <div key={speaker.id} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 bg-gray-50/50">
-                                            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-inner">
+                                            <div className="w-14 h-14 bg-coffee-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-inner">
                                                 {speaker.fullName.charAt(0)}
                                             </div>
                                             <div>
@@ -209,16 +220,16 @@ export default function SessionDetailPage() {
                         <div className="pt-10 border-t border-gray-100">
                             <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-                                    <MessageSquare className="w-6 h-6 text-blue-600" />
+                                    <MessageSquare className="w-6 h-6 text-coffee-600" />
                                     Q&A Live
                                 </h3>
-                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold">
+                                <span className="bg-coffee-100 text-coffee-700 px-3 py-1 rounded-lg text-xs font-bold">
                                     {questions.length} question{questions.length > 1 ? 's' : ''}
                                 </span>
                             </div>
 
                             {isLive ? (
-                                <form onSubmit={handleSendQuestion} className="mb-10 bg-white rounded-2xl border-2 border-blue-100 p-2 shadow-sm focus-within:border-blue-400 transition-colors">
+                                <form onSubmit={handleSendQuestion} className="mb-10 bg-white rounded-2xl border-2 border-coffee-100 p-2 shadow-sm focus-within:border-coffee-400 transition-colors">
                                     <textarea
                                         value={newQuestion}
                                         onChange={(e) => setNewQuestion(e.target.value)}
@@ -237,7 +248,7 @@ export default function SessionDetailPage() {
                                         <button 
                                             disabled={isSending}
                                             type="submit"
-                                            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                                            className="w-full sm:w-auto bg-coffee-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-coffee-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
                                         >
                                             {isSending ? 'Envoi...' : 'Envoyer'}
                                             <Send className="w-4 h-4" />
@@ -250,17 +261,18 @@ export default function SessionDetailPage() {
                                     <p className="text-gray-500 font-bold">Le module de questions s'activera au début du direct.</p>
                                 </div>
                             )}
+                            
                             <div className="space-y-4">
                                 {questions.length > 0 ? (
                                     questions.map((q) => (
-                                        <div key={q.id} className="group p-6 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-md transition-all flex items-start gap-4">
+                                        <div key={q.id} className="group p-6 bg-white border border-gray-100 rounded-2xl hover:border-coffee-200 hover:shadow-md transition-all flex items-start gap-4">
                                             <div className="flex-1">
                                                 <p className="text-gray-800 font-semibold text-lg mb-3 leading-snug">{q.content}</p>
                                                 <div className="flex items-center gap-3">
                                                     <div className="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-500 uppercase">
                                                         {(q.authorName || 'A').charAt(0)}
                                                     </div>
-                                                    <span className="text-sm font-bold text-blue-600">{q.authorName || 'Anonyme'}</span>
+                                                    <span className="text-sm font-bold text-coffee-600">{q.authorName || 'Anonyme'}</span>
                                                     <span className="text-gray-300 text-xs">•</span>
                                                     <span className="text-gray-400 text-xs font-medium">
                                                         {new Date(q.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -270,10 +282,10 @@ export default function SessionDetailPage() {
                                             <button 
                                                 onClick={() => handleUpvote(q.id)}
                                                 className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${
-                                                    q.upvotes > 0 ? 'bg-blue-50 border-blue-100 text-blue-600' : 'bg-gray-50 border-transparent text-gray-400 group-hover:border-gray-200'
+                                                    votedQuestions.map(String).includes(String(q.id)) ? 'bg-coffee-50 border-coffee-100 text-coffee-600' : 'bg-gray-50 border-transparent text-gray-400 group-hover:border-gray-200'
                                                 }`}
                                             >
-                                                <ThumbsUp className={`w-5 h-5 ${q.upvotes > 0 ? 'fill-blue-600' : ''}`} />
+                                                <ThumbsUp className={`w-5 h-5 ${votedQuestions.map(String).includes(String(q.id)) ? 'fill-coffee-600' : ''}`} />
                                                 <span className="text-xs font-black">{q.upvotes}</span>
                                             </button>
                                         </div>
@@ -295,7 +307,7 @@ export default function SessionDetailPage() {
 function InfoTile({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
     return (
         <div className="flex items-center gap-4 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50">
-            <div className="p-2.5 bg-white text-blue-600 rounded-xl shadow-sm border border-gray-100">
+            <div className="p-2.5 bg-white text-coffee-600 rounded-xl shadow-sm border border-gray-100">
                 {icon}
             </div>
             <div>
@@ -305,5 +317,3 @@ function InfoTile({ icon, label, value }: { icon: React.ReactNode, label: string
         </div>
     );
 }
-
-// 
