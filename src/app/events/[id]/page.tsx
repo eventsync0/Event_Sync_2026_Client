@@ -1,6 +1,6 @@
 // app/events/[id]/page.tsx
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, MapPin, Users, Sparkles, Building2, Share2, CalendarDays, Clock as ClockIcon, Tag, Globe, Award, TrendingUp } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Sparkles, Building2, Share2, CalendarDays, Clock as ClockIcon, Tag, Award, TrendingUp } from 'lucide-react';
 import api from '@/lib/api';
 import { formatFullDate, formatTime } from '@/lib/utils';
 import { Event, Session } from '@/types';
@@ -38,14 +38,14 @@ async function EventContent({ id }: { id: string }) {
 
   return (
     <>
-      {/* Hero Section - Avec toutes les infos */}
+      {/* Hero Section - With all info */}
       <div className="relative mb-12 overflow-hidden rounded-3xl bg-coffee-50 dark:bg-coffee-950/40 p-8 md:p-12 border border-coffee-100/50 dark:border-coffee-800/30">
-        {/* Décoration de fond moderne */}
+        {/* Modern background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-coffee-100/30 via-transparent to-coffee-200/20 dark:from-coffee-800/20 dark:to-coffee-700/10" />
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-coffee-200/20 dark:bg-coffee-700/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-coffee-300/10 dark:bg-coffee-600/10 rounded-full blur-3xl" />
         
-        {/* Cercles décoratifs */}
+        {/* Decorative circles */}
         <div className="absolute top-1/2 right-8 -translate-y-1/2 w-32 h-32 border-2 border-coffee-200/20 dark:border-coffee-700/20 rounded-full hidden lg:block" />
         <div className="absolute top-1/3 right-16 w-16 h-16 border-2 border-coffee-300/10 dark:border-coffee-600/10 rounded-full hidden lg:block" />
         
@@ -57,7 +57,7 @@ async function EventContent({ id }: { id: string }) {
               </div>
               <div>
                 <span className="text-sm font-medium text-coffee-600 dark:text-coffee-400 uppercase tracking-wider">
-                  Événement
+                  Event
                 </span>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-coffee-200/50 dark:bg-coffee-800/50 text-coffee-700 dark:text-coffee-300 rounded-full">
@@ -66,7 +66,7 @@ async function EventContent({ id }: { id: string }) {
                   </span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-coffee-200/50 dark:bg-coffee-800/50 text-coffee-700 dark:text-coffee-300 rounded-full">
                     <Tag className="w-3 h-3" />
-                    {event.category?.toLowerCase() || 'Événement'}
+                    {event.category?.toLowerCase() || 'Event'}
                   </span>
                 </div>
               </div>
@@ -85,7 +85,7 @@ async function EventContent({ id }: { id: string }) {
             {event.description}
           </p>
 
-          {/* Grille d'informations dans le hero */}
+          {/* Info grid in hero */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl">
             <div className="flex items-center gap-3 px-4 py-3 bg-white/60 dark:bg-coffee-900/40 backdrop-blur-sm rounded-xl border border-coffee-100/50 dark:border-coffee-800/30">
               <div className="p-1.5 rounded-lg bg-coffee-100/50 dark:bg-coffee-800/30">
@@ -102,7 +102,7 @@ async function EventContent({ id }: { id: string }) {
                 <Clock className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
               </div>
               <div>
-                <p className="text-xs text-txt-disabled">Horaire</p>
+                <p className="text-xs text-txt-disabled">Time</p>
                 <p className="text-sm font-semibold text-txt-title">{formatTime(event.startDate)} - {formatTime(event.endDate)}</p>
               </div>
             </div>
@@ -112,7 +112,7 @@ async function EventContent({ id }: { id: string }) {
                 <MapPin className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
               </div>
               <div>
-                <p className="text-xs text-txt-disabled">Lieu</p>
+                <p className="text-xs text-txt-disabled">Location</p>
                 <p className="text-sm font-semibold text-txt-title truncate">{event.location}</p>
               </div>
             </div>
@@ -131,7 +131,7 @@ async function EventContent({ id }: { id: string }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sidebar - Statistiques et infos supplémentaires */}
+        {/* Sidebar - Statistics & additional info */}
         <div className="lg:col-span-4">
           <div className="sticky top-8 space-y-6">
             {/* Stats Card */}
@@ -141,45 +141,35 @@ async function EventContent({ id }: { id: string }) {
                   <TrendingUp className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
                 </div>
                 <h3 className="text-sm font-semibold text-txt-secondary uppercase tracking-wider">
-                  Statistiques
+                  Statistics
                 </h3>
               </div>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
-                  <span className="text-sm text-txt-secondary">Sessions totales</span>
+                  <span className="text-sm text-txt-secondary">Total Sessions</span>
                   <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
                     {event.sessions?.length || 0}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
-                  <span className="text-sm text-txt-secondary">Capacité totale</span>
+                  <span className="text-sm text-txt-secondary">Total Capacity</span>
                   <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
                     {event.sessions?.reduce((acc, s) => acc + (s.capacity || 0), 0) || 0}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 rounded-xl bg-bg-subtle/50">
-                  <span className="text-sm text-txt-secondary">Intervenants</span>
-                  <span className="text-lg font-bold text-coffee-600 dark:text-coffee-400">
-                    {event.sessions?.reduce((acc, s) => {
-                      const speakers = s.speakers?.length || 0;
-                      return acc + speakers;
-                    }, 0) || 0}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Catégorie Card */}
+            {/* Category Card */}
             <div className="bg-bg-card rounded-2xl p-6 shadow-sm border border-border hover:shadow-lg transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-1.5 rounded-lg bg-coffee-100 dark:bg-coffee-800/50">
                   <Tag className="w-4 h-4 text-coffee-600 dark:text-coffee-400" />
                 </div>
                 <h3 className="text-sm font-semibold text-txt-secondary uppercase tracking-wider">
-                  Catégorie
+                  Category
                 </h3>
               </div>
               
@@ -188,14 +178,13 @@ async function EventContent({ id }: { id: string }) {
                   <Award className="w-5 h-5 text-coffee-600 dark:text-coffee-400" />
                 </div>
                 <div>
-                  <p className="text-xs text-txt-disabled">Type d'événement</p>
+                  <p className="text-xs text-txt-disabled">Event Type</p>
                   <p className="text-sm font-semibold text-txt-title capitalize">
-                    {event.category?.toLowerCase() || 'Non catégorisé'}
+                    {event.category?.toLowerCase() || 'Uncategorized'}
                   </p>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -210,7 +199,7 @@ async function EventContent({ id }: { id: string }) {
                 </span>
               </h2>
               <p className="text-sm text-txt-secondary mt-1">
-                Découvrez toutes les sessions de cet événement
+                Discover all sessions for this event
               </p>
             </div>
           </div>
@@ -231,10 +220,10 @@ async function EventContent({ id }: { id: string }) {
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-txt-title">
-                    Aucune session disponible
+                    No sessions available
                   </p>
                   <p className="text-sm text-txt-secondary mt-1">
-                    Les sessions pour cet événement seront bientôt ajoutées.
+                    Sessions for this event will be added soon.
                   </p>
                 </div>
               </div>

@@ -1,8 +1,9 @@
-import { Clock, Users, ChevronRight, MapPin, Calendar, User, Mic } from 'lucide-react';
+import { Clock, Users, ChevronRight, MapPin, Calendar, User, Mic, Sparkles } from 'lucide-react';
 import { formatTime, isLive } from '@/lib/utils';
 import { Session } from '@/types';
 import LiveSessionLink from './LiveSessionLink';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SessionCardProps {
   session: Session;
@@ -61,7 +62,7 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
               <div className="flex items-center gap-2.5 text-sm text-txt-secondary bg-bg-subtle px-3 py-2 rounded-lg">
                 <Users className="w-4 h-4 text-coffee-500 dark:text-coffee-400 flex-shrink-0" />
                 <span className="font-medium text-txt-title">
-                  {session.capacity} places
+                  {session.capacity} seats
                 </span>
               </div>
               
@@ -75,24 +76,58 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
               )}
             </div>
 
-            {/* Intervenants */}
+            {/* Intervenants - Version moderne avec avatars */}
             {session.speakers && session.speakers.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                <div className="flex items-center gap-1.5">
+              <div className="pt-2">
+                <div className="flex items-center gap-2 mb-3">
                   <Mic className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
-                  <span className="text-xs font-medium text-txt-secondary uppercase tracking-wider">
-                    Intervenants
+                  <span className="text-xs font-semibold text-txt-secondary uppercase tracking-wider">
+                    Speakers
+                  </span>
+                  <span className="text-[10px] font-bold text-coffee-600 dark:text-coffee-400 bg-coffee-100 dark:bg-coffee-800/50 px-2 py-0.5 rounded-full">
+                    {session.speakers.length}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {session.speakers.map((speaker, index) => (
-                    <span 
+                    <div 
                       key={speaker.id || index} 
-                      className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-txt-title bg-bg-subtle rounded-full hover:bg-coffee-100 dark:hover:bg-coffee-900/30 transition-colors"
+                      className="group/speaker flex items-center gap-3 px-3 py-2 bg-bg-subtle rounded-xl border border-border/50 hover:border-coffee-300 dark:hover:border-coffee-700 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
                     >
-                      <User className="w-3 h-3" />
-                      {speaker.fullName || speaker.name}
-                    </span>
+                      {/* Avatar avec image ou initiale */}
+                      {speaker.photoUrl ? (
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-coffee-200 dark:ring-coffee-700 flex-shrink-0">
+                          <Image 
+                            src={speaker.photoUrl} 
+                            alt={speaker.fullName || speaker.name || 'Speaker'}
+                            width={32}
+                            height={32}
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coffee-400 to-coffee-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                          {(speaker.fullName || speaker.name || 'S').charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-txt-title truncate">
+                          {speaker.fullName || speaker.name}
+                        </p>
+                        {speaker.bio && (
+                          <p className="text-xs text-txt-secondary truncate max-w-[120px]">
+                            {speaker.bio}
+                          </p>
+                        )}
+                      </div>
+                      {/* Petit badge de statut (optionnel) */}
+                      {index === 0 && (
+                        <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 bg-coffee-100 dark:bg-coffee-800/50 text-coffee-600 dark:text-coffee-400 text-[10px] font-bold rounded-full">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          Lead
+                        </span>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -110,9 +145,9 @@ export default function SessionCard({ session, eventId }: SessionCardProps) {
           <div className="flex items-center lg:items-start lg:pt-1">
             <Link
               href={`/sessions/${session.id}`}
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-btn-primary-txt bg-gradient-to-r from-coffee-600 to-coffee-700 hover:from-coffee-700 hover:to-coffee-800 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 whitespace-nowrap group/btn"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm text-amber-50 font-medium  bg-gradient-to-r from-coffee-600 to-coffee-700 hover:from-coffee-700 hover:to-coffee-800 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 whitespace-nowrap group/btn"
             >
-              <span>Détails</span>
+              <span>more</span>
               <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
             </Link>
           </div>
