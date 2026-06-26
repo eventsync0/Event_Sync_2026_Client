@@ -1,3 +1,5 @@
+// app/events/[id]/page.tsx
+import { notFound } from 'next/navigation';
 import { Calendar, Clock, MapPin, Users, Sparkles, Building2 } from 'lucide-react';
 import api from '@/lib/api';
 import { formatFullDate, formatTime } from '@/lib/utils';
@@ -12,12 +14,22 @@ async function EventContent({ id }: { id: string }) {
   let event: Event;
 
   try {
+    console.log(`🔍 Fetching event with ID: ${id}`);
     const response = await api.get(`/api/events/${id}`);
+    console.log('📦 API Response:', response.data);
+    
     event = response.data?.data || response.data;
   } catch (err: unknown) {
-    console.error("Error loading event:", err);
+    console.error("❌ Error loading event:", err);
 
+    // Gérer les erreurs 404 spécifiquement
     if (err instanceof Error) {
+      // Vérifier si c'est une erreur 404
+      if (err.message.includes('404') || err.message.includes('Not Found')) {
+        console.log('📭 Event not found, redirecting to 404');
+        notFound();
+      }
+      
       throw new AppError(
         err.message.includes('404') 
           ? "Event not found" 
@@ -28,7 +40,9 @@ async function EventContent({ id }: { id: string }) {
     throw new AppError("An unexpected error occurred while loading the event");
   }
 
-  if (!event) {
+  // Vérifier si l'événement existe vraiment
+  if (!event || !event.id) {
+    console.log('📭 Event data is empty or invalid');
     notFound();
   }
 
@@ -181,6 +195,8 @@ export default async function EventDetailPage({
   params: Promise<{ id: string }> 
 }) {
   const { id } = await params;
+  
+  console.log(`📄 Rendering EventDetailPage for ID: ${id}`);
 
   return (
     <div className="min-h-screen bg-background pb-16">
