@@ -25,6 +25,9 @@ export default function SessionDetailPage() {
     const [authorName, setAuthorName] = useState('');
     const [isSending, setIsSending] = useState(false);
 
+    // Le hook est maintenant placé correctement à l'intérieur du composant !
+    const [votedQuestions, setVotedQuestions] = useState<string[]>([]);
+
     const fetchData = useCallback(async () => {
         try {
             const response = await api.get(`/api/sessions/${id}`);
@@ -64,7 +67,6 @@ export default function SessionDetailPage() {
         return () => clearInterval(interval);
     }, [id, session]);
 
-
     const handleToggleFav = () => {
         const state = toggleFavorite(id as string);
         setIsFav(state);
@@ -93,14 +95,25 @@ export default function SessionDetailPage() {
     };
 
     const handleUpvote = async (qId: string) => {
+        const hasVoted = votedQuestions.map(String).includes(String(qId));
+        const action = hasVoted ? 'downvote' : 'upvote';
+
         try {
-            await api.post(`/api/questions/${qId}/upvote`);
+            const response = await api.post(`/api/questions/${qId}/upvote`, { action });
+            const updatedQuestion = response.data?.data;
+
             setQuestions(prev => 
-                prev.map(q => q.id === qId ? { ...q, upvotes: q.upvotes + 1 } : q)
+                prev.map(q => q.id === qId ? { ...q, upvotes: updatedQuestion?.upvotes ?? q.upvotes } : q)
                     .sort((a, b) => b.upvotes - a.upvotes)
             );
+
+            setVotedQuestions(prev => 
+                hasVoted 
+                    ? prev.filter(id => String(id) !== String(qId)) 
+                    : [...prev, String(qId)]
+            );
         } catch (err) {
-            console.error("Erreur lors de l'upvote");
+            console.error("Erreur lors du vote :", err);
         }
     };
 
@@ -138,24 +151,22 @@ export default function SessionDetailPage() {
                         onClick={() => router.back()}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white rounded-xl border hover:bg-gray-50 transition-all shadow-sm"
                     >
-                        {/* <ArrowLeft className="w-4 h-4" />
-                        Planning */}
-                    {/* </button> */}
+                        <ArrowLeft className="w-4 h-4" />
+                        Planning
+                    </button> */}
 
                     {/* <button
                         onClick={handleToggleFav}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-sm transition-all shadow-sm ${
                             isFav ? 'bg-yellow-400 border-yellow-400 text-white' : 'bg-white border-gray-200 text-gray-700'
                         }`}
-                    > */}
-                        {/* <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
-                        {isFav ? 'Programmé' : 'Ajouter au planning'} */}
-                    {/* </button> */}
+                    >
+                        <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
+                        {isFav ? 'Programmé' : 'Ajouter au planning'}
+                    </button> */}
                 </div>
 
-                {/* Card Principale */}
                 <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-                    {/* Hero Section de la Session */}
                     <div className={`p-8 ${isLive ? 'bg-gradient-to-br from-red-50 to-orange-50' : 'bg-gradient-to-br from-coffee-50 to-indigo-50'}`}>
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             {isLive && (
@@ -250,6 +261,7 @@ export default function SessionDetailPage() {
                                     <p className="text-gray-500 font-bold">Le module de questions s'activera au début du direct.</p>
                                 </div>
                             )}
+                            
                             <div className="space-y-4">
                                 {questions.length > 0 ? (
                                     questions.map((q) => (
@@ -270,10 +282,10 @@ export default function SessionDetailPage() {
                                             <button 
                                                 onClick={() => handleUpvote(q.id)}
                                                 className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${
-                                                    q.upvotes > 0 ? 'bg-coffee-50 border-coffee-100 text-coffee-600' : 'bg-gray-50 border-transparent text-gray-400 group-hover:border-gray-200'
+                                                    votedQuestions.map(String).includes(String(q.id)) ? 'bg-coffee-50 border-coffee-100 text-coffee-600' : 'bg-gray-50 border-transparent text-gray-400 group-hover:border-gray-200'
                                                 }`}
                                             >
-                                                <ThumbsUp className={`w-5 h-5 ${q.upvotes > 0 ? 'fill-coffee-600' : ''}`} />
+                                                <ThumbsUp className={`w-5 h-5 ${votedQuestions.map(String).includes(String(q.id)) ? 'fill-coffee-600' : ''}`} />
                                                 <span className="text-xs font-black">{q.upvotes}</span>
                                             </button>
                                         </div>
