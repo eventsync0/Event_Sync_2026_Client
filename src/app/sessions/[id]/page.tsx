@@ -142,15 +142,15 @@ export default function SessionDetailPage() {
                         Planning */}
                     {/* </button> */}
 
-                    <button
+                    {/* <button
                         onClick={handleToggleFav}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-sm transition-all shadow-sm ${
                             isFav ? 'bg-yellow-400 border-yellow-400 text-white' : 'bg-white border-gray-200 text-gray-700'
                         }`}
-                    >
+                    > */}
                         {/* <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
                         {isFav ? 'Programmé' : 'Ajouter au planning'} */}
-                    </button>
+                    {/* </button> */}
                 </div>
 
                 {/* Card Principale */}
