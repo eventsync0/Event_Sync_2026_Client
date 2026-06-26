@@ -156,7 +156,7 @@ export default function HeroSection() {
           </Link>
 
           <Link
-            href="/about"
+            href="#about"
             className="
               inline-flex items-center justify-center gap-2
               border-2 border-coffee-400 dark:border-coffee-600
