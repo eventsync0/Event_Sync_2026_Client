@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LayoutDashboard } from 'lucide-react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,6 +25,12 @@ export default function Navbar() {
     { href: '/speakers', label: 'Speakers' },
   ];
 
+  const handleAdminRedirect = () => {
+    // Utiliser la variable d'environnement
+    const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:5173/#/login';
+    window.location.href = adminUrl;
+  };
+
   return (
     <>
       <nav
@@ -32,7 +38,7 @@ export default function Navbar() {
           isScrolled
             ? 'bg-background/80 backdrop-blur-xl shadow-lg'
             : 'bg-transparent'
-        } ` } 
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12 sm:h-14 md:h-16">
@@ -40,7 +46,7 @@ export default function Navbar() {
             {/* Logo - gauche */}
             <Link 
               href="/" 
-              className="group flex items-center gap-2 transition-transform active:scale-95 shrink-0 "
+              className="group flex items-center gap-2 transition-transform active:scale-95 shrink-0"
             >
               <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 bg-gradient-to-br from-coffee-600 to-coffee-700 rounded-lg flex items-center justify-center shadow-md shadow-coffee-500/20 group-hover:shadow-coffee-500/30 transition-all duration-300 group-hover:scale-105">
                 <h2 className="text-white font-audiowide text-xs sm:text-sm md:text-base tracking-tight">
@@ -87,8 +93,18 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Right Section - droite */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">   
+            {/* Right Section - Admin Button */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {/* Bouton Admin */}
+              <button
+                onClick={handleAdminRedirect}
+                className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg bg-gradient-to-r from-coffee-600 to-coffee-700 text-white text-xs sm:text-sm font-medium hover:shadow-lg hover:shadow-coffee-500/30 transition-all duration-200 hover:scale-105"
+                aria-label="Accéder à l'administration"
+              >
+                <LayoutDashboard className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                <span className="hidden sm:inline">Admin</span>
+              </button>
+              
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -106,7 +122,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - centré */}
+      {/* Mobile Menu Overlay */}
       <div
         className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-lg transition-all duration-300 md:hidden ${
           isMobileMenuOpen
@@ -132,6 +148,18 @@ export default function Navbar() {
               </Link>
             );
           })}
+          
+          {/* Mobile Admin Button */}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              handleAdminRedirect();
+            }}
+            className="flex items-center gap-2 px-6 py-3 mt-4 rounded-lg bg-gradient-to-r from-coffee-600 to-coffee-700 text-white text-sm font-medium hover:shadow-lg hover:shadow-coffee-500/30 transition-all duration-200 hover:scale-105"
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            Administration
+          </button>
         </div>
       </div>
     </>
