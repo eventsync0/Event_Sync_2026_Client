@@ -112,7 +112,7 @@ export default function EventCard({ event }: EventCardProps) {
 
   return (
     <Link href={`/events/${event.id}`} className="block group h-full">
-      <div className={`relative h-full bg-bg-card/80 dark:bg-coffee-950/80 backdrop-blur-xl rounded-3xl overflow-hidden border ${borderClass} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2`}>
+      <div className={`relative h-full bg-bg-card/80  backdrop-blur-xl rounded-3xl overflow-hidden border ${borderClass} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2`}>
         
         {/* Glassmorphism overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
