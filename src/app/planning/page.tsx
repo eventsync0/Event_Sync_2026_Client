@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import api from '@/lib/api';
 import { Session } from '@/types';
 import { formatHour, isLiveSession } from '@/lib/utils';
+import { getFavoriteIds } from '@/lib/favoritesService';
 
 export default function PlanningPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -225,6 +226,8 @@ export default function PlanningPage() {
                                                 const sessionMinute = new Date(session.startTime).getMinutes();
                                                 const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                 const height = getSessionHeight(session.startTime, session.endTime);
+                                                
+                                                const isFav = getFavoriteIds().includes(session.id);
 
                                                 return (
                                                     <div
@@ -241,11 +244,14 @@ export default function PlanningPage() {
                                                                 <div className="text-xs font-semibold truncate flex-1">
                                                                     {session.title}
                                                                 </div>
-                                                                {isLiveSession(session.startTime, session.endTime) && (
-                                                                    <div className="flex-shrink-0">
+                                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                                    {isFav && (
+                                                                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                                                                    )}
+                                                                    {isLiveSession(session.startTime, session.endTime) && (
                                                                         <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                                                                    </div>
-                                                                )}
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                             <div className="text-xs mt-1">
                                                                 {formatHour(session.startTime)} - {formatHour(session.endTime)}
