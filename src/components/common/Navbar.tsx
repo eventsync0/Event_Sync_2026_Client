@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemeToggle from './ThemeToggle';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
@@ -89,9 +88,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Section - droite */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <ThemeToggle />
-              
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">   
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
