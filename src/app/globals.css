@@ -16,8 +16,7 @@
   --coffee-900: #29120a;
   --coffee-950: #1d0d07;
 
-  /* Thème unique : dark. Plus de bascule light/dark, ces valeurs
-     s'appliquent globalement, partout, tout le temps. */
+
   color-scheme: dark;
 
   /* ==========================================================================
