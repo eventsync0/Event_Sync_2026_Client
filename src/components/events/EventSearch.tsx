@@ -24,9 +24,11 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  
   const [search, setSearch] = useState(initialSearch);
-  const [category] = useState(initialCategory);
+  const [category, setCategory] = useState(initialCategory);
   const [isFocused, setIsFocused] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   
@@ -64,7 +66,7 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
     
     startTransition(() => {
       router.push(url);
-      // Ne pas fermer les suggestions immédiatement
+      setIsSearching(false);
       setShowSuggestions(false);
     });
 
@@ -76,32 +78,28 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
   // Gérer la recherche avec debounce
   const handleSearchChange = (value: string) => {
     setSearch(value);
+    setIsSearching(true);
     setShowSuggestions(true);
     
-    // Annuler le timeout précédent
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     
-    // Nouveau timeout avec debounce plus long
     timeoutRef.current = setTimeout(() => {
       if (value.trim()) {
         performSearch(value, category);
       } else {
-        performSearch('', category);
+        setIsSearching(false);
+        setShowSuggestions(false);
       }
-    }, 600); // 600ms pour laisser le temps de taper
+    }, 500);
   };
 
   // Gérer le clic sur une suggestion
   const handleSuggestionClick = (suggestion: string) => {
     setSearch(suggestion);
     performSearch(suggestion, category);
-    setShowSuggestions(false);
-    // Garder le focus
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 10);
+    inputRef.current?.blur();
   };
 
   // Gérer les touches clavier
@@ -109,12 +107,8 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
     if (e.key === 'Enter') {
       e.preventDefault();
       if (search.trim()) {
-        // Annuler le timeout en cours
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
         performSearch(search, category);
-        setShowSuggestions(false);
+        inputRef.current?.blur();
       }
     } else if (e.key === 'Escape') {
       setShowSuggestions(false);
@@ -125,12 +119,11 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
   // Effacer la recherche
   const clearSearch = () => {
     setSearch('');
+    setIsSearching(false);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     performSearch('', category);
-    setShowSuggestions(false);
-    // Garder le focus
     inputRef.current?.focus();
   };
 
@@ -157,15 +150,6 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  // Nettoyer le timeout
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
   // Suggestions à afficher
   const getSuggestions = () => {
     if (!search.trim()) {
@@ -187,7 +171,7 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
 
   return (
     <div ref={wrapperRef} className="relative w-full">
-      {/* Barre de recherche */}
+      {/* Barre de recherche style Facebook */}
       <div className={`
         relative flex items-center rounded-full transition-all duration-300
         ${isFocused || search 
@@ -197,11 +181,11 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
       `}>
         {/* Icône de recherche */}
         <Search className={`
-          absolute left-4 w-5 h-5 transition-colors duration-300 pointer-events-none
+          absolute left-4 w-5 h-5 transition-colors duration-300
           ${isFocused || search ? 'text-coffee-500' : 'text-coffee-400'}
         `} />
 
-        {/* Input - toujours actif */}
+        {/* Input */}
         <input
           ref={inputRef}
           type="text"
@@ -209,43 +193,34 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
           onChange={(e) => handleSearchChange(e.target.value)}
           onFocus={() => {
             setIsFocused(true);
-            if (search.trim() || recentSearches.length > 0) {
-              setShowSuggestions(true);
-            }
+            setShowSuggestions(true);
           }}
-          onBlur={() => {
-            // Retarder le blur pour permettre les clics sur les suggestions
-            setTimeout(() => {
-              setIsFocused(false);
-            }, 200);
-          }}
+          onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
           placeholder="Search events..."
           className="w-full pl-12 pr-14 py-3 bg-transparent rounded-full outline-none text-coffee-800 dark:text-coffee-100 placeholder:text-coffee-400 dark:placeholder:text-coffee-500"
-          disabled={false}
-          autoComplete="off"
+          disabled={isPending}
         />
 
         {/* Actions à droite */}
         <div className="absolute right-2 flex items-center gap-1">
           {/* Indicateur de chargement */}
-          {isPending && (
+          {(isSearching || isPending) && (
             <Loader2 className="w-5 h-5 text-coffee-400 animate-spin" />
           )}
 
           {/* Bouton clear */}
-          {search && !isPending && (
+          {search && !isSearching && !isPending && (
             <button
               onClick={clearSearch}
               className="p-1 rounded-full hover:bg-coffee-100 dark:hover:bg-coffee-800 transition-colors"
-              type="button"
             >
               <X className="w-5 h-5 text-coffee-400 hover:text-coffee-600" />
             </button>
           )}
 
           {/* Raccourci clavier */}
-          {!search && !isFocused && !isPending && (
+          {!search && !isFocused && (
             <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-coffee-400 bg-coffee-100 dark:bg-coffee-800 rounded-md">
               <span className="text-[10px]">⌘</span>K
             </kbd>
@@ -253,7 +228,7 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
         </div>
       </div>
 
-      {/* Suggestions dropdown */}
+      {/* Suggestions dropdown - style Facebook */}
       {(showSuggestions && (suggestions.length > 0 || recentSearches.length > 0)) && (
         <div className="absolute z-50 mt-2 w-full bg-white dark:bg-coffee-950 rounded-2xl shadow-2xl border border-coffee-200 dark:border-coffee-700 overflow-hidden">
           {/* En-tête des suggestions */}
@@ -266,41 +241,35 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
           {/* Liste des suggestions */}
           <ul className="py-2 max-h-80 overflow-y-auto">
             {search.trim() ? (
+              // Suggestions de recherche
               suggestions.map((suggestion, index) => (
                 <li
                   key={index}
                   className="px-4 py-2.5 hover:bg-coffee-50 dark:hover:bg-coffee-900/50 cursor-pointer flex items-center gap-3 transition-colors"
-                  onMouseDown={(e) => {
-                    e.preventDefault(); // Empêche le blur
-                    handleSuggestionClick(suggestion);
-                  }}
+                  onClick={() => handleSuggestionClick(suggestion)}
                 >
                   <Search className="w-4 h-4 text-coffee-400" />
                   <span className="text-coffee-700 dark:text-coffee-200">{suggestion}</span>
                 </li>
               ))
             ) : (
+              // Recherches récentes
               recentSearches.map((item, index) => (
                 <li
                   key={index}
                   className="px-4 py-2.5 hover:bg-coffee-50 dark:hover:bg-coffee-900/50 cursor-pointer flex items-center gap-3 transition-colors group"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    handleSuggestionClick(item);
-                  }}
+                  onClick={() => handleSuggestionClick(item)}
                 >
                   <Clock className="w-4 h-4 text-coffee-400" />
                   <span className="text-coffee-700 dark:text-coffee-200 flex-1">{item}</span>
                   <button
-                    onMouseDown={(e) => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                       const newRecent = recentSearches.filter(s => s !== item);
                       setRecentSearches(newRecent);
                       localStorage.setItem('event_recent_searches', JSON.stringify(newRecent));
                     }}
                     className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    type="button"
                   >
                     <X className="w-4 h-4 text-coffee-400 hover:text-red-500" />
                   </button>
@@ -319,12 +288,8 @@ export default function EventSearch({ initialSearch = '', initialCategory = '' }
                   {POPULAR_SEARCHES.slice(0, 3).map((item) => (
                     <button
                       key={item.label}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        handleSuggestionClick(item.label);
-                      }}
+                      onClick={() => handleSuggestionClick(item.label)}
                       className="px-2 py-1 bg-white dark:bg-coffee-800 rounded-full hover:bg-coffee-100 dark:hover:bg-coffee-700 transition-colors"
-                      type="button"
                     >
                       {item.icon} {item.label}
                     </button>

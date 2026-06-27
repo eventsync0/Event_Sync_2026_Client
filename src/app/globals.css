@@ -4,7 +4,7 @@
    2. PALETTE DE BASE — Coffee Bean
    ========================================================================== */
 :root {
-  --coffee-50:  #ede1db;
+   --coffee-50:  #ede1db;
   --coffee-100: #f5ded6;
   --coffee-200: #ebbdad;
   --coffee-300: #e19d84;
@@ -14,11 +14,11 @@
   --coffee-700: #7b371e;
   --coffee-800: #522414;
   --coffee-900: #29120a;
-  --coffee-950: #1d0d07;
+  --coffee-950: #1d0d07; 
 
   /* Nouvelle palette — tons plus doux et naturels */
 
-  /* --coffee-50:   #ede1db;  
+ /* --coffee-50:   #ede1db;  
   --coffee-100:  #e0d2c8; 
   --coffee-200:  #c9b6a8;  
   --coffee-300:  #b09886; 
@@ -28,7 +28,7 @@
   --coffee-700:  #4b3628;
   --coffee-800:  #332218;
   --coffee-900:  #1f130c;
-  --coffee-950:  #140b07; */
+  --coffee-950:  #140b07; 
 
   /* ==========================================================================
      3. FONDS & SURFACES
