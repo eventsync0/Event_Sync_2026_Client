@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation'; // 👈 AJOUTER
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Filter, LayoutGrid, List } from 'lucide-react';
 import api from '@/lib/api';
@@ -8,6 +9,9 @@ import { Session, Room } from '@/types';
 import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
+    const searchParams = useSearchParams(); // 👈 AJOUTER
+    const dateParam = searchParams.get('date'); // 👈 Récupérer la date
+
     const [sessions, setSessions] = useState<Session[]>([]);
     const [rooms, setRooms] = useState<Room[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<string>('');
@@ -16,6 +20,16 @@ export default function PlanningPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        if (dateParam) {
+            const date = new Date(dateParam);
+            if (!isNaN(date.getTime())) {
+                setCurrentDate(date);
+                setSelectedDay(date);
+            }
+        }
+    }, [dateParam]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,6 +52,7 @@ export default function PlanningPage() {
         fetchData();
     }, []);
 
+    // ... le reste du code inchangé
     const fetchSessions = async (roomId?: string) => {
         try {
             let url = '/api/sessions';
@@ -151,18 +166,18 @@ export default function PlanningPage() {
     };
 
     const getSessionColor = (sessionId: string) => {
-    const colors = [
-        'bg-gray-800 hover:bg-gray-700 text-gray-100',
-        'bg-gray-700 hover:bg-gray-600 text-gray-100',
-        'bg-gray-600 hover:bg-gray-500 text-gray-100',
-        'bg-stone-800 hover:bg-stone-700 text-stone-100',
-        'bg-stone-700 hover:bg-stone-600 text-stone-100',
-        'bg-zinc-800 hover:bg-zinc-700 text-zinc-100',
-        'bg-zinc-700 hover:bg-zinc-600 text-zinc-100',
-    ];
-    const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length];
-};
+        const colors = [
+            'bg-gray-800 hover:bg-gray-700 text-gray-100',
+            'bg-gray-700 hover:bg-gray-600 text-gray-100',
+            'bg-gray-600 hover:bg-gray-500 text-gray-100',
+            'bg-stone-800 hover:bg-stone-700 text-stone-100',
+            'bg-stone-700 hover:bg-stone-600 text-stone-100',
+            'bg-zinc-800 hover:bg-zinc-700 text-zinc-100',
+            'bg-zinc-700 hover:bg-zinc-600 text-zinc-100',
+        ];
+        const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return colors[hash % colors.length];
+    };
 
     const weekDays = getWeekDays(currentDate);
     const weekStart = weekDays[0];
@@ -367,7 +382,7 @@ export default function PlanningPage() {
                                                                         minHeight: '40px'
                                                                     }}
                                                                 >
-                                                                    <Link href={`/sessions/${session.id}`} className="block h-full">
+                                                                    <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
                                                                         <div className="flex flex-col h-full">
                                                                             <div className="flex justify-between items-start gap-1">
                                                                                 <div className="text-xs font-semibold truncate text-white">
@@ -464,7 +479,7 @@ export default function PlanningPage() {
                                                                     minHeight: '40px'
                                                                 }}
                                                             >
-                                                                <Link href={`/sessions/${session.id}`} className="block h-full">
+                                                                <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
                                                                     <div className="flex flex-col h-full">
                                                                         <div className="flex justify-between items-start gap-1">
                                                                             <div className="text-xs font-semibold truncate text-white">

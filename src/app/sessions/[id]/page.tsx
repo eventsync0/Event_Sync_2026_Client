@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
     Calendar, Clock, MapPin, Users, User,
     Send, ThumbsUp, MessageSquare, X
@@ -14,6 +14,8 @@ import { getFavoriteIds, toggleFavorite } from '@/lib/favoritesService';
 export default function SessionDetailPage() {
     const router = useRouter();
     const { id } = useParams();
+    const searchParams = useSearchParams();
+    const sessionDate = searchParams.get('date');
 
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
@@ -25,6 +27,14 @@ export default function SessionDetailPage() {
     const [authorName, setAuthorName] = useState('');
     const [isSending, setIsSending] = useState(false);
     const [votedQuestions, setVotedQuestions] = useState<string[]>([]);
+
+    const handleClose = () => {
+        if (sessionDate) {
+            router.push(`/planning?date=${sessionDate}`);
+        } else {
+            router.push('/planning');
+        }
+    };
 
     const fetchData = useCallback(async () => {
         try {
@@ -131,7 +141,7 @@ export default function SessionDetailPage() {
             <div className="min-h-screen flex items-center justify-center bg-black px-4">
                 <div className="text-center bg-black p-8 rounded-3xl border border-coffee-800 max-w-sm w-full">
                     <p className="text-red-500 font-semibold mb-6">{error || "Session introuvable"}</p>
-                    <button onClick={() => router.push('/planning')} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold hover:bg-coffee-700 transition">
+                    <button onClick={handleClose} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold hover:bg-coffee-700 transition">
                         Retour au planning
                     </button>
                 </div>
@@ -146,7 +156,7 @@ export default function SessionDetailPage() {
             <div className="max-w-4xl mx-auto px-4 py-6">
                 <div className="flex justify-end items-center mb-8">
                     <button
-                        onClick={() => router.push('/planning')}
+                        onClick={handleClose} 
                         className="p-2 text-coffee-400 hover:text-white hover:bg-coffee-900/50 rounded-xl transition border border-coffee-800"
                         aria-label="Fermer et retourner au planning"
                     >
