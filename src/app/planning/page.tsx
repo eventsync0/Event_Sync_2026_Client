@@ -1,19 +1,35 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation'; // 👈 AJOUTER
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, LayoutGrid, List } from 'lucide-react';
 import api from '@/lib/api';
 import { Session, Room } from '@/types';
 import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
+    const searchParams = useSearchParams(); // 👈 AJOUTER
+    const dateParam = searchParams.get('date'); // 👈 Récupérer la date
+
     const [sessions, setSessions] = useState<Session[]>([]);
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [selectedRoom, setSelectedRoom] = useState<string>(''); 
+    const [selectedRoom, setSelectedRoom] = useState<string>('');
+    const [viewMode, setViewMode] = useState<'week' | 'multitrack'>('week');
+    const [selectedDay, setSelectedDay] = useState<Date>(new Date());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date());
+
+    useEffect(() => {
+        if (dateParam) {
+            const date = new Date(dateParam);
+            if (!isNaN(date.getTime())) {
+                setCurrentDate(date);
+                setSelectedDay(date);
+            }
+        }
+    }, [dateParam]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +52,7 @@ export default function PlanningPage() {
         fetchData();
     }, []);
 
+    // ... le reste du code inchangé
     const fetchSessions = async (roomId?: string) => {
         try {
             let url = '/api/sessions';
@@ -62,6 +79,26 @@ export default function PlanningPage() {
     const handleRoomFilter = async (roomId: string) => {
         setSelectedRoom(roomId);
         await fetchSessions(roomId || undefined);
+    };
+
+    const toggleViewMode = () => {
+        setViewMode(viewMode === 'week' ? 'multitrack' : 'week');
+    };
+
+    const goToPreviousDay = () => {
+        const newDate = new Date(selectedDay);
+        newDate.setDate(selectedDay.getDate() - 1);
+        setSelectedDay(newDate);
+    };
+
+    const goToNextDay = () => {
+        const newDate = new Date(selectedDay);
+        newDate.setDate(selectedDay.getDate() + 1);
+        setSelectedDay(newDate);
+    };
+
+    const goToToday = () => {
+        setSelectedDay(new Date());
     };
 
     const previousWeek = () => {
@@ -104,6 +141,23 @@ export default function PlanningPage() {
             .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
     };
 
+    const getSessionsByRoomForDay = (day: Date) => {
+        const daySessions = getSessionsForDay(day);
+        const roomsMap: { [key: string]: Session[] } = {};
+
+        rooms.forEach(room => {
+            roomsMap[room.id] = [];
+        });
+
+        daySessions.forEach(session => {
+            if (session.roomId && roomsMap[session.roomId]) {
+                roomsMap[session.roomId].push(session);
+            }
+        });
+
+        return roomsMap;
+    };
+
     const getSessionHeight = (startTime: string, endTime: string) => {
         const start = new Date(startTime);
         const end = new Date(endTime);
@@ -113,18 +167,14 @@ export default function PlanningPage() {
 
     const getSessionColor = (sessionId: string) => {
         const colors = [
-            'bg-blue-100 hover:bg-blue-200 text-blue-900',
-            'bg-green-100 hover:bg-green-200 text-green-900',
-            'bg-orange-100 hover:bg-orange-200 text-orange-900',
-            'bg-purple-100 hover:bg-purple-200 text-purple-900',
-            'bg-red-100 hover:bg-red-200 text-red-900',
-            'bg-yellow-100 hover:bg-yellow-200 text-yellow-900',
-            'bg-pink-100 hover:bg-pink-200 text-pink-900',
-            'bg-indigo-100 hover:bg-indigo-200 text-indigo-900',
-            'bg-teal-100 hover:bg-teal-200 text-teal-900',
-            'bg-cyan-100 hover:bg-cyan-200 text-cyan-900',
+            'bg-gray-800 hover:bg-gray-700 text-gray-100',
+            'bg-gray-700 hover:bg-gray-600 text-gray-100',
+            'bg-gray-600 hover:bg-gray-500 text-gray-100',
+            'bg-stone-800 hover:bg-stone-700 text-stone-100',
+            'bg-stone-700 hover:bg-stone-600 text-stone-100',
+            'bg-zinc-800 hover:bg-zinc-700 text-zinc-100',
+            'bg-zinc-700 hover:bg-zinc-600 text-zinc-100',
         ];
-
         const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         return colors[hash % colors.length];
     };
@@ -135,10 +185,10 @@ export default function PlanningPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
-                    <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-600">Chargement du planning...</p>
+                    <div className="animate-spin h-12 w-12 border-4 border-coffee-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-coffee-400">Chargement du planning...</p>
                 </div>
             </div>
         );
@@ -146,12 +196,12 @@ export default function PlanningPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center text-red-600">
+            <div className="min-h-screen flex items-center justify-center bg-black">
+                <div className="text-center text-red-500">
                     <p>{error}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                        className="mt-4 px-4 py-2 bg-coffee-600 text-white rounded-lg hover:bg-coffee-700 transition"
                     >
                         Réessayer
                     </button>
@@ -161,19 +211,22 @@ export default function PlanningPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 mt-16">
-            <div className="bg-white border-b sticky top-0 z-10">
+        <div className="relative min-h-screen bg-black mt-16 pb-12">
+            {/* Header */}
+            <div className="border-b border-coffee-900 bg-black/90 backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-2xl font-bold text-gray-900">Planning</h1>
-                        <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+                        <h1 className="text-4xl md:text-5xl font-audiowide bg-gradient-to-r from-coffee-400 via-coffee-300 to-coffee-500 bg-clip-text text-transparent tracking-tight">
+                            Planning
+                        </h1>
+                        <div className="flex items-center gap-4 flex-wrap">
                             {rooms.length > 0 && (
                                 <div className="flex items-center gap-2">
-                                    <Filter className="w-4 h-4 text-gray-500" />
+                                    <Filter className="w-4 h-4 text-coffee-400" />
                                     <select
                                         value={selectedRoom}
                                         onChange={(e) => handleRoomFilter(e.target.value)}
-                                        className="px-3 py-1 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="px-3 py-1.5 border border-coffee-800 rounded-lg text-sm bg-black text-coffee-200 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-coffee-500"
                                     >
                                         <option value="">Toutes les salles</option>
                                         {rooms.map((room) => (
@@ -185,132 +238,280 @@ export default function PlanningPage() {
                                 </div>
                             )}
 
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={previousWeek}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition"
-                                >
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button
-                                    onClick={currentWeek}
-                                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition text-coffee-600"
-                                >
-                                    Aujourd'hui
-                                </button>
-                                <button
-                                    onClick={nextWeek}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition"
-                                >
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
-                            </div>
+                            <button
+                                onClick={toggleViewMode}
+                                className="flex items-center gap-1.5 px-3 py-1.5 border border-coffee-800 rounded-lg text-sm hover:bg-coffee-900/50 transition text-coffee-300"
+                            >
+                                {viewMode === 'week' ? (
+                                    <>
+                                        <LayoutGrid className="w-4 h-4" />
+                                        <span>Vue Multi-Track</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <List className="w-4 h-4" />
+                                        <span>Vue Semaine</span>
+                                    </>
+                                )}
+                            </button>
+
+                            {viewMode === 'week' ? (
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={previousWeek}
+                                        className="p-2 hover:bg-coffee-900/50 rounded-full transition text-coffee-400"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        onClick={currentWeek}
+                                        className="px-3 py-1.5 text-sm bg-coffee-900/50 hover:bg-coffee-800/50 rounded-lg transition text-coffee-300 font-medium"
+                                    >
+                                        Aujourd'hui
+                                    </button>
+                                    <button
+                                        onClick={nextWeek}
+                                        className="p-2 hover:bg-coffee-900/50 rounded-full transition text-coffee-400"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={goToPreviousDay}
+                                        className="p-2 hover:bg-coffee-900/50 rounded-full transition text-coffee-400"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        onClick={goToToday}
+                                        className="px-3 py-1.5 text-sm bg-coffee-900/50 hover:bg-coffee-800/50 rounded-lg transition text-coffee-300 font-medium"
+                                    >
+                                        Aujourd'hui
+                                    </button>
+                                    <button
+                                        onClick={goToNextDay}
+                                        className="p-2 hover:bg-coffee-900/50 rounded-full transition text-coffee-400"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <p className="text-gray-600 text-sm">
-                        {weekStart.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} -{' '}
-                        {weekEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </p>
+
+                    {viewMode === 'week' ? (
+                        <p className="text-coffee-500 text-sm">
+                            {weekStart.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} -{' '}
+                            {weekEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                    ) : (
+                        <p className="text-coffee-500 text-sm">
+                            {selectedDay.toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            })}
+                            {selectedDay.toDateString() === new Date().toDateString() && (
+                                <span className="ml-2 text-coffee-400 font-semibold">(Aujourd'hui)</span>
+                            )}
+                        </p>
+                    )}
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-6">
+            {/* Contenu principal */}
+            <div className="relative max-w-7xl mx-auto px-4 py-6">
                 {sessions.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-2xl text-gray-400">Aucune session disponible pour le moment.</p>
-                        <p className="text-gray-500 mt-2">Revenez plus tard !</p>
+                        <p className="text-2xl text-coffee-500">Aucune session disponible pour le moment.</p>
+                        <p className="text-coffee-600 mt-2">Revenez plus tard !</p>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                        <div className="grid grid-cols-7 border-b">
-                            {weekDays.map((day, idx) => {
-                                const isToday = day.toDateString() === new Date().toDateString();
-                                const sessionsForDay = getSessionsForDay(day);
-
-                                return (
-                                    <div key={idx} className={`p-3 text-center border-r last:border-r-0 ${isToday ? 'bg-blue-50' : ''}`}>
-                                        <div className="font-semibold text-gray-700">
-                                            {day.toLocaleDateString('fr-FR', { weekday: 'short' }).toUpperCase()}
-                                        </div>
-                                        <div className={`text-2xl font-bold ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>
-                                            {day.getDate()}
-                                        </div>
-                                        <div className="text-xs text-gray-400">
-                                            {day.toLocaleDateString('fr-FR', { month: 'short' })}
-                                        </div>
-                                        {sessionsForDay.length > 0 && (
-                                            <div className="mt-1 text-xs text-blue-600 font-medium">
-                                                {sessionsForDay.length} session{sessionsForDay.length > 1 ? 's' : ''}
-                                            </div>
-                                        )}
+                    <>
+                        {viewMode === 'multitrack' ? (
+                            <div className="bg-black rounded-2xl border border-coffee-900 overflow-hidden">
+                                <div className="grid border-b border-coffee-900" style={{ gridTemplateColumns: `100px repeat(${rooms.length}, 1fr)` }}>
+                                    <div className="p-3 bg-black font-semibold text-sm text-coffee-400 border-r border-coffee-900">
+                                        Horaire
                                     </div>
-                                );
-                            })}
-                        </div>
+                                    {rooms.map(room => (
+                                        <div key={room.id} className="p-3 bg-black font-semibold text-sm text-coffee-300 text-center border-r last:border-r-0 border-coffee-900">
+                                            {room.name}
+                                        </div>
+                                    ))}
+                                </div>
 
-                        <div className="grid grid-cols-7 min-h-[600px]">
-                            {weekDays.map((day, dayIdx) => {
-                                const sessionsForDay = getSessionsForDay(day);
-                                const hours = Array.from({ length: 14 }, (_, i) => i + 7);
+                                <div className="relative min-h-[600px]">
+                                    {rooms.length > 0 ? (
+                                        <div className="grid" style={{ gridTemplateColumns: `100px repeat(${rooms.length}, 1fr)` }}>
+                                            <div className="border-r border-coffee-900">
+                                                {Array.from({ length: 14 }, (_, i) => i + 7).map(hour => (
+                                                    <div key={hour} className="border-b border-coffee-900 h-16 relative">
+                                                        <span className="absolute -top-3 left-2 text-xs text-coffee-600 bg-black px-1">
+                                                            {hour}:00
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
 
-                                return (
-                                    <div key={dayIdx} className={`border-r last:border-r-0 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
-                                        <div className="relative min-h-[600px]">
-                                            {hours.map((hour) => (
-                                                <div key={hour} className="border-b border-gray-100 h-16 relative">
-                                                    <span className="absolute -top-3 left-1 text-xs text-gray-400 bg-white px-1">
-                                                        {hour}:00
-                                                    </span>
-                                                </div>
-                                            ))}
-
-                                            {sessionsForDay.map((session) => {
-                                                const sessionHour = new Date(session.startTime).getHours();
-                                                const sessionMinute = new Date(session.startTime).getMinutes();
-                                                const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
-                                                const height = getSessionHeight(session.startTime, session.endTime);
+                                            {rooms.map(room => {
+                                                const roomSessions = getSessionsByRoomForDay(selectedDay)[room.id] || [];
 
                                                 return (
-                                                    <div
-                                                        key={session.id}
-                                                        className={`absolute left-1 right-1 rounded-lg p-2 overflow-hidden transition cursor-pointer group ${getSessionColor(session.id)}`}
-                                                        style={{
-                                                            top: `${topPosition}px`,
-                                                            height: `${height}px`,
-                                                            minHeight: '40px'
-                                                        }}
-                                                    >
-                                                        <Link href={`/sessions/${session.id}`}>
-                                                            <div className="flex justify-between items-start gap-1">
-                                                                <div className="text-xs font-semibold truncate flex-1">
-                                                                    {session.title}
+                                                    <div key={room.id} className="relative border-r last:border-r-0 border-coffee-900">
+                                                        {Array.from({ length: 14 }, (_, i) => i + 7).map(hour => (
+                                                            <div key={hour} className="border-b border-coffee-900 h-16"></div>
+                                                        ))}
+
+                                                        {roomSessions.map(session => {
+                                                            const sessionHour = new Date(session.startTime).getHours();
+                                                            const sessionMinute = new Date(session.startTime).getMinutes();
+                                                            const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
+                                                            const height = getSessionHeight(session.startTime, session.endTime);
+
+                                                            return (
+                                                                <div
+                                                                    key={session.id}
+                                                                    className={`absolute left-1 right-1 rounded-lg p-2 overflow-hidden transition cursor-pointer group ${getSessionColor(session.id)}`}
+                                                                    style={{
+                                                                        top: `${topPosition}px`,
+                                                                        height: `${height}px`,
+                                                                        minHeight: '40px'
+                                                                    }}
+                                                                >
+                                                                    <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
+                                                                        <div className="flex flex-col h-full">
+                                                                            <div className="flex justify-between items-start gap-1">
+                                                                                <div className="text-xs font-semibold truncate text-white">
+                                                                                    {session.title}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="text-xs mt-1 text-coffee-400">
+                                                                                {formatHour(session.startTime)} - {formatHour(session.endTime)}
+                                                                            </div>
+                                                                            {session.speakers && session.speakers.length > 0 && (
+                                                                                <div className="text-[10px] text-coffee-500 mt-0.5 truncate">
+                                                                                    👤 {session.speakers.map(s => s.fullName).join(', ')}
+                                                                                    {session.speakers.length > 2 && ` +${session.speakers.length - 2}`}
+                                                                                </div>
+                                                                            )}
+                                                                            {isLiveSession(session.startTime, session.endTime) && (
+                                                                                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full animate-pulse inline-block mt-1 w-fit">
+                                                                                    LIVE
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    </Link>
                                                                 </div>
-                                                                {isLiveSession(session.startTime, session.endTime) && (
-                                                                    <div className="flex-shrink-0">
-                                                                        <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full animate-pulse">
-                                                                            LIVE
-                                                                        </span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div className="text-xs mt-1">
-                                                                {formatHour(session.startTime)} - {formatHour(session.endTime)}
-                                                            </div>
-                                                            {session.room && (
-                                                                <div className="text-[10px] text-gray-500 mt-0.5 truncate">
-                                                                    📍 {session.room.name}
-                                                                </div>
-                                                            )}
-                                                        </Link>
+                                                            );
+                                                        })}
                                                     </div>
                                                 );
                                             })}
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                                    ) : (
+                                        <div className="text-center py-20 text-coffee-500">
+                                            Aucune salle disponible
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bg-black rounded-2xl border border-coffee-900 overflow-hidden">
+                                <div className="grid grid-cols-7 border-b border-coffee-900">
+                                    {weekDays.map((day, idx) => {
+                                        const isToday = day.toDateString() === new Date().toDateString();
+                                        const sessionsForDay = getSessionsForDay(day);
+
+                                        return (
+                                            <div key={idx} className={`p-3 text-center border-r last:border-r-0 border-coffee-900 ${isToday ? 'bg-coffee-950/50' : ''}`}>
+                                                <div className="font-semibold text-coffee-500 text-sm">
+                                                    {day.toLocaleDateString('fr-FR', { weekday: 'short' }).toUpperCase()}
+                                                </div>
+                                                <div className={`text-2xl font-bold ${isToday ? 'text-coffee-400' : 'text-white'}`}>
+                                                    {day.getDate()}
+                                                </div>
+                                                <div className="text-xs text-coffee-600">
+                                                    {day.toLocaleDateString('fr-FR', { month: 'short' })}
+                                                </div>
+                                                {sessionsForDay.length > 0 && (
+                                                    <div className="mt-1 text-xs text-coffee-500 font-medium">
+                                                        {sessionsForDay.length} session{sessionsForDay.length > 1 ? 's' : ''}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="grid grid-cols-7 min-h-[600px]">
+                                    {weekDays.map((day, dayIdx) => {
+                                        const sessionsForDay = getSessionsForDay(day);
+                                        const hours = Array.from({ length: 14 }, (_, i) => i + 7);
+
+                                        return (
+                                            <div key={dayIdx} className={`border-r last:border-r-0 border-coffee-900 ${dayIdx === 6 ? 'border-r-0' : ''}`}>
+                                                <div className="relative min-h-[600px]">
+                                                    {hours.map((hour) => (
+                                                        <div key={hour} className="border-b border-coffee-900 h-16 relative">
+                                                            <span className="absolute -top-3 left-1 text-xs text-coffee-600 bg-black px-1">
+                                                                {hour}:00
+                                                            </span>
+                                                        </div>
+                                                    ))}
+
+                                                    {sessionsForDay.map((session) => {
+                                                        const sessionHour = new Date(session.startTime).getHours();
+                                                        const sessionMinute = new Date(session.startTime).getMinutes();
+                                                        const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
+                                                        const height = getSessionHeight(session.startTime, session.endTime);
+
+                                                        return (
+                                                            <div
+                                                                key={session.id}
+                                                                className={`absolute left-1 right-1 rounded-lg p-2 overflow-hidden transition cursor-pointer group ${getSessionColor(session.id)}`}
+                                                                style={{
+                                                                    top: `${topPosition}px`,
+                                                                    height: `${height}px`,
+                                                                    minHeight: '40px'
+                                                                }}
+                                                            >
+                                                                <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
+                                                                    <div className="flex flex-col h-full">
+                                                                        <div className="flex justify-between items-start gap-1">
+                                                                            <div className="text-xs font-semibold truncate text-white">
+                                                                                {session.title}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="text-xs mt-1 text-coffee-400">
+                                                                            {formatHour(session.startTime)} - {formatHour(session.endTime)}
+                                                                        </div>
+                                                                        {session.room && (
+                                                                            <div className="text-[10px] text-coffee-500 mt-0.5 truncate">
+                                                                                📍 {session.room.name}
+                                                                            </div>
+                                                                        )}
+                                                                        {isLiveSession(session.startTime, session.endTime) && (
+                                                                            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full animate-pulse inline-block mt-1 w-fit">
+                                                                                LIVE
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </Link>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
