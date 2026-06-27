@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
-import { ThemeProvider } from '@/components/common/ThemeProvider';
+
 import {
   Plus_Jakarta_Sans,
   Fira_Code,
@@ -49,7 +49,6 @@ export default function RootLayout({
       ${quicksand.variable}
     `}>
       <body className="bg-background text-text-body antialiased">
-        <ThemeProvider>
           <div className="min-h-screen flex flex-col">
             <Navbar />
             <main className="flex-1 ">
@@ -57,7 +56,6 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
-        </ThemeProvider>
       </body>
     </html>
   );
