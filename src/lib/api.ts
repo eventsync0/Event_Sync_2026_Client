@@ -1,8 +1,11 @@
 // src/lib/api.ts
 import axios from 'axios';
 
+const rawBaseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const normalizedBaseURL = rawBaseURL.replace(/\/+$/, '');
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+  baseURL: normalizedBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -17,6 +20,11 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   }
+
+  if (config.url?.startsWith('/api') && normalizedBaseURL.endsWith('/api')) {
+    config.url = config.url.replace(/^\/api/, '');
+  }
+
   return config;
 });
 
