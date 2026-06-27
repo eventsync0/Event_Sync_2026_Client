@@ -2,33 +2,29 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, User, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import api from '@/lib/api';
-import { Session } from '@/types';
+import { Session, Room } from '@/types';
 import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
+    const [rooms, setRooms] = useState<Room[]>([]);
+    const [selectedRoom, setSelectedRoom] = useState<string>(''); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date());
 
     useEffect(() => {
-        const fetchSessions = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await api.get('/api/sessions');
 
-                let sessionsData = [];
-                if (Array.isArray(response.data)) {
-                    sessionsData = response.data;
-                } else if (response.data?.data && Array.isArray(response.data.data)) {
-                    sessionsData = response.data.data;
-                } else if (response.data?.sessions && Array.isArray(response.data.sessions)) {
-                    sessionsData = response.data.sessions;
-                }
+                const roomsResponse = await api.get('/api/rooms');
+                const roomsData = roomsResponse.data?.data || [];
+                setRooms(roomsData);
 
-                setSessions(sessionsData);
+                await fetchSessions();
             } catch (err) {
                 console.error(err);
                 setError("Impossible de charger le planning");
@@ -37,8 +33,36 @@ export default function PlanningPage() {
             }
         };
 
-        fetchSessions();
+        fetchData();
     }, []);
+
+    const fetchSessions = async (roomId?: string) => {
+        try {
+            let url = '/api/sessions';
+            if (roomId) {
+                url = `/api/sessions/room/${roomId}`;
+            }
+
+            const response = await api.get(url);
+            let sessionsData = [];
+            if (Array.isArray(response.data)) {
+                sessionsData = response.data;
+            } else if (response.data?.data && Array.isArray(response.data.data)) {
+                sessionsData = response.data.data;
+            } else if (response.data?.sessions && Array.isArray(response.data.sessions)) {
+                sessionsData = response.data.sessions;
+            }
+            setSessions(sessionsData);
+        } catch (err) {
+            console.error('Error fetching sessions:', err);
+            throw err;
+        }
+    };
+
+    const handleRoomFilter = async (roomId: string) => {
+        setSelectedRoom(roomId);
+        await fetchSessions(roomId || undefined);
+    };
 
     const previousWeek = () => {
         const newDate = new Date(currentDate);
@@ -142,25 +166,45 @@ export default function PlanningPage() {
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex justify-between items-center mb-4">
                         <h1 className="text-2xl font-bold text-gray-900">Planning</h1>
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={previousWeek}
-                                className="p-2 hover:bg-gray-100 rounded-full transition"
-                            >
-                                <ChevronLeft className="w-5 h-5" />
-                            </button>
-                            <button
-                                onClick={currentWeek}
-                                className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition text-coffee-600"
-                            >
-                                Aujourd'hui
-                            </button>
-                            <button
-                                onClick={nextWeek}
-                                className="p-2 hover:bg-gray-100 rounded-full transition"
-                            >
-                                <ChevronRight className="w-5 h-5" />
-                            </button>
+                        <div className="flex items-center gap-4">
+                            {rooms.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                    <Filter className="w-4 h-4 text-gray-500" />
+                                    <select
+                                        value={selectedRoom}
+                                        onChange={(e) => handleRoomFilter(e.target.value)}
+                                        className="px-3 py-1 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="">Toutes les salles</option>
+                                        {rooms.map((room) => (
+                                            <option key={room.id} value={room.id}>
+                                                {room.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={previousWeek}
+                                    className="p-2 hover:bg-gray-100 rounded-full transition"
+                                >
+                                    <ChevronLeft className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={currentWeek}
+                                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition text-coffee-600"
+                                >
+                                    Aujourd'hui
+                                </button>
+                                <button
+                                    onClick={nextWeek}
+                                    className="p-2 hover:bg-gray-100 rounded-full transition"
+                                >
+                                    <ChevronRight className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <p className="text-gray-600 text-sm">
@@ -173,8 +217,8 @@ export default function PlanningPage() {
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {sessions.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-2xl text-gray-400">No events available at the moment.</p>
-                        <p className="text-gray-500 mt-2">Please check back soon!</p>
+                        <p className="text-2xl text-gray-400">Aucune session disponible pour le moment.</p>
+                        <p className="text-gray-500 mt-2">Revenez plus tard !</p>
                     </div>
                 ) : (
                     <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -243,13 +287,20 @@ export default function PlanningPage() {
                                                                 </div>
                                                                 {isLiveSession(session.startTime, session.endTime) && (
                                                                     <div className="flex-shrink-0">
-                                                                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                                                        <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full animate-pulse">
+                                                                            LIVE
+                                                                        </span>
                                                                     </div>
                                                                 )}
                                                             </div>
                                                             <div className="text-xs mt-1">
                                                                 {formatHour(session.startTime)} - {formatHour(session.endTime)}
                                                             </div>
+                                                            {session.room && (
+                                                                <div className="text-[10px] text-gray-500 mt-0.5 truncate">
+                                                                    📍 {session.room.name}
+                                                                </div>
+                                                            )}
                                                         </Link>
                                                     </div>
                                                 );
