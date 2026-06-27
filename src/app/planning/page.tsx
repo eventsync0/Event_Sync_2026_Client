@@ -151,17 +151,18 @@ export default function PlanningPage() {
     };
 
     const getSessionColor = (sessionId: string) => {
-        const colors = [
-            'bg-coffee-900 hover:bg-coffee-800 text-coffee-100',
-            'bg-coffee-800 hover:bg-coffee-700 text-coffee-100',
-            'bg-coffee-700 hover:bg-coffee-600 text-coffee-100',
-            'bg-amber-900 hover:bg-amber-800 text-amber-100',
-            'bg-amber-800 hover:bg-amber-700 text-amber-100',
-        ];
-
-        const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return colors[hash % colors.length];
-    };
+    const colors = [
+        'bg-gray-800 hover:bg-gray-700 text-gray-100',
+        'bg-gray-700 hover:bg-gray-600 text-gray-100',
+        'bg-gray-600 hover:bg-gray-500 text-gray-100',
+        'bg-stone-800 hover:bg-stone-700 text-stone-100',
+        'bg-stone-700 hover:bg-stone-600 text-stone-100',
+        'bg-zinc-800 hover:bg-zinc-700 text-zinc-100',
+        'bg-zinc-700 hover:bg-zinc-600 text-zinc-100',
+    ];
+    const hash = sessionId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return colors[hash % colors.length];
+};
 
     const weekDays = getWeekDays(currentDate);
     const weekStart = weekDays[0];
