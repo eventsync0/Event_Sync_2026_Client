@@ -33,7 +33,7 @@
   /* ==========================================================================
      3. FONDS & SURFACES
      ========================================================================== */
-  --background:    var(--coffee-50);
+  --background:    #000000;
   --bg-card:       #ffffff;
   --bg-subtle:     var(--coffee-100);  /* fond légèrement teinté, ex: sidebar */
   --border:        var(--coffee-200);
@@ -112,7 +112,7 @@
    ========================================================================== */
 .dark {
   /* Fonds & surfaces */
-  --background: var(--coffee-00);
+  --background: #000000;
   --bg-card:    var(--coffee-900);
   --bg-subtle:  var(--coffee-800);
   --border:     var(--coffee-800);

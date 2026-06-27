@@ -115,7 +115,7 @@ async function EventsContent({
 
   return (
     <>
-      <div className="relative border-b border-coffee-200 dark:border-coffee-800/50 bg-white/70 dark:bg-coffee-950/40 backdrop-blur-sm">
+      <div className="relative border-b border-coffee-200 dark:border-coffee-800/50 bg-coffee-950/40 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-25 text-center">
           <h1 className="text-4xl md:text-5xl font-audiowide bg-gradient-to-r from-coffee-600 via-coffee-500 to-coffee-700 bg-clip-text text-transparent mb-4 tracking-tight">
             {getPageTitle()}
