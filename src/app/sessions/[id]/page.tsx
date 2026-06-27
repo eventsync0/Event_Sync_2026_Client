@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { 
-  Calendar, Clock, MapPin, Users, User, ArrowLeft, 
-  Link as LinkIcon, Tag, Star, Send, ThumbsUp, MessageSquare 
+import {
+    Calendar, Clock, MapPin, Users, User,
+    Send, ThumbsUp, MessageSquare, X
 } from 'lucide-react';
 import { formatHour, formatDate, isLiveSession } from '@/lib/utils';
 import api from '@/lib/api';
@@ -14,18 +14,16 @@ import { getFavoriteIds, toggleFavorite } from '@/lib/favoritesService';
 export default function SessionDetailPage() {
     const router = useRouter();
     const { id } = useParams();
-    
+
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
+
     const [isFav, setIsFav] = useState(false);
     const [questions, setQuestions] = useState<any[]>([]);
     const [newQuestion, setNewQuestion] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [isSending, setIsSending] = useState(false);
-
-    // Le hook est maintenant placé correctement à l'intérieur du composant !
     const [votedQuestions, setVotedQuestions] = useState<string[]>([]);
 
     const fetchData = useCallback(async () => {
@@ -33,12 +31,12 @@ export default function SessionDetailPage() {
             const response = await api.get(`/api/sessions/${id}`);
             const sessionData = response.data?.data || response.data;
             setSession(sessionData);
-            
+
             if (sessionData.questions) {
                 const sortedQuestions = [...sessionData.questions].sort((a, b) => b.upvotes - a.upvotes);
                 setQuestions(sortedQuestions);
             }
-            
+
             setIsFav(getFavoriteIds().includes(id as string));
         } catch (err) {
             console.error("Erreur de chargement:", err);
@@ -54,7 +52,7 @@ export default function SessionDetailPage() {
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
-        
+
         if (session && isLiveSession(session.startTime, session.endTime)) {
             interval = setInterval(() => {
                 api.get(`/api/sessions/${id}`).then(res => {
@@ -83,7 +81,7 @@ export default function SessionDetailPage() {
                 content: newQuestion,
                 authorName: authorName.trim() || "Anonyme"
             });
-            
+
             setQuestions(prev => [res.data, ...prev]);
             setNewQuestion('');
             setAuthorName('');
@@ -102,14 +100,14 @@ export default function SessionDetailPage() {
             const response = await api.post(`/api/questions/${qId}/upvote`, { action });
             const updatedQuestion = response.data?.data;
 
-            setQuestions(prev => 
+            setQuestions(prev =>
                 prev.map(q => q.id === qId ? { ...q, upvotes: updatedQuestion?.upvotes ?? q.upvotes } : q)
                     .sort((a, b) => b.upvotes - a.upvotes)
             );
 
-            setVotedQuestions(prev => 
-                hasVoted 
-                    ? prev.filter(id => String(id) !== String(qId)) 
+            setVotedQuestions(prev =>
+                hasVoted
+                    ? prev.filter(id => String(id) !== String(qId))
                     : [...prev, String(qId)]
             );
         } catch (err) {
@@ -119,10 +117,10 @@ export default function SessionDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
-                    <div className="animate-spin h-10 w-10 border-4 border-coffee-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-gray-500 font-medium">Récupération des détails...</p>
+                    <div className="animate-spin h-12 w-12 border-4 border-coffee-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-coffee-400">Récupération des détails...</p>
                 </div>
             </div>
         );
@@ -130,11 +128,11 @@ export default function SessionDetailPage() {
 
     if (error || !session) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-                <div className="text-center bg-white p-8 rounded-3xl shadow-sm border max-w-sm w-full">
+            <div className="min-h-screen flex items-center justify-center bg-black px-4">
+                <div className="text-center bg-black p-8 rounded-3xl border border-coffee-800 max-w-sm w-full">
                     <p className="text-red-500 font-semibold mb-6">{error || "Session introuvable"}</p>
-                    <button onClick={() => router.back()} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold">
-                        Retour
+                    <button onClick={() => router.push('/planning')} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold hover:bg-coffee-700 transition">
+                        Retour au planning
                     </button>
                 </div>
             </div>
@@ -144,30 +142,20 @@ export default function SessionDetailPage() {
     const isLive = isLiveSession(session.startTime, session.endTime);
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-12">
+        <div className="min-h-screen bg-black pb-12 mt-16">
             <div className="max-w-4xl mx-auto px-4 py-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    {/* <button
-                        onClick={() => router.back()}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-white rounded-xl border hover:bg-gray-50 transition-all shadow-sm"
+                <div className="flex justify-end items-center mb-8">
+                    <button
+                        onClick={() => router.push('/planning')}
+                        className="p-2 text-coffee-400 hover:text-white hover:bg-coffee-900/50 rounded-xl transition border border-coffee-800"
+                        aria-label="Fermer et retourner au planning"
                     >
-                        <ArrowLeft className="w-4 h-4" />
-                        Planning
-                    </button> */}
-
-                    {/* <button
-                        onClick={handleToggleFav}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold text-sm transition-all shadow-sm ${
-                            isFav ? 'bg-yellow-400 border-yellow-400 text-white' : 'bg-white border-gray-200 text-gray-700'
-                        }`}
-                    >
-                        <Star className={`w-4 h-4 ${isFav ? 'fill-white' : ''}`} />
-                        {isFav ? 'Programmé' : 'Ajouter au planning'}
-                    </button> */}
+                        <X className="w-6 h-6" />
+                    </button>
                 </div>
 
-                <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-                    <div className={`p-8 ${isLive ? 'bg-gradient-to-br from-red-50 to-orange-50' : 'bg-gradient-to-br from-coffee-50 to-indigo-50'}`}>
+                <div className="bg-black rounded-[2rem] border border-coffee-800 overflow-hidden">
+                    <div className={`p-8 ${isLive ? 'bg-gradient-to-br from-red-950/50 to-orange-950/50' : 'bg-gradient-to-br from-coffee-950/50 to-coffee-900/30'}`}>
                         <div className="flex flex-wrap items-center gap-3 mb-4">
                             {isLive && (
                                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 animate-pulse">
@@ -175,14 +163,14 @@ export default function SessionDetailPage() {
                                     EN DIRECT
                                 </span>
                             )}
-                            <span className="bg-white/80 backdrop-blur-sm text-gray-600 px-3 py-1 rounded-full text-xs font-bold border border-gray-100">
+                            <span className="bg-coffee-900/50 backdrop-blur-sm text-coffee-300 px-3 py-1 rounded-full text-xs font-bold border border-coffee-800">
                                 {session.event?.title || 'Conférence'}
                             </span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight leading-tight">
                             {session.title}
                         </h1>
-                        <p className="text-gray-600 text-lg leading-relaxed max-w-3xl">
+                        <p className="text-coffee-300 text-lg leading-relaxed max-w-3xl">
                             {session.description}
                         </p>
                     </div>
@@ -197,19 +185,19 @@ export default function SessionDetailPage() {
 
                         {session.speakers && session.speakers.length > 0 && (
                             <div className="mb-12">
-                                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                                    <User className="w-5 h-5 text-coffee-600" />
+                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                                    <User className="w-5 h-5 text-coffee-400" />
                                     Intervenants
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {session.speakers.map((speaker) => (
-                                        <div key={speaker.id} className="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 bg-gray-50/50">
-                                            <div className="w-14 h-14 bg-coffee-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-inner">
+                                        <div key={speaker.id} className="flex items-center gap-4 p-4 rounded-2xl border border-coffee-800 bg-coffee-950/30">
+                                            <div className="w-14 h-14 bg-coffee-700 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-inner">
                                                 {speaker.fullName.charAt(0)}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900">{speaker.fullName}</p>
-                                                <p className="text-sm text-gray-500 font-medium">{speaker.bio || 'Expert / Conférencier'}</p>
+                                                <p className="font-bold text-white">{speaker.fullName}</p>
+                                                <p className="text-sm text-coffee-400 font-medium">{speaker.bio || 'Expert / Conférencier'}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -217,35 +205,35 @@ export default function SessionDetailPage() {
                             </div>
                         )}
 
-                        <div className="pt-10 border-t border-gray-100">
+                        <div className="pt-10 border-t border-coffee-800">
                             <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-                                    <MessageSquare className="w-6 h-6 text-coffee-600" />
+                                <h3 className="text-2xl font-black text-white flex items-center gap-3">
+                                    <MessageSquare className="w-6 h-6 text-coffee-400" />
                                     Q&A Live
                                 </h3>
-                                <span className="bg-coffee-100 text-coffee-700 px-3 py-1 rounded-lg text-xs font-bold">
+                                <span className="bg-coffee-900 text-coffee-300 px-3 py-1 rounded-lg text-xs font-bold">
                                     {questions.length} question{questions.length > 1 ? 's' : ''}
                                 </span>
                             </div>
 
                             {isLive ? (
-                                <form onSubmit={handleSendQuestion} className="mb-10 bg-white rounded-2xl border-2 border-coffee-100 p-2 shadow-sm focus-within:border-coffee-400 transition-colors">
+                                <form onSubmit={handleSendQuestion} className="mb-10 bg-coffee-950/50 rounded-2xl border border-coffee-800 p-2 focus-within:border-coffee-600 transition-colors">
                                     <textarea
                                         value={newQuestion}
                                         onChange={(e) => setNewQuestion(e.target.value)}
                                         placeholder="Une question pour les intervenants ?"
-                                        className="w-full p-4 text-gray-800 outline-none resize-none h-24 text-lg"
+                                        className="w-full p-4 text-white bg-transparent outline-none resize-none h-24 text-lg placeholder-coffee-500"
                                         required
                                     />
-                                    <div className="flex flex-col sm:flex-row items-center gap-2 p-2 bg-gray-50 rounded-xl">
+                                    <div className="flex flex-col sm:flex-row items-center gap-2 p-2 bg-coffee-900/30 rounded-xl">
                                         <input
                                             type="text"
                                             value={authorName}
                                             onChange={(e) => setAuthorName(e.target.value)}
                                             placeholder="Votre nom (optionnel)"
-                                            className="w-full sm:flex-1 bg-transparent px-4 py-2 text-sm outline-none font-medium"
+                                            className="w-full sm:flex-1 bg-transparent px-4 py-2 text-sm outline-none font-medium text-coffee-300 placeholder-coffee-600"
                                         />
-                                        <button 
+                                        <button
                                             disabled={isSending}
                                             type="submit"
                                             className="w-full sm:w-auto bg-coffee-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-coffee-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
@@ -256,43 +244,42 @@ export default function SessionDetailPage() {
                                     </div>
                                 </form>
                             ) : (
-                                <div className="mb-10 p-8 bg-gray-100 rounded-3xl border border-dashed border-gray-300 text-center">
-                                    <Clock className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                                    <p className="text-gray-500 font-bold">Le module de questions s'activera au début du direct.</p>
+                                <div className="mb-10 p-8 bg-coffee-950/30 rounded-3xl border border-dashed border-coffee-800 text-center">
+                                    <Clock className="w-8 h-8 text-coffee-500 mx-auto mb-3" />
+                                    <p className="text-coffee-400 font-bold">Le module de questions s'activera au début du direct.</p>
                                 </div>
                             )}
-                            
+
                             <div className="space-y-4">
                                 {questions.length > 0 ? (
                                     questions.map((q) => (
-                                        <div key={q.id} className="group p-6 bg-white border border-gray-100 rounded-2xl hover:border-coffee-200 hover:shadow-md transition-all flex items-start gap-4">
+                                        <div key={q.id} className="group p-6 bg-coffee-950/30 border border-coffee-800 rounded-2xl hover:border-coffee-700 hover:bg-coffee-900/30 transition-all flex items-start gap-4">
                                             <div className="flex-1">
-                                                <p className="text-gray-800 font-semibold text-lg mb-3 leading-snug">{q.content}</p>
+                                                <p className="text-white font-semibold text-lg mb-3 leading-snug">{q.content}</p>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-500 uppercase">
+                                                    <div className="h-6 w-6 rounded-full bg-coffee-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
                                                         {(q.authorName || 'A').charAt(0)}
                                                     </div>
-                                                    <span className="text-sm font-bold text-coffee-600">{q.authorName || 'Anonyme'}</span>
-                                                    <span className="text-gray-300 text-xs">•</span>
-                                                    <span className="text-gray-400 text-xs font-medium">
-                                                        {new Date(q.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                                    <span className="text-sm font-bold text-coffee-400">{q.authorName || 'Anonyme'}</span>
+                                                    <span className="text-coffee-600 text-xs">•</span>
+                                                    <span className="text-coffee-500 text-xs font-medium">
+                                                        {new Date(q.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <button 
+                                            <button
                                                 onClick={() => handleUpvote(q.id)}
-                                                className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${
-                                                    votedQuestions.map(String).includes(String(q.id)) ? 'bg-coffee-50 border-coffee-100 text-coffee-600' : 'bg-gray-50 border-transparent text-gray-400 group-hover:border-gray-200'
-                                                }`}
+                                                className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${votedQuestions.map(String).includes(String(q.id)) ? 'bg-coffee-900/50 border-coffee-700 text-coffee-400' : 'bg-coffee-950/30 border-transparent text-coffee-600 hover:border-coffee-800'
+                                                    }`}
                                             >
-                                                <ThumbsUp className={`w-5 h-5 ${votedQuestions.map(String).includes(String(q.id)) ? 'fill-coffee-600' : ''}`} />
-                                                <span className="text-xs font-black">{q.upvotes}</span>
+                                                <ThumbsUp className={`w-5 h-5 ${votedQuestions.map(String).includes(String(q.id)) ? 'fill-coffee-400' : ''}`} />
+                                                <span className="text-xs font-black text-coffee-400">{q.upvotes}</span>
                                             </button>
                                         </div>
                                     ))
                                 ) : (
                                     <div className="text-center py-10">
-                                        <p className="text-gray-400 font-medium italic">Soyez le premier à poser une question !</p>
+                                        <p className="text-coffee-500 font-medium italic">Soyez le premier à poser une question !</p>
                                     </div>
                                 )}
                             </div>
@@ -306,13 +293,13 @@ export default function SessionDetailPage() {
 
 function InfoTile({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
     return (
-        <div className="flex items-center gap-4 p-4 bg-gray-50/80 rounded-2xl border border-gray-100/50">
-            <div className="p-2.5 bg-white text-coffee-600 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex items-center gap-4 p-4 bg-coffee-950/30 rounded-2xl border border-coffee-800">
+            <div className="p-2.5 bg-coffee-900/50 text-coffee-400 rounded-xl border border-coffee-800">
                 {icon}
             </div>
             <div>
-                <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-0.5">{label}</p>
-                <p className="text-gray-900 font-bold leading-none">{value}</p>
+                <p className="text-[10px] font-black uppercase tracking-wider text-coffee-500 mb-0.5">{label}</p>
+                <p className="text-white font-bold leading-none">{value}</p>
             </div>
         </div>
     );
