@@ -13,7 +13,7 @@ export default function SpeakerPage() {
   const [speaker, setSpeaker] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [showSessions, setShowSessions] = useState(false);
+  const [showSessions, setShowSessions] = useState(true);
 
   useEffect(() => {
     if (!id) return;
