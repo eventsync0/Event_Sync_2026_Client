@@ -1,8 +1,8 @@
 // components/events/EventCard.tsx
 import Link from 'next/link';
 import { Event, EventCategory } from '@/types';
-import { Calendar, Clock, MapPin, Users, ArrowUpRight } from 'lucide-react';
-import { formatFullDate, formatTime } from '@/lib/utils';
+import { ArrowUpRight } from 'lucide-react';
+import { formatFullDate} from '@/lib/utils';
 import { EVENT_CATEGORIES } from '@/lib/constants';
 
 interface EventCardProps {
