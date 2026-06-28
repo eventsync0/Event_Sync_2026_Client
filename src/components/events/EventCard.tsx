@@ -112,46 +112,37 @@ export default function EventCard({ event }: EventCardProps) {
 
     return (
       <Link href={`/events/${event.id}`} className="group block h-full">
-        {/* Container : Style "Feuille flottante" avec ombre diffuse */}
         <article className="relative flex flex-col h-full bg-bg-card p-1 rounded-[2rem] transition-all duration-700 hover:shadow-[0_20px_50px_-12px_rgba(41,18,10,0.3)]">
-          
-          {/* Intérieur : Espace de respiration */}
+         
           <div className="flex flex-col flex-grow p-8 bg-bg-card rounded-[1.8rem] border border-coffee-800/30">
             
-            {/* Header minimaliste */}
             <div className="flex justify-between items-start mb-8">
               <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ${status.bg} ${status.text}`}>
                 {status.label}
               </div>
-              {/* L'icône catégorie devient un élément de design abstrait */}
               <span className="text-2xl opacity-40">{categoryInfo?.icon}</span>
             </div>
   
-            {/* Titre : Typographie imposante */}
             <h3 className="text-3xl font-extrabold text-txt-title leading-[1.1] mb-6 tracking-tight group-hover:text-coffee-300 transition-colors">
               {event.title}
             </h3>
   
-            {/* Espace pour le contenu */}
             <p className="text-txt-secondary text-base leading-relaxed mb-10 flex-grow">
               {event.description}
             </p>
   
-            {/* Footer : Style "Badge flottant" */}
             <div className="mt-auto pt-6 border-t border-coffee-800/30 flex items-center justify-between">
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] uppercase font-bold text-coffee-600 tracking-widest">Date</span>
                 <span className="text-sm font-semibold text-txt-body">{formatFullDate(event.startDate)}</span>
               </div>
               
-              {/* Bouton circulaire minimaliste */}
               <div className="w-12 h-12 rounded-full border border-coffee-800 flex items-center justify-center group-hover:bg-coffee-500 group-hover:border-coffee-500 transition-all duration-500">
                 <ArrowUpRight className="w-5 h-5 text-txt-title group-hover:text-white" />
               </div>
             </div>
           </div>
   
-          {/* Effet visuel au survol : Une fine ligne de couleur émerge en bas */}
           <div className={`absolute bottom-0 left-8 right-8 h-1 rounded-t-full ${colorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
         </article>
       </Link>
