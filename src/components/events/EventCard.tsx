@@ -9,7 +9,7 @@ interface EventCardProps {
   event: Event;
 }
 
-// Palette de couleurs moderne avec dégradés - utilisant les couleurs coffee
+
 function getCategoryGradient(category: EventCategory) {
   const gradients: Record<EventCategory, string> = {
     CONFERENCE: 'from-coffee-500/20 to-coffee-700/20 dark:from-coffee-400/10 dark:to-coffee-600/10',
