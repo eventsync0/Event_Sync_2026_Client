@@ -110,92 +110,41 @@ export default function EventCard({ event }: EventCardProps) {
 
   const status = getStatus();
 
-  return (
-    <Link href={`/events/${event.id}`} className="block group h-full">
-      <div className={`relative h-full bg-bg-card/80 dark:bg-coffee-950/80 backdrop-blur-xl rounded-3xl overflow-hidden border ${borderClass} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2`}>
-        
-        {/* Glassmorphism overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-        
-        {/* Glow effect */}
-        <div className={`absolute -top-20 -right-20 w-40 h-40 ${colorClass} rounded-full opacity-0 group-hover:opacity-10 blur-3xl transition-all duration-700 group-hover:scale-150`} />
-
-        {/* Category color bar */}
-        <div className={`h-1 w-full ${colorClass}`} />
-
-        <div className="relative p-6 flex-1">
-          {/* Header avec status */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full ${status.bg} ${status.text}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${status.dot} ${hasLiveSession ? 'animate-pulse' : ''}`} />
-                {status.label}
-              </span>
-            </div>
+    return (
+      <Link href={`/events/${event.id}`} className="group block h-full">
+        <article className="relative flex flex-col h-full bg-bg-card p-1 rounded-[2rem] transition-all duration-700 hover:shadow-[0_20px_50px_-12px_rgba(41,18,10,0.3)]">
+         
+          <div className="flex flex-col flex-grow p-8 bg-bg-card rounded-[1.8rem] border border-coffee-800/30">
             
-            {/* Category Badge */}
-            {categoryInfo && (
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-bg-card/50 dark:bg-coffee-900/50 backdrop-blur-sm border ${borderClass}`}>
-                <span className="text-base">{categoryInfo.icon}</span>
-                <span className="text-txt-title dark:text-txt-title">{categoryInfo.label}</span>
-              </span>
-            )}
-          </div>
-
-          {/* Title */}
-          <h3 className="text-xl font-bold text-txt-title dark:text-txt-title mb-2 group-hover:text-coffee-600 dark:group-hover:text-coffee-400 transition-colors line-clamp-2">
-            {event.title}
-          </h3>
-
-          {/* Description */}
-          <p className="text-txt-secondary dark:text-txt-secondary text-sm leading-relaxed line-clamp-2 mb-6">
-            {event.description}
-          </p>
-
-          {/* Meta info avec icônes modernes */}
-          <div className="space-y-2.5 text-sm">
-            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
-              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
-                <Calendar className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
+            <div className="flex justify-between items-start mb-8">
+              <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ${status.bg} ${status.text}`}>
+                {status.label}
               </div>
-              <span>{formatFullDate(event.startDate)}</span>
+              <span className="text-2xl opacity-40">{categoryInfo?.icon}</span>
             </div>
-
-            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
-              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
+  
+            <h3 className="text-3xl font-extrabold text-txt-title leading-[1.1] mb-6 tracking-tight group-hover:text-coffee-300 transition-colors">
+              {event.title}
+            </h3>
+  
+            <p className="text-txt-secondary text-base leading-relaxed mb-10 flex-grow">
+              {event.description}
+            </p>
+  
+            <div className="mt-auto pt-6 border-t border-coffee-800/30 flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] uppercase font-bold text-coffee-600 tracking-widest">Date</span>
+                <span className="text-sm font-semibold text-txt-body">{formatFullDate(event.startDate)}</span>
               </div>
-              <span>{formatTime(event.startDate)} — {formatTime(event.endDate)}</span>
+              
+              <div className="w-12 h-12 rounded-full border border-coffee-800 flex items-center justify-center group-hover:bg-coffee-500 group-hover:border-coffee-500 transition-all duration-500">
+                <ArrowUpRight className="w-5 h-5 text-txt-title group-hover:text-white" />
+              </div>
             </div>
-
-            <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
-              <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
-                <MapPin className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
-              </div>
-              <span className="truncate">{event.location}</span>
-            </div>
-
-            {sessionCount > 0 && (
-              <div className="flex items-center gap-3 text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
-                <div className="w-8 h-8 rounded-full bg-bg-subtle dark:bg-coffee-800 flex items-center justify-center">
-                  <Users className="w-4 h-4 text-coffee-500 dark:text-coffee-400" />
-                </div>
-                <span>{sessionCount} session{sessionCount > 1 ? 's' : ''}</span>
-              </div>
-            )}
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="relative border-t border-border/50 dark:border-coffee-800/50 px-6 py-4 bg-bg-subtle/30 dark:bg-coffee-900/20 backdrop-blur-sm group-hover:bg-bg-subtle/50 dark:group-hover:bg-coffee-900/40 transition-colors">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-txt-secondary dark:text-txt-secondary group-hover:text-txt-body dark:group-hover:text-txt-body transition-colors">
-              View Details
-            </span>
-            <ArrowUpRight className="w-4 h-4 text-coffee-400 dark:text-coffee-500 group-hover:text-coffee-600 dark:group-hover:text-coffee-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
+  
+          <div className={`absolute bottom-0 left-8 right-8 h-1 rounded-t-full ${colorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+        </article>
+      </Link>
+    );
+  }

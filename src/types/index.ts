@@ -40,14 +40,19 @@ export interface Room {
 }
 
 export interface Session {
-  id: string;
-  title: string;
-  description: string;
-  startTime: string;
-  endTime: string;
-  capacity: number;
-  room: Room;        
-  event: Event;    
-  speakers: Speaker[]; 
-  isLive?: boolean;
+    id: string;
+    title: string;
+    description: string;
+    startTime: string;
+    endTime: string;
+    roomId: string;
+    room?: Room;     
+    capacity: number;
+    speakerIds: string[];
+    speakers?: Speaker[];
+    eventId: string;
+    event?: Event;
+    isLive?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }

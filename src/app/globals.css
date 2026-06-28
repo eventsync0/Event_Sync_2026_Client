@@ -16,147 +16,71 @@
   --coffee-900: #29120a;
   --coffee-950: #1d0d07; 
 
-  /* Nouvelle palette — tons plus doux et naturels */
+  color-scheme: dark;
 
- /* --coffee-50:   #ede1db;  
-  --coffee-100:  #e0d2c8; 
-  --coffee-200:  #c9b6a8;  
-  --coffee-300:  #b09886; 
-  --coffee-400:  #967a64;
-  --coffee-500:  #7d5f4a;
-  --coffee-600:  #644a38;
-  --coffee-700:  #4b3628;
-  --coffee-800:  #332218;
-  --coffee-900:  #1f130c;
-  --coffee-950:  #140b07; 
 
   /* ==========================================================================
      3. FONDS & SURFACES
      ========================================================================== */
-  --background:    var(--coffee-50);
-  --bg-card:       #ffffff;
-  --bg-subtle:     var(--coffee-100);  /* fond légèrement teinté, ex: sidebar */
-  --border:        var(--coffee-200);
-
-  /* ==========================================================================
-     4. TYPOGRAPHIE
-     ========================================================================== */
-  --txt-title:     var(--coffee-900);
-  --txt-body:      var(--coffee-800);
-  --txt-secondary: var(--coffee-600);
-  --txt-disabled:  var(--coffee-300);
-  --txt-on-dark:   var(--coffee-50);   /* texte sur fond sombre (ex: bouton primary) */
-
-  /* ==========================================================================
-     5. BOUTON PRIMARY  (ex: "S'inscrire", CTA principal)
-     ========================================================================== */
-  --btn-primary:          var(--coffee-500);
-  --btn-primary-hover:    var(--coffee-600);
-  --btn-primary-active:   var(--coffee-700);
-  --btn-primary-disabled: var(--coffee-300);
-  --btn-primary-txt:      var(--coffee-50);
-
-  /* ==========================================================================
-     6. BOUTON SECONDARY  (ex: "Annuler", action secondaire)
-     ========================================================================== */
-  --btn-secondary:          var(--coffee-100);
-  --btn-secondary-hover:    var(--coffee-200);
-  --btn-secondary-active:   var(--coffee-300);
-  --btn-secondary-disabled: var(--coffee-50);
-  --btn-secondary-txt:      var(--coffee-800);
-
-  /* ==========================================================================
-     7. BOUTON TERTIARY / GHOST  (ex: lien discret, icône)
-     ========================================================================== */
-  --btn-ghost:          transparent;
-  --btn-ghost-hover:    rgba(205, 91, 50, 0.08);
-  --btn-ghost-active:   rgba(205, 91, 50, 0.15);
-  --btn-ghost-disabled: transparent;
-  --btn-ghost-txt:      var(--coffee-600);
-
-  /* ==========================================================================
-     8. BOUTON DANGER  (ex: "Supprimer")
-     ========================================================================== */
-  --btn-danger:          #dc2626;
-  --btn-danger-hover:    #b91c1c;
-  --btn-danger-active:   #991b1b;
-  --btn-danger-disabled: #fca5a5;
-  --btn-danger-txt:      #ffffff;
-
-  /* ==========================================================================
-     9. BADGES & LABELS
-     ========================================================================== */
-  --badge-bg:  var(--coffee-100);
-  --badge-txt: var(--coffee-700);
-
-  /* ==========================================================================
-     10. FEEDBACK — États sémantiques
-     ========================================================================== */
-  --success:     #16a34a;
-  --success-bg:  #dcfce7;
-  --warning:     #d97706;
-  --warning-bg:  #fef3c7;
-  --error:       #dc2626;
-  --error-bg:    #fee2e2;
-  --info:        #2563eb;
-  --info-bg:     #dbeafe;
-
-  /* ==========================================================================
-     11. FOCUS (accessibilité)
-     ========================================================================== */
-  --focus-ring: var(--coffee-500);
-}
-
-/* ==========================================================================
-   12. DARK MODE — Classe .dark injectée par next-themes
-   ========================================================================== */
-.dark {
-  /* Fonds & surfaces */
-  --background: var(--coffee-00);
+  --background: #000000;
   --bg-card:    var(--coffee-900);
   --bg-subtle:  var(--coffee-800);
   --border:     var(--coffee-800);
 
-  /* Typographie */
+  /* ==========================================================================
+     4. TYPOGRAPHIE
+     ========================================================================== */
   --txt-title:     var(--coffee-50);
   --txt-body:      var(--coffee-100);
   --txt-secondary: var(--coffee-300);
   --txt-disabled:  var(--coffee-700);
   --txt-on-dark:   var(--coffee-950);
 
-  /* Bouton primary */
+  /* ==========================================================================
+     5. BOUTON PRIMARY
+     ========================================================================== */
   --btn-primary:          var(--coffee-400);
   --btn-primary-hover:    var(--coffee-500);
   --btn-primary-active:   var(--coffee-600);
   --btn-primary-disabled: var(--coffee-800);
   --btn-primary-txt:      var(--coffee-950);
 
-  /* Bouton secondary */
+  /* ==========================================================================
+     6. BOUTON SECONDARY
+     ========================================================================== */
   --btn-secondary:          rgba(41, 18, 10, 0.5);
   --btn-secondary-hover:    rgba(82, 36, 20, 0.7);
   --btn-secondary-active:   rgba(82, 36, 20, 0.9);
   --btn-secondary-disabled: rgba(41, 18, 10, 0.2);
   --btn-secondary-txt:      var(--coffee-200);
 
-  /* Bouton ghost */
+  /* ==========================================================================
+     7. BOUTON TERTIARY / GHOST
+     ========================================================================== */
   --btn-ghost:          transparent;
   --btn-ghost-hover:    rgba(215, 124, 91, 0.1);
   --btn-ghost-active:   rgba(215, 124, 91, 0.2);
   --btn-ghost-disabled: transparent;
   --btn-ghost-txt:      var(--coffee-300);
 
-  /* Bouton danger */
+  /* ==========================================================================
+     8. BOUTON DANGER
+     ========================================================================== */
   --btn-danger:          #ef4444;
   --btn-danger-hover:    #dc2626;
   --btn-danger-active:   #b91c1c;
   --btn-danger-disabled: #7f1d1d;
   --btn-danger-txt:      #ffffff;
 
-  /* Badges */
+  /* ==========================================================================
+     9. BADGES & LABELS
+     ========================================================================== */
   --badge-bg:  rgba(41, 18, 10, 0.6);
   --badge-txt: var(--coffee-200);
 
-  /* Feedback */
+  /* ==========================================================================
+     10. FEEDBACK — États sémantiques
+     ========================================================================== */
   --success:     #4ade80;
   --success-bg:  rgba(22, 163, 74, 0.15);
   --warning:     #fbbf24;
@@ -166,12 +90,14 @@
   --info:        #60a5fa;
   --info-bg:     rgba(37, 99, 235, 0.15);
 
-  /* Focus */
+  /* ==========================================================================
+     11. FOCUS (accessibilité)
+     ========================================================================== */
   --focus-ring: var(--coffee-400);
 }
 
 /* ==========================================================================
-   13. MAPPING TAILWIND V4
+   12. MAPPING TAILWIND V4
    ========================================================================== */
 @theme inline {
   /* Fonds & surfaces */
@@ -243,7 +169,6 @@
   --color-coffee-950: var(--coffee-950);
 
   /* Polices */
-  /* Fonts */
   --font-sans:
     var(--font-plus-jakarta),
     ui-sans-serif,
@@ -270,7 +195,7 @@
 }
 
 /* ==========================================================================
-   14. STYLES GLOBAUX
+   13. STYLES GLOBAUX
    ========================================================================== */
 *,
 *::before,
