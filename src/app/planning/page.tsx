@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation'; // 👈 AJOUTER
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Filter, LayoutGrid, List } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, LayoutGrid, List, Star } from 'lucide-react'; // 👈 AJOUT DE STAR
 import api from '@/lib/api';
 import { Session, Room } from '@/types';
 import { formatHour, isLiveSession } from '@/lib/utils';
 
 export default function PlanningPage() {
-    const searchParams = useSearchParams(); // 👈 AJOUTER
-    const dateParam = searchParams.get('date'); // 👈 Récupérer la date
+    const searchParams = useSearchParams();
+    const dateParam = searchParams.get('date');
 
     const [sessions, setSessions] = useState<Session[]>([]);
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -20,6 +20,31 @@ export default function PlanningPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date());
+    
+    const [favorites, setFavorites] = useState<string[]>([]);
+
+    useEffect(() => {
+        const storedFavorites = localStorage.getItem('session_favorites');
+        if (storedFavorites) {
+            try {
+                setFavorites(JSON.parse(storedFavorites));
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }, []);
+
+    const toggleFavorite = (e: React.MouseEvent, sessionId: string) => {
+        e.preventDefault(); 
+        e.stopPropagation(); 
+        
+        const updatedFavorites = favorites.includes(sessionId)
+            ? favorites.filter(id => id !== sessionId)
+            : [...favorites, sessionId];
+            
+        setFavorites(updatedFavorites);
+        localStorage.setItem('session_favorites', JSON.stringify(updatedFavorites));
+    };
 
     useEffect(() => {
         if (dateParam) {
@@ -52,7 +77,6 @@ export default function PlanningPage() {
         fetchData();
     }, []);
 
-    // ... le reste du code inchangé
     const fetchSessions = async (roomId?: string) => {
         try {
             let url = '/api/sessions';
@@ -213,8 +237,8 @@ export default function PlanningPage() {
     return (
         <div className="relative min-h-screen bg-black mt-16 pb-12">
             {/* Header */}
-            <div className="border-b border-coffee-900 bg-black/90 backdrop-blur-sm sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-4 py-4">
+            
+            <div className="border-b border-coffee-900 bg-black/90 backdrop-blur-sm sticky top-0 z-[100]">    <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                         <h1 className="text-4xl md:text-5xl font-audiowide bg-gradient-to-r from-coffee-400 via-coffee-300 to-coffee-500 bg-clip-text text-transparent tracking-tight">
                             Planning
@@ -371,6 +395,7 @@ export default function PlanningPage() {
                                                             const sessionMinute = new Date(session.startTime).getMinutes();
                                                             const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                             const height = getSessionHeight(session.startTime, session.endTime);
+                                                            const isFav = favorites.includes(session.id); // Vérifie si favori
 
                                                             return (
                                                                 <div
@@ -383,8 +408,16 @@ export default function PlanningPage() {
                                                                     }}
                                                                 >
                                                                     <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
-                                                                        <div className="flex flex-col h-full">
-                                                                            <div className="flex justify-between items-start gap-1">
+                                                                        <div className="flex flex-col h-full relative">
+                                                                            {/* Bouton Étoile Favori */}
+                                                                            <button 
+                                                                                onClick={(e) => toggleFavorite(e, session.id)}
+                                                                                className="absolute top-0 right-0 p-0.5 rounded-full hover:bg-black/20 transition z-20"
+                                                                            >
+                                                                                <Star className={`w-4 h-4 transition-colors ${isFav ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} />
+                                                                            </button>
+
+                                                                            <div className="flex justify-between items-start gap-1 pr-5">
                                                                                 <div className="text-xs font-semibold truncate text-white">
                                                                                     {session.title}
                                                                                 </div>
@@ -468,6 +501,7 @@ export default function PlanningPage() {
                                                         const sessionMinute = new Date(session.startTime).getMinutes();
                                                         const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                         const height = getSessionHeight(session.startTime, session.endTime);
+                                                        const isFav = favorites.includes(session.id); // Vérifie si favori
 
                                                         return (
                                                             <div
@@ -480,8 +514,16 @@ export default function PlanningPage() {
                                                                 }}
                                                             >
                                                                 <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
-                                                                    <div className="flex flex-col h-full">
-                                                                        <div className="flex justify-between items-start gap-1">
+                                                                    <div className="flex flex-col h-full relative">
+                                                                        {/* Bouton Étoile Favori */}
+                                                                        <button 
+                                                                            onClick={(e) => toggleFavorite(e, session.id)}
+                                                                            className="absolute top-0 right-0 p-0.5 rounded-full hover:bg-black/20 transition z-20"
+                                                                        >
+                                                                            <Star className={`w-4 h-4 transition-colors ${isFav ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} />
+                                                                        </button>
+
+                                                                        <div className="flex justify-between items-start gap-1 pr-5">
                                                                             <div className="text-xs font-semibold truncate text-white">
                                                                                 {session.title}
                                                                             </div>
