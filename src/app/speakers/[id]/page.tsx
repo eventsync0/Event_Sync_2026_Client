@@ -1,178 +1,237 @@
 "use client";
 
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
-type Props = {
-  params: { id: string };
-};
-
-export default function SpeakerPage({ params }: Props) {
+export default function SpeakerPage() {
   const API_URL = "http://localhost:3001/api";
+  const params = useParams();
+  const id = params?.id as string;
 
   const [speaker, setSpeaker] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [showSessions, setShowSessions] = useState(true);
 
-   if (!res.ok) {
-    console.log("Fetch failed. Status:", res.status);
-    notFound();
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchSpeaker = async () => {
+      try {
+        const res = await fetch(`${API_URL}/speakers/${id}`);
+
+        if (res.status === 404) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        if (!res.ok) {
+          console.error("Fetch failed:", res.status, await res.text());
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        const json = await res.json();
+        setSpeaker(json.data);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpeaker();
+  }, [id]);
+
+  const getPlatformIcon = (platform: string) => {
+    const p = platform?.toLowerCase();
+    if (p === "linkedin") return <FaLinkedin className="w-5 h-5" />;
+    if (p === "github") return <FaGithub className="w-5 h-5" />;
+    return <FaGlobe className="w-5 h-5" />;
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-20 text-txt-secondary animate-pulse">
+        Loading speaker...
+      </div>
+    );
   }
 
-  const json = await res.json();
-  const speaker = json.data;
-
-   if (!speaker) {
-    notFound();
+  if (notFound || !speaker) {
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+        <p className="text-4xl mb-4">🎙️</p>
+        <h2 className="text-2xl font-bold text-txt-title mb-2">Speaker not found</h2>
+        <p className="text-txt-secondary mb-6">
+          This speaker doesn't exist or may have been removed.
+        </p>
+        <Link
+          href="/speakers"
+          className="inline-block px-6 py-3 rounded-xl border border-coffee-200/50 text-txt-title hover:bg-coffee-200/10 transition-colors text-sm font-semibold"
+        >
+          ← Back to speakers
+        </Link>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
 
-       <Link href="/speakers" className="text-blue-600 hover:underline">
+      {/* BACK LINK */}
+      <Link
+        href="/speakers"
+        className="inline-flex items-center gap-1.5 text-sm text-txt-secondary hover:text-txt-title transition-colors"
+      >
         ← Back to speakers
       </Link>
 
-       <div className="mt-8 bg-white border border-gray-200 rounded-2xl p-8">
+      {/* SPEAKER HERO CARD */}
+      <div className="mt-8 bg-bg-card border border-coffee-200/40 rounded-3xl p-8">
+        <div className="flex flex-col sm:flex-row gap-8">
 
-        <div className="flex flex-col md:flex-row gap-8">
-
-           <div className="shrink-0">
+          {/* PHOTO */}
+          <div className="flex-shrink-0">
             {speaker.photoUrl ? (
               <img
                 src={speaker.photoUrl}
                 alt={speaker.fullName}
-                className="w-40 h-40 rounded-full object-cover"
+                className="w-36 h-36 rounded-2xl object-cover ring-2 ring-coffee-200/30"
               />
             ) : (
-              <div className="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                No Image
+              <div className="w-36 h-36 rounded-2xl bg-coffee-200/10 border border-coffee-200/20 flex items-center justify-center text-txt-secondary text-sm">
+                No photo
               </div>
             )}
           </div>
 
-           <div className="flex-1">
-
-            <h1 className="text-4xl font-bold text-gray-900">
+          {/* INFO */}
+          <div className="flex-1 min-w-0">
+            <h1 className="font-audiowide text-3xl md:text-4xl text-txt-title leading-tight">
               {speaker.fullName}
             </h1>
 
             {speaker.bio && (
-              <p className="text-gray-600 mt-5 leading-relaxed">
+              <p className="text-txt-secondary mt-4 leading-relaxed max-w-prose">
                 {speaker.bio}
               </p>
             )}
 
-             {speaker.links?.length > 0 && (
+            {/* SOCIAL LINKS */}
+            {speaker.links?.length > 0 && (
               <div className="flex gap-4 mt-6">
-
-                {speaker.links.map((link: any) => {
-                  const platform = link.platform?.toLowerCase();
-
-                  let icon = <FaGlobe className="text-xl" />;
-
-                  if (platform === "linkedin") {
-                    icon = <FaLinkedin className="text-xl" />;
-                  } else if (platform === "github") {
-                    icon = <FaGithub className="text-xl" />;
-                  }
-
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-3 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:scale-110 transition flex items-center justify-center"
-                      title={link.platform}
-                    >
-                      {icon}
-                    </a>
-                  );
-                })}
-
+                {speaker.links.map((link: any) => (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-txt-secondary hover:text-txt-title transition-colors"
+                    title={link.platform}
+                  >
+                    {getPlatformIcon(link.platform)}
+                  </a>
+                ))}
               </div>
             )}
-
           </div>
+
         </div>
       </div>
 
-       <div className="mt-12">
+      {/* SESSIONS TOGGLE */}
+      <div className="mt-10">
+        <button
+          onClick={() => setShowSessions((prev) => !prev)}
+          className="flex items-center gap-3 w-full text-left group"
+        >
+          <h2 className="font-audiowide text-xl text-txt-title group-hover:opacity-80 transition-opacity">
+            Sessions
+          </h2>
+          {speaker.sessions?.length > 0 && (
+            <span className="text-xs text-txt-secondary border border-coffee-200/30 rounded-full px-2.5 py-0.5">
+              {speaker.sessions.length}
+            </span>
+          )}
+          <span
+            className="ml-auto text-txt-secondary text-lg transition-transform duration-200"
+            style={{ transform: showSessions ? "rotate(180deg)" : "rotate(0deg)" }}
+          >
+            ▾
+          </span>
+        </button>
 
-        <h2 className="text-2xl font-bold mb-6">
-          Speaker Sessions
-        </h2>
-
-        {speaker.sessions?.length > 0 ? (
-          <div className="space-y-5">
-
-            {speaker.sessions.map((session: any) => (
-              <div
-                key={session.id}
-                className="border border-gray-200 rounded-2xl p-5 bg-white"
-              >
-
-                <div className="flex items-center gap-3">
-
-                  {/* LIVE supprimé (non garanti par doc) */}
-
-                  <Link
-                    href={`/sessions/${session.id}`}
-                    className="text-xl font-semibold hover:text-blue-600 transition"
+        {showSessions && (
+          <div className="mt-6">
+            {speaker.sessions?.length > 0 ? (
+              <div className="space-y-4">
+                {speaker.sessions.map((session: any) => (
+                  <div
+                    key={session.id}
+                    className="bg-bg-card border border-coffee-200/30 rounded-2xl p-5 hover:border-coffee-200/60 transition-colors"
                   >
-                    {session.title}
-                  </Link>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
 
-                </div>
-
-                <p className="text-sm text-gray-500 mt-2">
-                  {session.startTime} — {session.endTime}
-                </p>
-
-                {/* ROOM supprimé (structure non garantie) */}
-
-                 {session.questions?.length > 0 && (
-                  <details className="mt-5">
-
-                    <summary className="cursor-pointer text-sm text-gray-600">
-                      View questions ({session.questions.length})
-                    </summary>
-
-                    <div className="mt-4 space-y-3">
-
-                      {session.questions.map((question: any) => (
-                        <div
-                          key={question.id}
-                          className="border-l-4 border-blue-500 pl-4 py-2 bg-gray-50 rounded-r-lg"
+                      <div className="flex-1 min-w-0">
+                        <Link
+                          href={`/sessions/${session.id}`}
+                          className="text-lg font-semibold text-txt-title hover:text-coffee-200 transition-colors line-clamp-2"
                         >
-                          <p className="text-gray-800">
-                            {question.content}
-                          </p>
+                          {session.title}
+                        </Link>
 
-                          <div className="text-sm text-gray-500 mt-2">
-                            {question.name ?? "Anonymous"} • {question.upvotes} upvote(s)
-                          </div>
-                        </div>
-                      ))}
+                        {(session.startTime || session.endTime) && (
+                          <p className="text-sm text-txt-secondary mt-1.5">
+                            🕐 {session.startTime}
+                            {session.endTime && ` — ${session.endTime}`}
+                          </p>
+                        )}
+
+                        {session.description && (
+                          <p className="text-sm text-txt-secondary mt-2 line-clamp-2">
+                            {session.description}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">
+                        {session.event && (
+                          <Link
+                            href={`/events/${session.event.id}`}
+                            className="text-xs text-txt-secondary border border-coffee-200/30 rounded-full px-3 py-1 hover:border-coffee-200/60 hover:text-txt-title transition-all"
+                          >
+                            📅 {session.event.name ?? "Event"}
+                          </Link>
+                        )}
+
+                        <Link
+                          href={`/sessions/${session.id}`}
+                          className="text-xs font-semibold text-txt-title border border-coffee-200/50 rounded-full px-3 py-1 hover:bg-coffee-200/10 transition-colors"
+                        >
+                          View session →
+                        </Link>
+                      </div>
 
                     </div>
-
-                  </details>
-                )}
-
+                  </div>
+                ))}
               </div>
-            ))}
-
-          </div>
-        ) : (
-          <div className="text-gray-500">
-            No sessions found.
+            ) : (
+              <div className="text-center py-12 text-txt-secondary border border-coffee-200/20 rounded-2xl">
+                <p className="text-2xl mb-2">📭</p>
+                <p>No sessions scheduled yet.</p>
+              </div>
+            )}
           </div>
         )}
-
       </div>
+
     </div>
   );
 }
