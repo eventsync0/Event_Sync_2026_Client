@@ -70,7 +70,7 @@ export default function SpeakersPage() {
             placeholder="Search a speaker..."
             className="
               w-full px-5 py-4 rounded-2xl border
-              border-coffee-200 bg-white text-black
+              border-coffee-200 bg-black text-black
               placeholder:text-txt-secondary shadow-sm
               focus:outline-none focus:ring-2
               focus:ring-coffee-400 focus:border-coffee-400
