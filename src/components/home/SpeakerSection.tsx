@@ -56,21 +56,7 @@ export default function SpeakersSection() {
         </p>
       </div>
 
-      {/* SEARCH */}
-      <div className="mb-10 flex justify-center">
-        <div className="w-full max-w-xl relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-txt-secondary pointer-events-none">
-            🔍
-          </span>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search a speaker..."
-            className="w-full pl-11 pr-5 py-4 rounded-2xl border border-coffee-200 bg-bg-card text-txt-title placeholder:text-txt-secondary focus:outline-none focus:ring-2 focus:ring-coffee-200 transition"
-          />
-        </div>
-      </div>
+      
 
       {/* LOADING */}
       {loading && (
