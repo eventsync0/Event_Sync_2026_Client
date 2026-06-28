@@ -1,28 +1,25 @@
+// app/speakers/SpeakersClient.tsx — CLIENT COMPONENT (search interactif uniquement)
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
-import api from "@/lib/api";
 
-export default function SpeakersPage() {
-  const [speakers, setSpeakers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+type Speaker = {
+  id: string;
+  fullName: string;
+  bio?: string;
+  photoUrl?: string;
+  sessions?: { id: string; title: string }[];
+  links?: { id: string; platform: string; url: string }[];
+};
+
+type Props = {
+  speakers: Speaker[];
+};
+
+export default function SpeakersClient({ speakers }: Props) {
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const fetchSpeakers = async () => {
-      try {
-        const { data } = await api.get("/api/speakers");
-        setSpeakers(data.data);
-      } catch (error) {
-        console.error("Error fetching speakers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSpeakers();
-  }, []);
 
   const filteredSpeakers = useMemo(() => {
     return speakers.filter((speaker) =>
@@ -66,15 +63,8 @@ export default function SpeakersPage() {
         </div>
       </div>
 
-      {/* LOADING */}
-      {loading && (
-        <div className="text-center py-16 text-txt-secondary animate-pulse">
-          Loading speakers...
-        </div>
-      )}
-
       {/* SPEAKER SCROLL */}
-      {!loading && filteredSpeakers.length > 0 && (
+      {filteredSpeakers.length > 0 && (
         <div className="relative group">
 
           {/* LEFT BUTTON */}
@@ -94,7 +84,7 @@ export default function SpeakersPage() {
             className="flex gap-5 overflow-x-auto scroll-smooth pb-4 px-1 [&::-webkit-scrollbar]:hidden"
             style={{ scrollbarWidth: "none" }}
           >
-            {filteredSpeakers.map((speaker: any) => {
+            {filteredSpeakers.map((speaker) => {
               const firstSession = speaker.sessions?.[0];
 
               return (
@@ -144,9 +134,9 @@ export default function SpeakersPage() {
                   <div className="flex-1" />
 
                   {/* SOCIAL LINKS */}
-                  {speaker.links?.length > 0 && (
+                  {speaker.links && speaker.links.length > 0 && (
                     <div className="flex gap-3 mt-5 justify-center text-txt-secondary">
-                      {speaker.links.map((link: any) => (
+                      {speaker.links.map((link) => (
                         <a
                           key={link.id}
                           href={link.url}
@@ -188,7 +178,7 @@ export default function SpeakersPage() {
       )}
 
       {/* EMPTY STATE */}
-      {!loading && filteredSpeakers.length === 0 && (
+      {filteredSpeakers.length === 0 && (
         <div className="text-center py-20 text-txt-secondary">
           <p className="text-3xl mb-3">🎙️</p>
           <p className="text-lg font-medium">No speakers found.</p>
