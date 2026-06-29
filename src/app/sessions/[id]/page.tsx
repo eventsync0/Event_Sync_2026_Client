@@ -10,6 +10,12 @@ import { formatHour, formatDate, isLiveSession } from '@/lib/utils';
 import api from '@/lib/api';
 import { Session } from '@/types';
 import { getFavoriteIds, toggleFavorite } from '@/lib/favoritesService';
+import {
+    getVotedQuestionIds,
+    markAsVoted,
+    hasAskedSameQuestion,
+    markQuestionAsked
+} from '../../../lib/Qalocalservice';
 
 export default function SessionDetailPage() {
     const router = useRouter();
@@ -26,6 +32,7 @@ export default function SessionDetailPage() {
     const [newQuestion, setNewQuestion] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [isSending, setIsSending] = useState(false);
+    const [sendError, setSendError] = useState<string | null>(null);
     const [votedQuestions, setVotedQuestions] = useState<string[]>([]);
 
     const handleClose = () => {
@@ -48,6 +55,8 @@ export default function SessionDetailPage() {
             }
 
             setIsFav(getFavoriteIds().includes(id as string));
+            // Restaure les votes déjà effectués par cet appareil/navigateur
+            setVotedQuestions(getVotedQuestionIds());
         } catch (err) {
             console.error("Erreur de chargement:", err);
             setError("Impossible de charger les détails de la session.");
@@ -82,32 +91,45 @@ export default function SessionDetailPage() {
 
     const handleSendQuestion = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newQuestion.trim() || isSending) return;
+        const trimmed = newQuestion.trim();
+        if (!trimmed || isSending) return;
+
+        setSendError(null);
+
+        // On ne peut pas poser deux fois la même question sur cette session
+        if (hasAskedSameQuestion(id as string, trimmed)) {
+            setSendError("Vous avez déjà posé cette question pour cette session.");
+            return;
+        }
 
         setIsSending(true);
         try {
             const res = await api.post('/api/questions', {
                 sessionId: id,
-                content: newQuestion,
+                content: trimmed,
                 authorName: authorName.trim() || "Anonyme"
             });
 
             setQuestions(prev => [res.data, ...prev]);
+            markQuestionAsked(id as string, trimmed);
             setNewQuestion('');
             setAuthorName('');
         } catch (err) {
-            alert("Erreur lors de l'envoi. Assurez-vous que la session est bien en cours.");
+            setSendError("Erreur lors de l'envoi. Assurez-vous que la session est bien en cours.");
         } finally {
             setIsSending(false);
         }
     };
 
     const handleUpvote = async (qId: string) => {
-        const hasVoted = votedQuestions.map(String).includes(String(qId));
-        const action = hasVoted ? 'downvote' : 'upvote';
+        // Upvote simple et définitif : un seul vote par question et par
+        // appareil/navigateur, sans possibilité de retrait (façon Facebook).
+        if (votedQuestions.map(String).includes(String(qId))) {
+            return;
+        }
 
         try {
-            const response = await api.post(`/api/questions/${qId}/upvote`, { action });
+            const response = await api.post(`/api/questions/${qId}/upvote`);
             const updatedQuestion = response.data?.data;
 
             setQuestions(prev =>
@@ -115,11 +137,8 @@ export default function SessionDetailPage() {
                     .sort((a, b) => b.upvotes - a.upvotes)
             );
 
-            setVotedQuestions(prev =>
-                hasVoted
-                    ? prev.filter(id => String(id) !== String(qId))
-                    : [...prev, String(qId)]
-            );
+            markAsVoted(qId);
+            setVotedQuestions(prev => [...prev, String(qId)]);
         } catch (err) {
             console.error("Erreur lors du vote :", err);
         }
@@ -230,11 +249,19 @@ export default function SessionDetailPage() {
                                 <form onSubmit={handleSendQuestion} className="mb-10 bg-coffee-950/50 rounded-2xl border border-coffee-800 p-2 focus-within:border-coffee-600 transition-colors">
                                     <textarea
                                         value={newQuestion}
-                                        onChange={(e) => setNewQuestion(e.target.value)}
+                                        onChange={(e) => {
+                                            setNewQuestion(e.target.value);
+                                            if (sendError) setSendError(null);
+                                        }}
                                         placeholder="Une question pour les intervenants ?"
                                         className="w-full p-4 text-white bg-transparent outline-none resize-none h-24 text-lg placeholder-coffee-500"
                                         required
                                     />
+                                    {sendError && (
+                                        <p className="px-4 pb-2 text-sm font-semibold text-red-400">
+                                            {sendError}
+                                        </p>
+                                    )}
                                     <div className="flex flex-col sm:flex-row items-center gap-2 p-2 bg-coffee-900/30 rounded-xl">
                                         <input
                                             type="text"
@@ -262,31 +289,39 @@ export default function SessionDetailPage() {
 
                             <div className="space-y-4">
                                 {questions.length > 0 ? (
-                                    questions.map((q) => (
-                                        <div key={q.id} className="group p-6 bg-coffee-950/30 border border-coffee-800 rounded-2xl hover:border-coffee-700 hover:bg-coffee-900/30 transition-all flex items-start gap-4">
-                                            <div className="flex-1">
-                                                <p className="text-white font-semibold text-lg mb-3 leading-snug">{q.content}</p>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-6 w-6 rounded-full bg-coffee-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
-                                                        {(q.authorName || 'A').charAt(0)}
+                                    questions.map((q) => {
+                                        const alreadyVoted = votedQuestions.map(String).includes(String(q.id));
+                                        return (
+                                            <div key={q.id} className="group p-6 bg-coffee-950/30 border border-coffee-800 rounded-2xl hover:border-coffee-700 hover:bg-coffee-900/30 transition-all flex items-start gap-4">
+                                                <div className="flex-1">
+                                                    <p className="text-white font-semibold text-lg mb-3 leading-snug">{q.content}</p>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-6 w-6 rounded-full bg-coffee-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                                                            {(q.authorName || 'A').charAt(0)}
+                                                        </div>
+                                                        <span className="text-sm font-bold text-coffee-400">{q.authorName || 'Anonyme'}</span>
+                                                        <span className="text-coffee-600 text-xs">•</span>
+                                                        <span className="text-coffee-500 text-xs font-medium">
+                                                            {new Date(q.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
                                                     </div>
-                                                    <span className="text-sm font-bold text-coffee-400">{q.authorName || 'Anonyme'}</span>
-                                                    <span className="text-coffee-600 text-xs">•</span>
-                                                    <span className="text-coffee-500 text-xs font-medium">
-                                                        {new Date(q.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
                                                 </div>
+                                                <button
+                                                    onClick={() => handleUpvote(q.id)}
+                                                    disabled={alreadyVoted}
+                                                    aria-pressed={alreadyVoted}
+                                                    title={alreadyVoted ? "Vous avez déjà voté pour cette question" : "Voter pour cette question"}
+                                                    className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${alreadyVoted
+                                                        ? 'bg-coffee-900/50 border-coffee-700 text-coffee-400 cursor-not-allowed'
+                                                        : 'bg-coffee-950/30 border-transparent text-coffee-600 hover:border-coffee-800'
+                                                        }`}
+                                                >
+                                                    <ThumbsUp className={`w-5 h-5 ${alreadyVoted ? 'fill-coffee-400' : ''}`} />
+                                                    <span className="text-xs font-black text-coffee-400">{q.upvotes}</span>
+                                                </button>
                                             </div>
-                                            <button
-                                                onClick={() => handleUpvote(q.id)}
-                                                className={`flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl transition-all border ${votedQuestions.map(String).includes(String(q.id)) ? 'bg-coffee-900/50 border-coffee-700 text-coffee-400' : 'bg-coffee-950/30 border-transparent text-coffee-600 hover:border-coffee-800'
-                                                    }`}
-                                            >
-                                                <ThumbsUp className={`w-5 h-5 ${votedQuestions.map(String).includes(String(q.id)) ? 'fill-coffee-400' : ''}`} />
-                                                <span className="text-xs font-black text-coffee-400">{q.upvotes}</span>
-                                            </button>
-                                        </div>
-                                    ))
+                                        );
+                                    })
                                 ) : (
                                     <div className="text-center py-10">
                                         <p className="text-coffee-500 font-medium italic">Soyez le premier à poser une question !</p>

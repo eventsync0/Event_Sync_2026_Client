@@ -1,85 +1,94 @@
-'use client';
-import { useState } from 'react';
+const VOTES_KEY = 'eventsync_voted_questions';
+const ASKED_KEY = 'eventsync_asked_questions';
 
-export function QASection({ sessionId, isLive, initialQuestions }: any) {
-    const [questions, setQuestions] = useState(initialQuestions || []);
-    const [content, setContent] = useState('');
-    const [authorName, setAuthorName] = useState('');
+// ============================================
+// VOTES — toggle réversible par question (un vote actif à la fois)
+// ============================================
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!content.trim()) return;
+export function getVotedQuestionIds(): string[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        return JSON.parse(localStorage.getItem(VOTES_KEY) || '[]');
+    } catch {
+        return [];
+    }
+}
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sessionId, content, authorName: authorName || null })
-        });
+export function hasVoted(questionId: string): boolean {
+    return getVotedQuestionIds().includes(String(questionId));
+}
 
-        if (res.ok) {
-            const newQ = await res.json();
-            setQuestions([newQ, ...questions]);
-            setContent('');
-            setAuthorName('');
-        }
-    };
+/**
+ * Bascule l'état du vote pour cette question (ajoute si absent, retire si présent).
+ * Retourne le nouvel état : true si désormais voté, false si désormais retiré.
+ */
+export function toggleVoted(questionId: string): boolean {
+    const voted = getVotedQuestionIds();
+    const id = String(questionId);
+    const index = voted.indexOf(id);
 
-    const handleUpvote = async (id: string) => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions/${id}/upvote`, { method: 'POST' });
-        if (res.ok) {
-            const { data } = await res.json();
-            setQuestions(questions.map((q: any) => q.id === id ? data : q).sort((a: any, b: any) => b.upvotes - a.upvotes));
-        }
-    };
+    if (index > -1) {
+        voted.splice(index, 1);
+        localStorage.setItem(VOTES_KEY, JSON.stringify(voted));
+        return false;
+    } else {
+        voted.push(id);
+        localStorage.setItem(VOTES_KEY, JSON.stringify(voted));
+        return true;
+    }
+}
 
-    if (!isLive) return (
-        <div className="mt-8 p-6 bg-gray-50 rounded-xl text-center border border-dashed">
-            <p className="text-gray-500">La session de questions/réponses s'ouvrira quand la session sera en direct.</p>
-        </div>
+// ============================================
+// QUESTIONS POSÉES — anti-doublon par contenu, par session
+// ============================================
+
+type AskedEntry = {
+    sessionId: string;
+    content: string; // contenu normalisé
+};
+
+function normalizeContent(content: string): string {
+    return content.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function getAskedEntries(): AskedEntry[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        return JSON.parse(localStorage.getItem(ASKED_KEY) || '[]');
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Vérifie si ce contenu (normalisé) a déjà été posé sur cette session
+ * par cet appareil/navigateur.
+ */
+export function hasAskedSameQuestion(sessionId: string, content: string): boolean {
+    const normalized = normalizeContent(content);
+    return getAskedEntries().some(
+        (entry) => entry.sessionId === String(sessionId) && entry.content === normalized
+    );
+}
+
+/**
+ * Enregistre la question comme posée. Retourne false si ce contenu exact
+ * avait déjà été posé sur cette session (rien n'est fait dans ce cas),
+ * true sinon.
+ */
+export function markQuestionAsked(sessionId: string, content: string): boolean {
+    const normalized = normalizeContent(content);
+    const entries = getAskedEntries();
+
+    const alreadyAsked = entries.some(
+        (entry) => entry.sessionId === String(sessionId) && entry.content === normalized
     );
 
-    return (
-        <div className="mt-10">
-            <h2 className="text-2xl font-bold mb-6">Questions & Réponses</h2>
-            
-            <form onSubmit={handleSubmit} className="mb-8 space-y-3 bg-white p-4 rounded-xl border shadow-sm">
-                <textarea 
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Posez votre question..."
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    required
-                />
-                <div className="flex gap-2">
-                    <input 
-                        className="flex-1 p-2 border rounded-lg"
-                        placeholder="Votre nom (optionnel)"
-                        value={authorName}
-                        onChange={(e) => setAuthorName(e.target.value)}
-                    />
-                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700">
-                        Envoyer
-                    </button>
-                </div>
-            </form>
+    if (alreadyAsked) {
+        return false;
+    }
 
-            <div className="space-y-4">
-                {questions.map((q: any) => (
-                    <div key={q.id} className="flex justify-between items-start p-4 bg-white border rounded-xl shadow-sm">
-                        <div>
-                            <p className="font-medium text-gray-800">{q.content}</p>
-                            <p className="text-xs text-gray-400 mt-1">{q.authorName} • {new Date(q.createdAt).toLocaleTimeString()}</p>
-                        </div>
-                        <button 
-                            onClick={() => handleUpvote(q.id)}
-                            className="flex flex-col items-center px-3 py-1 bg-blue-50 rounded-lg text-blue-600 hover:bg-blue-100"
-                        >
-                            <span className="text-lg">▲</span>
-                            <span className="font-bold">{q.upvotes}</span>
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+    entries.push({ sessionId: String(sessionId), content: normalized });
+    localStorage.setItem(ASKED_KEY, JSON.stringify(entries));
+    return true;
 }
