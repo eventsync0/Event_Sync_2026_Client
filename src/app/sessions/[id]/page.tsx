@@ -49,8 +49,8 @@ export default function SessionDetailPage() {
 
             setIsFav(getFavoriteIds().includes(id as string));
         } catch (err) {
-            console.error("Erreur de chargement:", err);
-            setError("Impossible de charger les détails de la session.");
+            console.error("Loading error:", err);
+            setError("Unable to load session details.");
         } finally {
             setLoading(false);
         }
@@ -89,14 +89,14 @@ export default function SessionDetailPage() {
             const res = await api.post('/api/questions', {
                 sessionId: id,
                 content: newQuestion,
-                authorName: authorName.trim() || "Anonyme"
+                authorName: authorName.trim() || "Anonymous"
             });
 
             setQuestions(prev => [res.data, ...prev]);
             setNewQuestion('');
             setAuthorName('');
         } catch (err) {
-            alert("Erreur lors de l'envoi. Assurez-vous que la session est bien en cours.");
+            alert("Error sending your question. Make sure the session is currently live.");
         } finally {
             setIsSending(false);
         }
@@ -121,7 +121,7 @@ export default function SessionDetailPage() {
                     : [...prev, String(qId)]
             );
         } catch (err) {
-            console.error("Erreur lors du vote :", err);
+            console.error("Error while voting:", err);
         }
     };
 
@@ -130,7 +130,7 @@ export default function SessionDetailPage() {
             <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
                     <div className="animate-spin h-12 w-12 border-4 border-coffee-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-coffee-400">Récupération des détails...</p>
+                    <p className="text-coffee-400">Fetching details...</p>
                 </div>
             </div>
         );
@@ -140,9 +140,9 @@ export default function SessionDetailPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-black px-4">
                 <div className="text-center bg-black p-8 rounded-3xl border border-coffee-800 max-w-sm w-full">
-                    <p className="text-red-500 font-semibold mb-6">{error || "Session introuvable"}</p>
+                    <p className="text-red-500 font-semibold mb-6">{error || "Session not found"}</p>
                     <button onClick={handleClose} className="w-full py-3 bg-coffee-600 text-white rounded-xl font-bold hover:bg-coffee-700 transition">
-                        Retour au planning
+                        Back to schedule
                     </button>
                 </div>
             </div>
@@ -158,7 +158,7 @@ export default function SessionDetailPage() {
                     <button
                         onClick={handleClose} 
                         className="p-2 text-coffee-400 hover:text-white hover:bg-coffee-900/50 rounded-xl transition border border-coffee-800"
-                        aria-label="Fermer et retourner au planning"
+                        aria-label="Close and return to schedule"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -170,11 +170,11 @@ export default function SessionDetailPage() {
                             {isLive && (
                                 <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 animate-pulse">
                                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
-                                    EN DIRECT
+                                    LIVE
                                 </span>
                             )}
                             <span className="bg-coffee-900/50 backdrop-blur-sm text-coffee-300 px-3 py-1 rounded-full text-xs font-bold border border-coffee-800">
-                                {session.event?.title || 'Conférence'}
+                                {session.event?.title || 'Conference'}
                             </span>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight leading-tight">
@@ -188,16 +188,16 @@ export default function SessionDetailPage() {
                     <div className="p-8">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                             <InfoTile icon={<Calendar />} label="Date" value={formatDate(session.startTime)} />
-                            <InfoTile icon={<Clock />} label="Horaire" value={`${formatHour(session.startTime)} - ${formatHour(session.endTime)}`} />
-                            <InfoTile icon={<MapPin />} label="Lieu / Salle" value={session.room?.name || 'À confirmer'} />
-                            <InfoTile icon={<Users />} label="Capacité" value={`${session.capacity} places`} />
+                            <InfoTile icon={<Clock />} label="Time" value={`${formatHour(session.startTime)} - ${formatHour(session.endTime)}`} />
+                            <InfoTile icon={<MapPin />} label="Location / Room" value={session.room?.name || 'TBD'} />
+                            <InfoTile icon={<Users />} label="Capacity" value={`${session.capacity} seats`} />
                         </div>
 
                         {session.speakers && session.speakers.length > 0 && (
                             <div className="mb-12">
                                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
                                     <User className="w-5 h-5 text-coffee-400" />
-                                    Intervenants
+                                    Speakers
                                 </h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {session.speakers.map((speaker) => (
@@ -207,7 +207,7 @@ export default function SessionDetailPage() {
                                             </div>
                                             <div>
                                                 <p className="font-bold text-white">{speaker.fullName}</p>
-                                                <p className="text-sm text-coffee-400 font-medium">{speaker.bio || 'Expert / Conférencier'}</p>
+                                                <p className="text-sm text-coffee-400 font-medium">{speaker.bio || 'Expert / Speaker'}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -219,7 +219,7 @@ export default function SessionDetailPage() {
                             <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-2xl font-black text-white flex items-center gap-3">
                                     <MessageSquare className="w-6 h-6 text-coffee-400" />
-                                    Q&A Live
+                                    Live Q&A
                                 </h3>
                                 <span className="bg-coffee-900 text-coffee-300 px-3 py-1 rounded-lg text-xs font-bold">
                                     {questions.length} question{questions.length > 1 ? 's' : ''}
@@ -231,7 +231,7 @@ export default function SessionDetailPage() {
                                     <textarea
                                         value={newQuestion}
                                         onChange={(e) => setNewQuestion(e.target.value)}
-                                        placeholder="Une question pour les intervenants ?"
+                                        placeholder="Have a question for the speakers?"
                                         className="w-full p-4 text-white bg-transparent outline-none resize-none h-24 text-lg placeholder-coffee-500"
                                         required
                                     />
@@ -240,7 +240,7 @@ export default function SessionDetailPage() {
                                             type="text"
                                             value={authorName}
                                             onChange={(e) => setAuthorName(e.target.value)}
-                                            placeholder="Votre nom (optionnel)"
+                                            placeholder="Your name (optional)"
                                             className="w-full sm:flex-1 bg-transparent px-4 py-2 text-sm outline-none font-medium text-coffee-300 placeholder-coffee-600"
                                         />
                                         <button
@@ -248,7 +248,7 @@ export default function SessionDetailPage() {
                                             type="submit"
                                             className="w-full sm:w-auto bg-coffee-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-coffee-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
                                         >
-                                            {isSending ? 'Envoi...' : 'Envoyer'}
+                                            {isSending ? 'Sending...' : 'Send'}
                                             <Send className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -256,7 +256,7 @@ export default function SessionDetailPage() {
                             ) : (
                                 <div className="mb-10 p-8 bg-coffee-950/30 rounded-3xl border border-dashed border-coffee-800 text-center">
                                     <Clock className="w-8 h-8 text-coffee-500 mx-auto mb-3" />
-                                    <p className="text-coffee-400 font-bold">Le module de questions s'activera au début du direct.</p>
+                                    <p className="text-coffee-400 font-bold">The Q&A module will open once the session goes live.</p>
                                 </div>
                             )}
 
@@ -270,7 +270,7 @@ export default function SessionDetailPage() {
                                                     <div className="h-6 w-6 rounded-full bg-coffee-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
                                                         {(q.authorName || 'A').charAt(0)}
                                                     </div>
-                                                    <span className="text-sm font-bold text-coffee-400">{q.authorName || 'Anonyme'}</span>
+                                                    <span className="text-sm font-bold text-coffee-400">{q.authorName || 'Anonymous'}</span>
                                                     <span className="text-coffee-600 text-xs">•</span>
                                                     <span className="text-coffee-500 text-xs font-medium">
                                                         {new Date(q.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -289,7 +289,7 @@ export default function SessionDetailPage() {
                                     ))
                                 ) : (
                                     <div className="text-center py-10">
-                                        <p className="text-coffee-500 font-medium italic">Soyez le premier à poser une question !</p>
+                                        <p className="text-coffee-500 font-medium italic">Be the first to ask a question!</p>
                                     </div>
                                 )}
                             </div>
