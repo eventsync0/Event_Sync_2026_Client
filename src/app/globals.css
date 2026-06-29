@@ -4,7 +4,7 @@
    2. PALETTE DE BASE — Coffee Bean
    ========================================================================== */
 :root {
-  --coffee-50:  #ede1db;
+   --coffee-50:  #ede1db;
   --coffee-100: #f5ded6;
   --coffee-200: #ebbdad;
   --coffee-300: #e19d84;
@@ -14,11 +14,10 @@
   --coffee-700: #7b371e;
   --coffee-800: #522414;
   --coffee-900: #29120a;
-  --coffee-950: #1d0d07;
+  --coffee-950: #1d0d07; 
 
-  /* Thème unique : dark. Plus de bascule light/dark, ces valeurs
-     s'appliquent globalement, partout, tout le temps. */
   color-scheme: dark;
+
 
   /* ==========================================================================
      3. FONDS & SURFACES

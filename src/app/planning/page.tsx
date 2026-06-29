@@ -68,7 +68,7 @@ export default function PlanningPage() {
                 await fetchSessions();
             } catch (err) {
                 console.error(err);
-                setError("Impossible de charger le planning");
+                setError("Unable to load the schedule");
             } finally {
                 setLoading(false);
             }
@@ -212,7 +212,7 @@ export default function PlanningPage() {
             <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
                     <div className="animate-spin h-12 w-12 border-4 border-coffee-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <p className="text-coffee-400">Chargement du planning...</p>
+                    <p className="text-coffee-400">Loading schedule...</p>
                 </div>
             </div>
         );
@@ -227,7 +227,7 @@ export default function PlanningPage() {
                         onClick={() => window.location.reload()}
                         className="mt-4 px-4 py-2 bg-coffee-600 text-white rounded-lg hover:bg-coffee-700 transition"
                     >
-                        Réessayer
+                        Retry
                     </button>
                 </div>
             </div>
@@ -241,7 +241,7 @@ export default function PlanningPage() {
             <div className="border-b border-coffee-900 bg-black/90 backdrop-blur-sm sticky top-0 z-[100]">    <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                         <h1 className="text-4xl md:text-5xl font-audiowide bg-gradient-to-r from-coffee-400 via-coffee-300 to-coffee-500 bg-clip-text text-transparent tracking-tight">
-                            Planning
+                            Schedule
                         </h1>
                         <div className="flex items-center gap-4 flex-wrap">
                             {rooms.length > 0 && (
@@ -252,7 +252,7 @@ export default function PlanningPage() {
                                         onChange={(e) => handleRoomFilter(e.target.value)}
                                         className="px-3 py-1.5 border border-coffee-800 rounded-lg text-sm bg-black text-coffee-200 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-coffee-500"
                                     >
-                                        <option value="">Toutes les salles</option>
+                                        <option value="">All rooms</option>
                                         {rooms.map((room) => (
                                             <option key={room.id} value={room.id}>
                                                 {room.name}
@@ -269,12 +269,12 @@ export default function PlanningPage() {
                                 {viewMode === 'week' ? (
                                     <>
                                         <LayoutGrid className="w-4 h-4" />
-                                        <span>Vue Multi-Track</span>
+                                        <span>Multi-Track View</span>
                                     </>
                                 ) : (
                                     <>
                                         <List className="w-4 h-4" />
-                                        <span>Vue Semaine</span>
+                                        <span>Week View</span>
                                     </>
                                 )}
                             </button>
@@ -291,7 +291,7 @@ export default function PlanningPage() {
                                         onClick={currentWeek}
                                         className="px-3 py-1.5 text-sm bg-coffee-900/50 hover:bg-coffee-800/50 rounded-lg transition text-coffee-300 font-medium"
                                     >
-                                        Aujourd'hui
+                                        Today
                                     </button>
                                     <button
                                         onClick={nextWeek}
@@ -312,7 +312,7 @@ export default function PlanningPage() {
                                         onClick={goToToday}
                                         className="px-3 py-1.5 text-sm bg-coffee-900/50 hover:bg-coffee-800/50 rounded-lg transition text-coffee-300 font-medium"
                                     >
-                                        Aujourd'hui
+                                        Today
                                     </button>
                                     <button
                                         onClick={goToNextDay}
@@ -327,31 +327,31 @@ export default function PlanningPage() {
 
                     {viewMode === 'week' ? (
                         <p className="text-coffee-500 text-sm">
-                            {weekStart.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} -{' '}
-                            {weekEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            {weekStart.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })} -{' '}
+                            {weekEnd.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </p>
                     ) : (
                         <p className="text-coffee-500 text-sm">
-                            {selectedDay.toLocaleDateString('fr-FR', {
+                            {selectedDay.toLocaleDateString('en-US', {
                                 weekday: 'long',
                                 day: 'numeric',
                                 month: 'long',
                                 year: 'numeric'
                             })}
                             {selectedDay.toDateString() === new Date().toDateString() && (
-                                <span className="ml-2 text-coffee-400 font-semibold">(Aujourd'hui)</span>
+                                <span className="ml-2 text-coffee-400 font-semibold">(Today)</span>
                             )}
                         </p>
                     )}
                 </div>
             </div>
 
-            {/* Contenu principal */}
+            {/* Main content */}
             <div className="relative max-w-7xl mx-auto px-4 py-6">
                 {sessions.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-2xl text-coffee-500">Aucune session disponible pour le moment.</p>
-                        <p className="text-coffee-600 mt-2">Revenez plus tard !</p>
+                        <p className="text-2xl text-coffee-500">No sessions available right now.</p>
+                        <p className="text-coffee-600 mt-2">Check back later!</p>
                     </div>
                 ) : (
                     <>
@@ -359,7 +359,7 @@ export default function PlanningPage() {
                             <div className="bg-black rounded-2xl border border-coffee-900 overflow-hidden">
                                 <div className="grid border-b border-coffee-900" style={{ gridTemplateColumns: `100px repeat(${rooms.length}, 1fr)` }}>
                                     <div className="p-3 bg-black font-semibold text-sm text-coffee-400 border-r border-coffee-900">
-                                        Horaire
+                                        Time
                                     </div>
                                     {rooms.map(room => (
                                         <div key={room.id} className="p-3 bg-black font-semibold text-sm text-coffee-300 text-center border-r last:border-r-0 border-coffee-900">
@@ -395,7 +395,7 @@ export default function PlanningPage() {
                                                             const sessionMinute = new Date(session.startTime).getMinutes();
                                                             const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                             const height = getSessionHeight(session.startTime, session.endTime);
-                                                            const isFav = favorites.includes(session.id); // Vérifie si favori
+                                                            const isFav = favorites.includes(session.id); // Check if favorite
 
                                                             return (
                                                                 <div
@@ -409,7 +409,7 @@ export default function PlanningPage() {
                                                                 >
                                                                     <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
                                                                         <div className="flex flex-col h-full relative">
-                                                                            {/* Bouton Étoile Favori */}
+                                                                            {/* Favorite star button */}
                                                                             <button 
                                                                                 onClick={(e) => toggleFavorite(e, session.id)}
                                                                                 className="absolute top-0 right-0 p-0.5 rounded-full hover:bg-black/20 transition z-20"
@@ -447,7 +447,7 @@ export default function PlanningPage() {
                                         </div>
                                     ) : (
                                         <div className="text-center py-20 text-coffee-500">
-                                            Aucune salle disponible
+                                            No rooms available
                                         </div>
                                     )}
                                 </div>
@@ -462,13 +462,13 @@ export default function PlanningPage() {
                                         return (
                                             <div key={idx} className={`p-3 text-center border-r last:border-r-0 border-coffee-900 ${isToday ? 'bg-coffee-950/50' : ''}`}>
                                                 <div className="font-semibold text-coffee-500 text-sm">
-                                                    {day.toLocaleDateString('fr-FR', { weekday: 'short' }).toUpperCase()}
+                                                    {day.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase()}
                                                 </div>
                                                 <div className={`text-2xl font-bold ${isToday ? 'text-coffee-400' : 'text-white'}`}>
                                                     {day.getDate()}
                                                 </div>
                                                 <div className="text-xs text-coffee-600">
-                                                    {day.toLocaleDateString('fr-FR', { month: 'short' })}
+                                                    {day.toLocaleDateString('en-US', { month: 'short' })}
                                                 </div>
                                                 {sessionsForDay.length > 0 && (
                                                     <div className="mt-1 text-xs text-coffee-500 font-medium">
@@ -501,7 +501,7 @@ export default function PlanningPage() {
                                                         const sessionMinute = new Date(session.startTime).getMinutes();
                                                         const topPosition = (sessionHour - 7) * 64 + (sessionMinute / 60) * 64;
                                                         const height = getSessionHeight(session.startTime, session.endTime);
-                                                        const isFav = favorites.includes(session.id); // Vérifie si favori
+                                                        const isFav = favorites.includes(session.id); // Check if favorite
 
                                                         return (
                                                             <div
@@ -515,7 +515,7 @@ export default function PlanningPage() {
                                                             >
                                                                 <Link href={`/sessions/${session.id}?date=${session.startTime}`} className="block h-full">
                                                                     <div className="flex flex-col h-full relative">
-                                                                        {/* Bouton Étoile Favori */}
+                                                                        {/* Favorite star button */}
                                                                         <button 
                                                                             onClick={(e) => toggleFavorite(e, session.id)}
                                                                             className="absolute top-0 right-0 p-0.5 rounded-full hover:bg-black/20 transition z-20"
