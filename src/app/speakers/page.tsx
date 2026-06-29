@@ -6,11 +6,15 @@ import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 export default function SpeakersPage() {
   const API_URL = "http://localhost:3001/api";
 
+  const ITEMS_PER_PAGE = 6;
+
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // FETCH DATA
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
@@ -33,14 +37,33 @@ export default function SpeakersPage() {
     fetchSpeakers();
   }, []);
 
+  // FILTER
   const filteredSpeakers = useMemo(() => {
     return speakers.filter((speaker) =>
       speaker.fullName?.toLowerCase().includes(search.toLowerCase())
     );
   }, [speakers, search]);
 
+  // RESET PAGE WHEN SEARCH CHANGES
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
+  // PAGINATION LOGIC
+  const totalPages = Math.ceil(filteredSpeakers.length / ITEMS_PER_PAGE);
+
+  const paginatedSpeakers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredSpeakers.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredSpeakers, currentPage]);
+
+  // SCROLL TOP WHEN PAGE CHANGES
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
   return (
-    <div className="max-w-6xl mx-auto px-6 py-21">
+    <div className="max-w-6xl mx-auto px-6 py-20">
 
       {/* HEADER */}
       <div className="mb-12 text-center">
@@ -81,48 +104,19 @@ export default function SpeakersPage() {
       </div>
 
       {/* LIST */}
-      {!loading && filteredSpeakers.length > 0 ? (
-        <div className="relative group">
+      {!loading && paginatedSpeakers.length > 0 ? (
+        <>
+          {/* GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {/* LEFT BUTTON */}
-          <button
-            onClick={() =>
-              document.getElementById("speakers-scroll")
-                ?.scrollBy({ left: -320, behavior: "smooth" })
-            }
-            className="
-              absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5
-              z-10 w-10 h-10 rounded-full bg-bg-card
-              border border-coffee-200 text-coffee-600
-              shadow-md flex items-center justify-center
-              hover:bg-coffee-100 hover:scale-110
-              transition-all opacity-0 group-hover:opacity-100
-            "
-          >
-            ‹
-          </button>
-
-          {/* SCROLL AREA */}
-          <div
-            id="speakers-scroll"
-            className="
-              flex gap-5 overflow-x-auto scroll-smooth pb-4 px-1
-              snap-x snap-mandatory
-              [&::-webkit-scrollbar]:hidden
-              [-ms-overflow-style:none]
-              [scrollbar-width:none]
-            "
-          >
-            {filteredSpeakers.map((speaker: any) => (
+            {paginatedSpeakers.map((speaker: any) => (
               <div
                 key={speaker.id}
                 className="
-                  snap-start shrink-0 w-64 bg-bg-card
-                  border border-coffee-200 rounded-3xl p-6
-                  text-center shadow-sm
+                  bg-bg-card border border-coffee-200
+                  rounded-3xl p-6 text-center shadow-sm
                   hover:shadow-xl hover:-translate-y-2
-                  hover:border-coffee-400
-                  transition-all duration-300
+                  hover:border-coffee-400 transition-all duration-300
                 "
               >
 
@@ -199,27 +193,44 @@ export default function SpeakersPage() {
 
               </div>
             ))}
+
           </div>
 
-          {/* RIGHT BUTTON */}
-          <button
-            onClick={() =>
-              document.getElementById("speakers-scroll")
-                ?.scrollBy({ left: 320, behavior: "smooth" })
-            }
-            className="
-              absolute right-0 top-1/2 -translate-y-1/2 translate-x-5
-              z-10 w-10 h-10 rounded-full bg-bg-card
-              border border-coffee-200 text-coffee-600
-              shadow-md flex items-center justify-center
-              hover:bg-coffee-100 hover:scale-110
-              transition-all opacity-0 group-hover:opacity-100
-            "
-          >
-            ›
-          </button>
+          {/* PAGINATION */}
+          <div className="flex justify-center items-center gap-4 mt-12">
 
-        </div>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="
+                px-5 py-2 rounded-xl border border-coffee-200
+                text-coffee-600 hover:bg-coffee-100
+                disabled:opacity-40 disabled:cursor-not-allowed
+                transition
+              "
+            >
+              Back
+            </button>
+
+            <span className="text-txt-secondary">
+              Page {currentPage} / {totalPages || 1}
+            </span>
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="
+                px-5 py-2 rounded-xl border border-coffee-200
+                text-coffee-600 hover:bg-coffee-100
+                disabled:opacity-40 disabled:cursor-not-allowed
+                transition
+              "
+            >
+              Next
+            </button>
+
+          </div>
+        </>
       ) : (
         !loading && (
           <div className="text-center py-16 text-txt-secondary">
@@ -237,6 +248,7 @@ export default function SpeakersPage() {
             p-8 shadow-2xl border border-coffee-200 relative
           ">
 
+            {/* CLOSE */}
             <button
               onClick={() => setSelectedSpeaker(null)}
               className="absolute top-3 right-4 text-txt-secondary hover:text-black text-xl"
@@ -301,6 +313,7 @@ export default function SpeakersPage() {
                 )}
 
               </div>
+
             </div>
 
           </div>
