@@ -6,10 +6,15 @@ import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 import api from "@/lib/api";
 
 export default function SpeakersPage() {
+  const ITEMS_PER_PAGE = 6;
+
   const [speakers, setSpeakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSpeaker, setSelectedSpeaker] = useState<any | null>(null);
 
+  // FETCH
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
@@ -24,11 +29,30 @@ export default function SpeakersPage() {
     fetchSpeakers();
   }, []);
 
+  // FILTER
   const filteredSpeakers = useMemo(() => {
-    return speakers.filter((speaker) =>
-      speaker.fullName?.toLowerCase().includes(search.toLowerCase())
+    return speakers.filter((s) =>
+      s.fullName?.toLowerCase().includes(search.toLowerCase())
     );
   }, [speakers, search]);
+
+  // RESET PAGE
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
+  // PAGINATION
+  const totalPages = Math.ceil(filteredSpeakers.length / ITEMS_PER_PAGE);
+
+  const paginatedSpeakers = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredSpeakers.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredSpeakers, currentPage]);
+
+  // SCROLL TOP
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   const getPlatformIcon = (platform: string) => {
     const p = platform?.toLowerCase();
@@ -41,29 +65,23 @@ export default function SpeakersPage() {
     <div className="max-w-6xl mx-auto px-6 py-20">
 
       {/* HEADER */}
-      <div className="mb-12 text-center">
+      <div className="text-center mb-12">
         <h1 className="font-audiowide text-4xl md:text-5xl text-txt-title">
           All Speakers
         </h1>
         <p className="text-txt-secondary mt-3 max-w-2xl mx-auto text-lg">
-          Discover the experts, innovators, and leaders sharing knowledge during the event.
+          Discover experts and innovators sharing knowledge.
         </p>
       </div>
 
       {/* SEARCH */}
-      <div className="mb-10 flex justify-center">
-        <div className="w-full max-w-xl relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-txt-secondary pointer-events-none">
-            🔍
-          </span>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search a speaker..."
-            className="w-full pl-11 pr-5 py-4 rounded-2xl border border-coffee-200 bg-bg-card text-txt-title placeholder:text-txt-secondary focus:outline-none focus:ring-2 focus:ring-coffee-200 transition"
-          />
-        </div>
+      <div className="flex justify-center mb-10">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search a speaker..."
+          className="w-full max-w-xl px-5 py-4 rounded-2xl border border-coffee-200 bg-bg-card text-txt-title placeholder:text-txt-secondary focus:ring-2 focus:ring-coffee-200 outline-none"
+        />
       </div>
 
       {/* LOADING */}
@@ -73,138 +91,130 @@ export default function SpeakersPage() {
         </div>
       )}
 
-      {/* SPEAKER SCROLL */}
-      {!loading && filteredSpeakers.length > 0 && (
-        <div className="relative group">
+      {/* GRID */}
+      {!loading && paginatedSpeakers.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {/* LEFT BUTTON */}
-          <button
-            onClick={() =>
-              document.getElementById("speakers-scroll")
-                ?.scrollBy({ left: -340, behavior: "smooth" })
-            }
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-bg-card border border-coffee-200 text-txt-title text-xl flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity -translate-x-3"
-          >
-            ‹
-          </button>
+            {paginatedSpeakers.map((speaker: any) => (
+              <div
+                key={speaker.id}
+                className="bg-bg-card border border-coffee-200 rounded-3xl p-6 text-center shadow-sm hover:shadow-xl hover:-translate-y-2 transition"
+              >
 
-          {/* SCROLL AREA */}
-          <div
-            id="speakers-scroll"
-            className="flex gap-5 overflow-x-auto scroll-smooth pb-4 px-1 [&::-webkit-scrollbar]:hidden"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {filteredSpeakers.map((speaker: any) => {
-              const firstSession = speaker.sessions?.[0];
-
-              return (
-                <div
-                  key={speaker.id}
-                  className="flex-shrink-0 w-64 bg-bg-card border border-coffee-200/40 rounded-3xl p-6 text-center flex flex-col hover:border-coffee-200 hover:shadow-lg transition-all duration-200"
-                >
-
-                  {/* PHOTO */}
-                  <div className="flex justify-center mb-4">
-                    {speaker.photoUrl ? (
-                      <img
-                        src={speaker.photoUrl}
-                        alt={speaker.fullName}
-                        className="w-24 h-24 rounded-full object-cover ring-2 ring-coffee-200/30"
-                      />
-                    ) : (
-                      <div className="w-24 h-24 rounded-full bg-coffee-200/10 border border-coffee-200/20 flex items-center justify-center text-txt-secondary text-sm">
-                        No photo
-                      </div>
-                    )}
-                  </div>
-
-                  {/* NAME */}
-                  <h2 className="text-base font-bold text-txt-title leading-snug">
-                    {speaker.fullName}
-                  </h2>
-
-                  {/* BIO */}
-                  {speaker.bio && (
-                    <p className="text-xs text-txt-secondary mt-2 line-clamp-2 leading-relaxed">
-                      {speaker.bio}
-                    </p>
-                  )}
-
-                  {/* SESSION TEASER */}
-                  {firstSession && (
-                    <Link
-                      href={`/sessions/${firstSession.id}`}
-                      className="mt-3 text-xs text-coffee-200 hover:underline truncate block"
-                      title={firstSession.title}
-                    >
-                      🎤 {firstSession.title}
-                    </Link>
-                  )}
-
-                  <div className="flex-1" />
-
-                  {/* SOCIAL LINKS */}
-                  {speaker.links?.length > 0 && (
-                    <div className="flex gap-3 mt-5 justify-center text-txt-secondary">
-                      {speaker.links.map((link: any) => (
-                        <a
-                          key={link.id}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-txt-title transition-colors text-base"
-                        >
-                          {getPlatformIcon(link.platform)}
-                        </a>
-                      ))}
+                {/* PHOTO */}
+                <div className="flex justify-center">
+                  {speaker.photoUrl ? (
+                    <img
+                      src={speaker.photoUrl}
+                      className="w-28 h-28 rounded-full object-cover border-4 border-coffee-100"
+                    />
+                  ) : (
+                    <div className="w-28 h-28 rounded-full bg-coffee-100 flex items-center justify-center">
+                      No Image
                     </div>
                   )}
-
-                  {/* VIEW PROFILE CTA */}
-                  <Link
-                    href={`/speakers/${speaker.id}`}
-                    className="mt-5 inline-block w-full py-2.5 rounded-xl border border-coffee-200/50 text-sm font-semibold text-txt-title hover:bg-coffee-200/10 transition-colors"
-                  >
-                    View profile →
-                  </Link>
-
                 </div>
-              );
-            })}
+
+                {/* NAME */}
+                <h2 className="text-xl font-bold mt-5 text-txt-title">
+                  {speaker.fullName}
+                </h2>
+
+                {/* BIO */}
+                {speaker.bio && (
+                  <p className="text-sm text-txt-secondary mt-3 line-clamp-3">
+                    {speaker.bio}
+                  </p>
+                )}
+
+                {/* LINKS */}
+                <div className="flex gap-3 mt-5 justify-center">
+                  {speaker.links?.map((l: any) => (
+                    <a
+                      key={l.id}
+                      href={l.url}
+                      target="_blank"
+                      className="text-txt-secondary hover:text-txt-title transition"
+                    >
+                      {getPlatformIcon(l.platform)}
+                    </a>
+                  ))}
+                </div>
+
+                {/* VIEW */}
+                <button
+                  onClick={() => setSelectedSpeaker(speaker)}
+                  className="mt-5 text-coffee-600 font-semibold"
+                >
+                  View profile →
+                </button>
+
+              </div>
+            ))}
+
           </div>
 
-          {/* RIGHT BUTTON */}
-          <button
-            onClick={() =>
-              document.getElementById("speakers-scroll")
-                ?.scrollBy({ left: 340, behavior: "smooth" })
-            }
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-bg-card border border-coffee-200 text-txt-title text-xl flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity translate-x-3"
-          >
-            ›
-          </button>
+          {/* PAGINATION */}
+          <div className="flex justify-center items-center gap-4 mt-12">
 
-        </div>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-5 py-2 border rounded-xl disabled:opacity-40"
+            >
+              Back
+            </button>
+
+            <span className="text-txt-secondary">
+              Page {currentPage} / {totalPages || 1}
+            </span>
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-5 py-2 border rounded-xl disabled:opacity-40"
+            >
+              Next
+            </button>
+
+          </div>
+        </>
       )}
 
-      {/* EMPTY STATE */}
+      {/* EMPTY */}
       {!loading && filteredSpeakers.length === 0 && (
         <div className="text-center py-20 text-txt-secondary">
-          <p className="text-3xl mb-3">🎙️</p>
-          <p className="text-lg font-medium">No speakers found.</p>
-          {search && (
-            <p className="text-sm mt-1">
-              Try a different name or{" "}
-              <button
-                onClick={() => setSearch("")}
-                className="underline hover:text-txt-title transition-colors"
-              >
-                clear the search
-              </button>.
-            </p>
-          )}
+          No speakers found
         </div>
       )}
+
+      {/* MODAL */}
+      {selectedSpeaker && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+          <div className="bg-bg-card p-8 rounded-3xl max-w-2xl w-[90%] relative">
+
+            <button
+              onClick={() => setSelectedSpeaker(null)}
+              className="absolute top-3 right-4"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold">
+              {selectedSpeaker.fullName}
+            </h2>
+
+            <p className="mt-4 text-txt-secondary">
+              {selectedSpeaker.bio}
+            </p>
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
